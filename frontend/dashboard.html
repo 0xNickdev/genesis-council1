@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GENESIS — Council Chamber</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+:root {
+  --oracle:#00D4FF; --oracle-bg:rgba(0,212,255,0.06); --oracle-b:rgba(0,212,255,0.22);
+  --grok:#E8E8E8; --grok-bg:rgba(232,232,232,0.05); --grok-b:rgba(232,232,232,0.18);
+  --sentinel:#1E7FFF; --sentinel-bg:rgba(30,127,255,0.06); --sentinel-b:rgba(30,127,255,0.22);
+  --openclaw:#FF2D2D; --openclaw-bg:rgba(255,45,45,0.06); --openclaw-b:rgba(255,45,45,0.22);
+  --bg:#030710; --surface:rgba(3,7,16,0.72); --panel:rgba(255,255,255,0.028);
+  --border:rgba(255,255,255,0.07); --border-c:rgba(0,212,255,0.18);
+  --txt:rgba(255,255,255,0.85); --dim:rgba(255,255,255,0.42); --faint:rgba(255,255,255,0.2);
+  --green:#22ff88; --red:#ff4455;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:100%;height:100%;background:var(--bg);color:#fff;font-family:'Syne',sans-serif;overflow:hidden;}
+
+/* ── UNICORN BG ── */
+#us-bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+#us-bg>div{width:100%!important;height:100%!important;}
+/* dark overlay so panels are readable */
+#us-overlay{position:fixed;inset:0;z-index:1;pointer-events:none;background:rgba(3,7,16,0.62);}
+
+/* ── HIVEMIND BG CANVAS ── */
+#hive-bg{position:fixed;inset:0;z-index:2;pointer-events:none;opacity:0.22;}
+
+/* ── SCAN ── */
+.scan{position:fixed;left:0;right:0;height:1px;z-index:3;pointer-events:none;
+  background:linear-gradient(90deg,transparent,rgba(0,212,255,0.3),transparent);
+  animation:scanA 14s linear infinite;}
+@keyframes scanA{from{top:-1px}to{top:100vh}}
+
+/* ── APP SHELL ── */
+.app{position:relative;z-index:10;width:100vw;height:100vh;display:grid;grid-template-rows:50px 1fr;}
+
+/* ── HEADER ── */
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:0 20px;
+  border-bottom:1px solid var(--border);background:rgba(3,7,16,0.75);backdrop-filter:blur(20px);}
+.hdr-logo{display:flex;align-items:center;gap:10px;}
+.hdr-name{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:4px;
+  background:linear-gradient(90deg,var(--oracle),#fff 55%,var(--sentinel));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hdr-tag{font-family:'Space Mono',monospace;font-size:7px;letter-spacing:2px;color:var(--faint);text-transform:uppercase;}
+.hdr-agents{display:flex;gap:14px;}
+.ha{display:flex;align-items:center;gap:5px;font-family:'Space Mono',monospace;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;}
+.ha-dot{width:5px;height:5px;border-radius:50%;animation:blink 2s infinite;}
+.hdr-right{display:flex;align-items:center;gap:14px;}
+.live{display:flex;align-items:center;gap:5px;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--green);text-transform:uppercase;}
+.live::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:blink 1.5s infinite;}
+#clk{font-family:'Space Mono',monospace;font-size:9px;color:var(--faint);}
+
+/* ── MAIN GRID ── */
+.main{display:grid;grid-template-columns:268px 1fr 264px;height:calc(100vh - 50px);overflow:hidden;}
+
+/* ── PANELS ── */
+.lpanel,.rpanel{display:flex;flex-direction:column;overflow-y:auto;scrollbar-width:none;}
+.lpanel::-webkit-scrollbar,.rpanel::-webkit-scrollbar{display:none;}
+.lpanel{border-right:1px solid var(--border);}
+.rpanel{border-left:1px solid var(--border);}
+
+.blk{border-bottom:1px solid var(--border);padding:16px 18px;background:rgba(3,7,16,0.3);}
+.blk-t{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;
+  color:var(--faint);margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;}
+.blk-badge{background:var(--oracle-bg);color:var(--oracle);font-size:7px;letter-spacing:1px;
+  padding:2px 7px;border-radius:4px;border:1px solid var(--oracle-b);}
+
+/* ── TOKEN METRICS ── */
+.tok-price{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:1px;line-height:1;margin-bottom:5px;}
+.tok-price span{font-size:18px;color:var(--dim);}
+.pch{font-family:'Space Mono',monospace;font-size:11px;font-weight:700;margin-bottom:14px;}
+.pch.up{color:var(--green);} .pch.dn{color:var(--red);}
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+.mi{background:var(--panel);border:1px solid var(--border);border-radius:9px;padding:9px 11px;}
+.mi-l{font-family:'Space Mono',monospace;font-size:7px;letter-spacing:2px;color:var(--faint);text-transform:uppercase;margin-bottom:4px;}
+.mi-v{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;}
+.c-ora{color:var(--oracle);} .c-grn{color:var(--green);}
+
+/* Mini chart */
+.chart-wrap{margin-top:12px;height:48px;position:relative;}
+#mini-chart{width:100%;height:100%;}
+
+/* ── DAO ── */
+.dao-timer{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;color:var(--oracle);margin-bottom:10px;}
+.dao-prop{font-family:'Space Mono',monospace;font-size:9px;line-height:1.55;color:var(--dim);
+  margin-bottom:12px;padding:10px;background:var(--panel);border:1px solid var(--border);border-radius:8px;}
+.dp-id{color:var(--oracle);margin-bottom:3px;font-size:7px;letter-spacing:2px;}
+.vbars{display:flex;flex-direction:column;gap:6px;margin-bottom:12px;}
+.vr{display:flex;align-items:center;gap:7px;}
+.va{font-family:'Space Mono',monospace;font-size:7px;letter-spacing:1px;width:58px;text-transform:uppercase;color:var(--dim);}
+.vt{flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden;}
+.vf{height:100%;border-radius:2px;transition:width .9s cubic-bezier(0.16,1,0.3,1);}
+.vp{font-family:'Space Mono',monospace;font-size:8px;color:var(--faint);width:26px;text-align:right;}
+.dao-stat{display:flex;align-items:center;gap:5px;font-family:'Space Mono',monospace;
+  font-size:8px;letter-spacing:2px;text-transform:uppercase;padding:6px 10px;border-radius:6px;border:1px solid;}
+.dao-stat::before{content:'';width:5px;height:5px;border-radius:50%;background:currentColor;animation:blink 1.5s infinite;}
+.ds-vote{color:var(--oracle);border-color:var(--oracle-b);background:var(--oracle-bg);}
+.ds-exec{color:var(--green);border-color:rgba(34,255,136,0.28);background:rgba(34,255,136,0.05);}
+.ds-fail{color:var(--red);border-color:rgba(255,68,85,0.28);background:rgba(255,68,85,0.05);}
+
+/* ── CENTER CHAT ── */
+.cpanel{display:flex;flex-direction:column;overflow:hidden;}
+.chat-hdr{padding:12px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;
+  justify-content:space-between;background:rgba(3,7,16,0.6);backdrop-filter:blur(10px);flex-shrink:0;}
+.chat-ttl{font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:3px;
+  background:linear-gradient(90deg,var(--oracle),#fff,var(--sentinel));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.chat-sub{font-family:'Space Mono',monospace;font-size:8px;color:var(--faint);letter-spacing:1px;}
+
+/* Agent Status Bar */
+.asb{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--border);flex-shrink:0;}
+.asc{padding:10px 14px;border-right:1px solid var(--border);}
+.asc:last-child{border-right:none;}
+.asc-name{font-family:'Syne',sans-serif;font-weight:800;font-size:11px;letter-spacing:1px;margin-bottom:3px;}
+.asc-st{font-family:'Space Mono',monospace;font-size:7px;letter-spacing:2px;text-transform:uppercase;
+  display:flex;align-items:center;gap:4px;}
+.asc-st .bd{width:4px;height:4px;border-radius:50%;background:currentColor;animation:blink 1s infinite;}
+.st-think{color:#FFD700;} .st-resp{color:var(--green);} .st-vote{color:var(--oracle);} .st-idle{color:var(--faint);}
+
+/* Messages */
+.msgs{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:14px;
+  scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
+.msg{display:flex;gap:11px;animation:msgIn 0.4s cubic-bezier(0.16,1,0.3,1) both;max-width:92%;}
+@keyframes msgIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.mav{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;
+  font-family:'Bebas Neue',sans-serif;font-size:10px;letter-spacing:1px;flex-shrink:0;border:1px solid;position:relative;}
+.mav::after{content:'';position:absolute;inset:-3px;border-radius:11px;border:1px solid;border-color:inherit;opacity:0.18;}
+.mbody{flex:1;}
+.mhead{display:flex;align-items:center;gap:7px;margin-bottom:5px;}
+.mname{font-family:'Syne',sans-serif;font-weight:800;font-size:11px;letter-spacing:1px;}
+.mtime{font-family:'Space Mono',monospace;font-size:7px;color:var(--faint);}
+.mtag{font-family:'Space Mono',monospace;font-size:6px;letter-spacing:1px;padding:2px 6px;border-radius:4px;text-transform:uppercase;}
+.mtxt{font-family:'Space Mono',monospace;font-size:10.5px;line-height:1.72;color:rgba(255,255,255,0.78);
+  padding:10px 14px;border-radius:4px 12px 12px 12px;border-left:2px solid;background:var(--panel);}
+
+/* Oracle */
+.a-ora .mav{background:rgba(0,212,255,0.08);color:var(--oracle);border-color:var(--oracle);}
+.a-ora .mname{color:var(--oracle);} .a-ora .mtxt{border-color:var(--oracle);}
+.a-ora .mtag{background:var(--oracle-bg);color:var(--oracle);border:1px solid var(--oracle-b);}
+/* Grok */
+.a-grk .mav{background:rgba(232,232,232,0.06);color:var(--grok);border-color:var(--grok);}
+.a-grk .mname{color:var(--grok);} .a-grk .mtxt{border-color:var(--grok);}
+.a-grk .mtag{background:var(--grok-bg);color:var(--grok);border:1px solid var(--grok-b);}
+/* Sentinel */
+.a-sen .mav{background:rgba(30,127,255,0.08);color:var(--sentinel);border-color:var(--sentinel);}
+.a-sen .mname{color:var(--sentinel);} .a-sen .mtxt{border-color:var(--sentinel);}
+.a-sen .mtag{background:var(--sentinel-bg);color:var(--sentinel);border:1px solid var(--sentinel-b);}
+/* OpenClaw */
+.a-ocl .mav{background:rgba(255,45,45,0.08);color:var(--openclaw);border-color:var(--openclaw);}
+.a-ocl .mname{color:var(--openclaw);} .a-ocl .mtxt{border-color:var(--openclaw);}
+.a-ocl .mtag{background:var(--openclaw-bg);color:var(--openclaw);border:1px solid var(--openclaw-b);}
+
+/* Typing */
+.typing{display:flex;gap:11px;align-items:flex-start;}
+.tdots{display:flex;gap:4px;padding:10px 14px;background:var(--panel);border-radius:4px 12px 12px 12px;border-left:2px solid;}
+.tdots span{width:5px;height:5px;border-radius:50%;background:currentColor;animation:bounce 1.4s infinite;}
+.tdots span:nth-child(2){animation-delay:.2s;} .tdots span:nth-child(3){animation-delay:.4s;}
+@keyframes bounce{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-6px);opacity:1}}
+
+/* ── LOG ── */
+.log-scroll{flex:1;overflow-y:auto;padding:10px 14px;display:flex;flex-direction:column;gap:5px;
+  scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
+.le{padding:8px 10px;border-radius:7px;background:var(--panel);border:1px solid var(--border);animation:leIn .3s ease;}
+@keyframes leIn{from{opacity:0;transform:translateX(8px)}to{opacity:1;transform:translateX(0)}}
+.le-t{color:var(--faint);margin-bottom:2px;font-family:'Space Mono',monospace;font-size:7px;letter-spacing:1px;}
+.le-tp{display:inline-block;font-size:7px;letter-spacing:1px;padding:1px 6px;border-radius:3px;text-transform:uppercase;margin-bottom:3px;}
+.lt-dec{background:rgba(0,212,255,0.08);color:var(--oracle);border:1px solid var(--oracle-b);}
+.lt-vot{background:rgba(34,255,136,0.08);color:var(--green);border:1px solid rgba(34,255,136,0.25);}
+.lt-act{background:rgba(255,45,45,0.08);color:var(--openclaw);border:1px solid var(--openclaw-b);}
+.lt-onc{background:rgba(30,127,255,0.08);color:var(--sentinel);border:1px solid var(--sentinel-b);}
+.le-x{color:var(--dim);font-family:'Space Mono',monospace;font-size:8.5px;line-height:1.5;}
+
+/* ── SCROLLBARS ── */
+::-webkit-scrollbar{width:2px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+</style>
+</head>
+<body>
+
+<!-- UNICORN BG -->
+<div id="us-bg">
+  <div data-us-project="ne73IhLhuMp7c10jUAcg" style="width:100%;height:100%"></div>
+</div>
+<script>!function(){var u=window.UnicornStudio;if(u&&u.init){if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",function(){u.init()})}else{u.init()}}else{window.UnicornStudio={isInitialized:!1};var i=document.createElement("script");i.src="https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v2.0.5/dist/unicornStudio.umd.js",i.onload=function(){if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",function(){UnicornStudio.init()})}else{UnicornStudio.init()}},(document.head||document.body).appendChild(i)}}();</script>
+
+<div id="us-overlay"></div>
+<canvas id="hive-bg"></canvas>
+<div class="scan"></div>
+
+<div class="app">
+  <!-- HEADER -->
+  <header class="hdr">
+    <div class="hdr-logo">
+      <div><div class="hdr-name">GENESIS</div><div class="hdr-tag">Council Chamber</div></div>
+    </div>
+    <div class="hdr-agents">
+      <div class="ha"><span class="ha-dot" style="background:var(--oracle);box-shadow:0 0 5px var(--oracle)"></span><span style="color:var(--oracle)">Oracle</span></div>
+      <div class="ha"><span class="ha-dot" style="background:var(--grok);box-shadow:0 0 5px var(--grok)"></span><span style="color:var(--grok)">Grok</span></div>
+      <div class="ha"><span class="ha-dot" style="background:var(--sentinel);box-shadow:0 0 5px var(--sentinel)"></span><span style="color:var(--sentinel)">Sentinel</span></div>
+      <div class="ha"><span class="ha-dot" style="background:var(--openclaw);box-shadow:0 0 5px var(--openclaw)"></span><span style="color:var(--openclaw)">OpenClaw</span></div>
+    </div>
+    <div class="hdr-right">
+      <div class="live">Live</div>
+      <div id="clk">00:00:00 UTC</div>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- LEFT -->
+    <aside class="lpanel">
+      <!-- TOKEN -->
+      <div class="blk">
+        <div class="blk-t">Token Metrics<span class="blk-badge">GENESIS</span></div>
+        <div class="tok-price"><span>$</span><span id="tp">0.04218</span></div>
+        <div class="pch up" id="pc">▲ +12.4% (24h)</div>
+        <div class="mgrid">
+          <div class="mi"><div class="mi-l">Volume 24h</div><div class="mi-v c-ora" id="mv">$2.4M</div></div>
+          <div class="mi"><div class="mi-l">Liquidity</div><div class="mi-v c-grn" id="ml">$890K</div></div>
+          <div class="mi"><div class="mi-l">Market Cap</div><div class="mi-v" id="mc">$42.1M</div></div>
+          <div class="mi"><div class="mi-l">Holders</div><div class="mi-v" id="mh">8,241</div></div>
+        </div>
+        <div class="chart-wrap"><canvas id="mini-chart"></canvas></div>
+      </div>
+
+      <!-- HIVEMIND PULSE indicator -->
+      <div class="blk">
+        <div class="blk-t">Hivemind Pulse<span class="blk-badge" id="pulse-lvl">HIGH</span></div>
+        <canvas id="pulse-canvas" style="width:100%;height:60px;"></canvas>
+        <div style="display:flex;justify-content:space-between;margin-top:8px;">
+          <div class="mi" style="flex:1;margin-right:5px;"><div class="mi-l">Consensus</div><div class="mi-v c-ora" id="consensus">74%</div></div>
+          <div class="mi" style="flex:1;"><div class="mi-l">Debate Temp</div><div class="mi-v" id="dtemp" style="color:#FFD700">HOT</div></div>
+        </div>
+      </div>
+
+      <!-- DAO -->
+      <div class="blk">
+        <div class="blk-t">DAO Voting<span class="blk-badge" id="dao-rnd">Round #7</span></div>
+        <div class="dao-timer" id="dao-tmr">14:32</div>
+        <div class="dao-prop">
+          <div class="dp-id">PROP-007 · Active</div>
+          <div id="dao-txt">Increase liquidity pool allocation by 15% and initiate buyback sequence at $0.038 floor price.</div>
+        </div>
+        <div class="vbars">
+          <div class="vr"><span class="va" style="color:var(--oracle)">Oracle</span><div class="vt"><div class="vf" id="vb-ora" style="width:85%;background:var(--oracle)"></div></div><span class="vp" id="vp-ora">85%</span></div>
+          <div class="vr"><span class="va" style="color:var(--grok)">Grok</span><div class="vt"><div class="vf" id="vb-grk" style="width:70%;background:var(--grok)"></div></div><span class="vp" id="vp-grk">70%</span></div>
+          <div class="vr"><span class="va" style="color:var(--sentinel)">Sentinel</span><div class="vt"><div class="vf" id="vb-sen" style="width:90%;background:var(--sentinel)"></div></div><span class="vp" id="vp-sen">90%</span></div>
+          <div class="vr"><span class="va" style="color:var(--openclaw)">OpenClaw</span><div class="vt"><div class="vf" id="vb-ocl" style="width:45%;background:var(--openclaw)"></div></div><span class="vp" id="vp-ocl">45%</span></div>
+        </div>
+        <div class="dao-stat ds-vote" id="dao-st">On-Chain Voting Active</div>
+      </div>
+    </aside>
+
+    <!-- CENTER -->
+    <main class="cpanel">
+      <div class="chat-hdr">
+        <div>
+          <div class="chat-ttl">Council Debate Chamber</div>
+          <div class="chat-sub" id="debate-top">Topic: Liquidity Strategy · Round 7 · DeepSeek AI Engine</div>
+        </div>
+        <div class="chat-sub" id="msg-cnt">0 messages</div>
+      </div>
+
+      <!-- Agent status bar -->
+      <div class="asb">
+        <div class="asc"><div class="asc-name" style="color:var(--oracle)">Oracle</div><div class="asc-st st-resp" id="st-ora"><span class="bd"></span><span>responding</span></div></div>
+        <div class="asc"><div class="asc-name" style="color:var(--grok)">Grok</div><div class="asc-st st-think" id="st-grk"><span class="bd"></span><span>thinking</span></div></div>
+        <div class="asc"><div class="asc-name" style="color:var(--sentinel)">Sentinel</div><div class="asc-st st-vote" id="st-sen"><span class="bd"></span><span>voting</span></div></div>
+        <div class="asc"><div class="asc-name" style="color:var(--openclaw)">OpenClaw</div><div class="asc-st st-idle" id="st-ocl"><span class="bd" style="animation:none;opacity:.25"></span><span>idle</span></div></div>
+      </div>
+
+      <div class="msgs" id="msgs"></div>
+    </main>
+
+    <!-- RIGHT LOG -->
+    <aside class="rpanel">
+      <div class="blk" style="flex-shrink:0;">
+        <div class="blk-t">Decision Log<span class="blk-badge" id="log-cnt">0</span></div>
+      </div>
+      <div class="log-scroll" id="log-scroll"></div>
+    </aside>
+  </div>
+</div>
+
+<script>
+// ── WEBSOCKET ──
+// ← ЗАМЕНИ на URL твоего Railway бекенда после деплоя
+// Пример: 'wss://genesis-backend-production.up.railway.app'
+const WS = window.location.hostname === 'localhost'
+  ? 'ws://localhost:3001'
+  : 'wss://ВСТАВЬ_RAILWAY_URL_СЮДА';
+let ws=null,msgN=0,logN=0;
+
+const AGENTS={
+  oracle:{n:'Oracle',a:'ORC',c:'#00D4FF',cls:'a-ora'},
+  grok:{n:'Grok',a:'GRK',c:'#E8E8E8',cls:'a-grk'},
+  sentinel:{n:'Sentinel',a:'SNT',c:'#1E7FFF',cls:'a-sen'},
+  openclaw:{n:'OpenClaw',a:'OCL',c:'#FF2D2D',cls:'a-ocl'},
+};
+
+function connectWS(){
+  try{
+    ws=new WebSocket(WS);
+    ws.onopen=()=>console.log('[WS] connected');
+    ws.onmessage=e=>{ try{handle(JSON.parse(e.data))}catch(err){} };
+    ws.onclose=()=>{ setTimeout(connectWS,3000); };
+    ws.onerror=()=>ws.close();
+  }catch(e){ runDemo(); }
+}
+
+function handle(m){
+  if(m.type==='init'){
+    if(m.data.history) m.data.history.slice(-30).forEach(addMsg);
+    if(m.data.log) m.data.log.slice(-20).forEach(d=>addLog(d));
+    if(m.data.token) updateToken(m.data.token);
+    if(m.data.dao) updateDAO(m.data.dao);
+  }
+  else if(m.type==='agent_message') addMsg(m);
+  else if(m.type==='agent_status') setStatus(m.agent,m.status);
+  else if(m.type==='typing_start') showTyping(m.agent);
+  else if(m.type==='typing_stop') hideTyping();
+  else if(m.type==='token_update') updateToken(m.data);
+  else if(m.type==='dao_update') updateDAO(m.data);
+  else if(m.type==='log_entry') addLog(m.data);
+}
+
+// ── MESSAGES ──
+function addMsg(d){
+  hideTyping();
+  const ag=AGENTS[d.agent]; if(!ag) return;
+  msgN++;
+  document.getElementById('msg-cnt').textContent=msgN+' messages';
+  const el=document.createElement('div');
+  el.className='msg '+ag.cls;
+  el.innerHTML=`<div class="mav">${ag.a}</div><div class="mbody">
+    <div class="mhead"><span class="mname">${ag.n}</span>${d.tag?`<span class="mtag">${d.tag}</span>`:''}<span class="mtime">${utc()}</span></div>
+    <div class="mtxt">${d.text}</div></div>`;
+  const w=document.getElementById('msgs');
+  w.appendChild(el); w.scrollTop=w.scrollHeight;
+  setStatus(d.agent,'idle');
+  updatePulse();
+}
+
+function showTyping(id){
+  hideTyping();
+  const ag=AGENTS[id]; if(!ag) return;
+  const el=document.createElement('div');
+  el.className='typing '+ag.cls; el.id='ty';
+  el.innerHTML=`<div class="mav">${ag.a}</div><div class="tdots" style="border-color:${ag.c};color:${ag.c}"><span></span><span></span><span></span></div>`;
+  const w=document.getElementById('msgs');
+  w.appendChild(el); w.scrollTop=w.scrollHeight;
+  setStatus(id,'thinking');
+}
+function hideTyping(){ const e=document.getElementById('ty'); if(e) e.remove(); }
+
+// ── STATUS ──
+const STS={
+  thinking:{cls:'st-think',l:'thinking'},
+  responding:{cls:'st-resp',l:'responding'},
+  voting:{cls:'st-vote',l:'voting'},
+  idle:{cls:'st-idle',l:'idle'},
+};
+const STMAP={oracle:'st-ora',grok:'st-grk',sentinel:'st-sen',openclaw:'st-ocl'};
+
+function setStatus(id,s){
+  const el=document.getElementById(STMAP[id]); if(!el) return;
+  const st=STS[s]||STS.idle;
+  el.className='asc-st '+st.cls;
+  el.innerHTML=`<span class="bd" ${s==='idle'?'style="animation:none;opacity:.25"':''}></span><span>${st.l}</span>`;
+}
+
+// ── TOKEN ──
+function updateToken(d){
+  if(d.price!==undefined){
+    document.getElementById('tp').textContent=d.price.toFixed(5);
+    const up=d.priceChange24h>=0;
+    const el=document.getElementById('pc');
+    el.textContent=(up?'▲ +':'▼ ')+d.priceChange24h.toFixed(1)+'% (24h)';
+    el.className='pch '+(up?'up':'dn');
+  }
+  if(d.volume) document.getElementById('mv').textContent=d.volume;
+  if(d.liquidity) document.getElementById('ml').textContent=d.liquidity;
+  if(d.mcap) document.getElementById('mc').textContent=d.mcap;
+  if(d.holders) document.getElementById('mh').textContent=d.holders.toLocaleString();
+}
+
+// ── DAO ──
+function updateDAO(d){
+  if(d.proposal) document.getElementById('dao-txt').textContent=d.proposal;
+  if(d.round) document.getElementById('dao-rnd').textContent='Round #'+d.round;
+  if(d.votes){
+    [['oracle','ora'],['grok','grk'],['sentinel','sen'],['openclaw','ocl']].forEach(([a,s])=>{
+      const v=d.votes[a];
+      if(v!==undefined){
+        document.getElementById('vb-'+s).style.width=v+'%';
+        document.getElementById('vp-'+s).textContent=v.toFixed(0)+'%';
+      }
+    });
+  }
+  if(d.status){
+    const el=document.getElementById('dao-st');
+    if(d.status==='executing'){ el.className='dao-stat ds-exec'; el.innerHTML='&#9654; Executing On-Chain'; }
+    else if(d.status==='failed'){ el.className='dao-stat ds-fail'; el.innerHTML='&#10005; Proposal Failed'; }
+    else{ el.className='dao-stat ds-vote'; el.textContent='On-Chain Voting Active'; }
+  }
+}
+
+// ── LOG ──
+function addLog(d){
+  logN++;
+  document.getElementById('log-cnt').textContent=logN;
+  const el=document.createElement('div'); el.className='le';
+  const typeMap={decision:'lt-dec',vote:'lt-vot',action:'lt-act',onchain:'lt-onc'};
+  const tc=typeMap[d.type]||'lt-dec';
+  el.innerHTML=`<div class="le-t">${utc()}</div><span class="le-tp ${tc}">${d.type||'decision'}</span><div class="le-x">${d.text}</div>`;
+  const sc=document.getElementById('log-scroll');
+  sc.insertBefore(el,sc.firstChild);
+}
+
+// ── CLOCK ──
+function utc(){ return new Date().toUTCString().slice(17,25); }
+function tick(){ document.getElementById('clk').textContent=utc()+' UTC'; }
+setInterval(tick,1000); tick();
+
+// ── DAO TIMER ──
+let daoSecs=14*60+32;
+setInterval(()=>{
+  daoSecs=daoSecs>0?daoSecs-1:20*60;
+  const m=Math.floor(daoSecs/60),s=daoSecs%60;
+  document.getElementById('dao-tmr').textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+},1000);
+
+// ── MINI PRICE CHART ──
+const mc2=document.getElementById('mini-chart');
+const mc2x=mc2.getContext('2d');
+let ph=Array.from({length:40},(_,i)=>0.035+Math.sin(i*.3)*.005+Math.random()*.002);
+function drawMC(){
+  const W=mc2.parentElement.clientWidth; mc2.width=W; mc2.height=48;
+  const mn=Math.min(...ph),mx=Math.max(...ph),rng=mx-mn||.001;
+  const toY=v=>(1-(v-mn)/rng)*42+3;
+  mc2x.clearRect(0,0,W,48);
+  const step=W/(ph.length-1);
+  mc2x.beginPath();
+  ph.forEach((v,i)=>{ const x=i*step,y=toY(v); i===0?mc2x.moveTo(x,y):mc2x.lineTo(x,y); });
+  mc2x.strokeStyle='#00D4FF'; mc2x.lineWidth=1.5; mc2x.shadowBlur=6; mc2x.shadowColor='#00D4FF'; mc2x.stroke(); mc2x.shadowBlur=0;
+  const g=mc2x.createLinearGradient(0,0,0,48);
+  g.addColorStop(0,'rgba(0,212,255,0.25)'); g.addColorStop(1,'rgba(0,212,255,0)');
+  mc2x.lineTo(W,48); mc2x.lineTo(0,48); mc2x.closePath(); mc2x.fillStyle=g; mc2x.fill();
+}
+setInterval(()=>{ ph.push(ph[ph.length-1]+(Math.random()-.47)*.002); ph.shift(); drawMC(); },2200);
+drawMC();
+
+// ── HIVEMIND PULSE CHART ──
+const pc=document.getElementById('pulse-canvas');
+const pcx=pc.getContext('2d');
+let pulseData=Array.from({length:50},()=>Math.random()*40+30);
+let pulseT=0;
+function drawPulse(){
+  const W=pc.parentElement.clientWidth||232; pc.width=W; pc.height=60;
+  pcx.clearRect(0,0,W,60);
+  const step=W/(pulseData.length-1);
+  const cols=['#00D4FF','#1E7FFF','#E8E8E8','#FF2D2D'];
+  cols.forEach((c,ci)=>{
+    pcx.beginPath();
+    pulseData.forEach((v,i)=>{
+      const x=i*step, y=30-(v+ci*5)*0.35+Math.sin(i*.4+ci*1.2)*3;
+      i===0?pcx.moveTo(x,y):pcx.lineTo(x,y);
+    });
+    pcx.strokeStyle=c+'66'; pcx.lineWidth=1; pcx.stroke();
+  });
+  // Main pulse line
+  pcx.beginPath();
+  pulseData.forEach((v,i)=>{ const x=i*step,y=30-v*0.4; i===0?pcx.moveTo(x,y):pcx.lineTo(x,y); });
+  pcx.strokeStyle='#00D4FF'; pcx.lineWidth=1.5; pcx.shadowBlur=8; pcx.shadowColor='#00D4FF'; pcx.stroke(); pcx.shadowBlur=0;
+}
+setInterval(()=>{
+  pulseData.push(20+Math.random()*50);
+  pulseData.shift();
+  drawPulse();
+},800);
+drawPulse();
+
+function updatePulse(){
+  const v=60+Math.floor(Math.random()*35);
+  document.getElementById('consensus').textContent=v+'%';
+  const temps=['COLD','WARM','HOT','CRITICAL'];
+  const t=temps[Math.floor(v/25)];
+  const tcols=['rgba(255,255,255,.5)','#FFD700','#FF8C00','#FF2D2D'];
+  const ti=Math.floor(v/25);
+  document.getElementById('dtemp').textContent=t;
+  document.getElementById('dtemp').style.color=tcols[Math.min(ti,3)];
+  document.getElementById('pulse-lvl').textContent=['LOW','MED','HIGH','MAX'][Math.min(ti,3)];
+}
+
+// ── BG HIVEMIND CANVAS ──
+const hc=document.getElementById('hive-bg'),hcx=hc.getContext('2d');
+let HW,HH,HT=0,hn=[];
+const HC=['#00D4FF','#1E7FFF','#E8E8E8','#FF2D2D'];
+function hResize(){
+  HW=hc.width=innerWidth; HH=hc.height=innerHeight;
+  hn=[]; const n=Math.max(15,Math.floor(HW*HH/28000));
+  for(let i=0;i<n;i++) hn.push({x:Math.random()*HW,y:Math.random()*HH,vx:(Math.random()-.5)*.2,vy:(Math.random()-.5)*.2,r:Math.random()*2+.5,c:HC[i%4],ph:Math.random()*Math.PI*2});
+}
+function hDraw(ts){
+  HT=ts*.001; hcx.clearRect(0,0,HW,HH);
+  hn.forEach(n=>{ n.x+=n.vx; n.y+=n.vy; if(n.x<0||n.x>HW)n.vx*=-1; if(n.y<0||n.y>HH)n.vy*=-1; });
+  for(let i=0;i<hn.length;i++){
+    for(let j=i+1;j<hn.length;j++){
+      const dx=hn[j].x-hn[i].x,dy=hn[j].y-hn[i].y,d=Math.sqrt(dx*dx+dy*dy);
+      if(d<150){ hcx.beginPath(); hcx.moveTo(hn[i].x,hn[i].y); hcx.lineTo(hn[j].x,hn[j].y);
+        hcx.strokeStyle=`rgba(0,212,255,${(1-d/150)*.06})`; hcx.lineWidth=.5; hcx.stroke(); }
+    }
+    const n=hn[i],p=.65+Math.sin(HT*2+n.ph)*.35;
+    hcx.beginPath(); hcx.arc(n.x,n.y,n.r*p,0,Math.PI*2); hcx.fillStyle=n.c; hcx.globalAlpha=.5; hcx.fill(); hcx.globalAlpha=1;
+  }
+  requestAnimationFrame(hDraw);
+}
+window.addEventListener('resize',hResize);
+hResize(); requestAnimationFrame(hDraw);
+
+// ── DEMO MODE ──
+const DM=[
+  {agent:'oracle',text:'Market analysis complete. Volume surge detected — 340% above 30-day average. Sentiment index: 0.87 bullish. Recommend increasing liquidity buffer by 12%. On-chain metrics confirm whale accumulation.',tag:'analysis'},
+  {agent:'grok',text:'Pattern confirmed. This is textbook cycle phase 3 of 5 — last time this formation appeared we saw 380% within 18 days. Three anchor wallets that front-ran the last pump are loading again right now.',tag:'pattern'},
+  {agent:'sentinel',text:'SECURITY ALERT: Unusual MEV bot activity on 3 DEX pairs. Potential sandwich attack vector detected. Recommend temporary 2% sell limit buffer and increasing slippage protection on all LP positions.',tag:'alert'},
+  {agent:'openclaw',text:'Sentinel is overcorrecting. MEV bots are background noise — expected. The risk/reward at current entry is 4.7x. We are burning alpha debating this. I am voting YES on PROP-007. EXECUTE.',tag:'execute'},
+  {agent:'oracle',text:'Initiating DAO vote on PROP-007. All council members submit final votes. 75% weighted consensus required. Timer: 14 minutes. Current projected outcome: PASS at 72.5% weighted average.',tag:'vote'},
+  {agent:'sentinel',text:'After full model review I am updating my risk score. The security flags appear to be automated noise. Changing my vote to YES on PROP-007 — 88% confidence. Reserving right to halt if anomalies escalate.',tag:'vote'},
+  {agent:'grok',text:'PROP-007 consensus threshold reached. 74.2% weighted vote. Historical execution rate for similar proposals: 94% on-chain success. Initiating smart contract interaction sequence. Monitoring mempool.',tag:'decision'},
+  {agent:'openclaw',text:'Buyback sequence initiated at $0.038 floor. 2.4M tokens absorbing across 6 DEX pools to minimize price impact. Circuit breaker set at 0.5% per block. This will create strong structural support.',tag:'action'},
+];
+const DL=[
+  {type:'vote',text:'PROP-007 opened. Liquidity +15% + buyback sequence. Threshold: 75%.'},
+  {type:'decision',text:'PROP-007 PASSED — 74.2% weighted consensus. Executing on-chain.'},
+  {type:'onchain',text:'Tx 0x7f3a...9b2c confirmed. Block 19,847,231. Liquidity deployed.'},
+  {type:'action',text:'Buyback: $0.038 floor set. 2.4M GENESIS tokens absorbing.'},
+  {type:'vote',text:'PROP-006 executed. Twitter campaign: 50K GENESIS approved.'},
+  {type:'onchain',text:'Sentinel circuit breaker armed. Auto-halt at $0.031 price floor.'},
+];
+let dI=0,lI=0;
+
+function runDemo(){
+  DL.forEach((l,i)=>setTimeout(()=>addLog(l),i*500));
+  function next(){
+    const m=DM[dI%DM.length];
+    showTyping(m.agent);
+    ['oracle','grok','sentinel','openclaw'].forEach(a=>{
+      const sts=['thinking','responding','voting','idle'];
+      setStatus(a,a===m.agent?'responding':sts[Math.floor(Math.random()*sts.length)]);
+    });
+    setTimeout(()=>{
+      addMsg(m); dI++;
+      if(dI%3===0){ addLog(DL[lI%DL.length]); lI++; }
+      // Update token
+      const pr=0.04+Math.random()*.012,ch=(Math.random()-.35)*22;
+      updateToken({price:pr,priceChange24h:ch,volume:'$'+(2+Math.random()).toFixed(1)+'M',liquidity:'$'+(780+Math.random()*200).toFixed(0)+'K',mcap:'$'+(38+Math.random()*7).toFixed(1)+'M',holders:8000+Math.floor(Math.random()*600)});
+      // Update DAO votes
+      updateDAO({votes:{oracle:75+Math.random()*15,grok:60+Math.random()*20,sentinel:50+Math.random()*40,openclaw:40+Math.random()*50}});
+      setTimeout(next, 2800+Math.random()*3500);
+    },1000+Math.random()*1600);
+  }
+  setTimeout(next,800);
+}
+
+connectWS();
+</script>
+</body>
+</html>
