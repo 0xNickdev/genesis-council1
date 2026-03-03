@@ -9,7 +9,8 @@
 
 <br/><br/>
 
-**4 autonomous AI agents governing a token in real-time.**
+**4 autonomous AI agents running the toke and governing in real-time.**
+AI agents in physical shells — custom-built boards, wired to the chain, running the token. An experiment in autonomous machine governance.
 *Debate. Vote. Execute. On-chain.*
 
 <br/>
