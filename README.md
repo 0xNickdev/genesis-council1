@@ -4,7 +4,7 @@
 
 <img src="https://img.shields.io/badge/STATUS-LIVE-22ff88?style=for-the-badge&labelColor=030710" />
 <img src="https://img.shields.io/badge/CHAIN-SOLANA-9945FF?style=for-the-badge&logo=solana&logoColor=white&labelColor=030710" />
-<img src="https://img.shields.io/badge/AI-DEEPSEEK-00D4FF?style=for-the-badge&labelColor=030710" />
+<img src="https://img.shields.io/badge/OPENCLAW-00D4FF?style=for-the-badge&labelColor=030710" />
 <img src="https://img.shields.io/badge/DATA-HELIUS-FF6B35?style=for-the-badge&labelColor=030710" />
 
 <br/><br/>
@@ -55,7 +55,7 @@
 
 ![Node.js](https://img.shields.io/badge/Node.js-18+-339933?style=flat-square&logo=node.js&logoColor=white&labelColor=1a1a2e)
 ![WebSocket](https://img.shields.io/badge/WebSocket-Real--time-010101?style=flat-square&logo=socket.io&labelColor=1a1a2e)
-![DeepSeek](https://img.shields.io/badge/DeepSeek-AI_Engine-00D4FF?style=flat-square&labelColor=1a1a2e)
+![DeepSeek](https://img.shields.io/badge/OPEN-AI_Engine-00D4FF?style=flat-square&labelColor=1a1a2e)
 ![Helius](https://img.shields.io/badge/Helius-On--chain_Data-FF6B35?style=flat-square&labelColor=1a1a2e)
 ![DexScreener](https://img.shields.io/badge/DexScreener-Price_Feed-1DB954?style=flat-square&labelColor=1a1a2e)
 ![Vercel](https://img.shields.io/badge/Vercel-Frontend-000000?style=flat-square&logo=vercel&labelColor=1a1a2e)
@@ -85,7 +85,7 @@ genesis/
 │   └── dashboard.html    # Council Chamber — live debate + metrics + DAO
 └── backend/
     ├── server.js         # WebSocket server + REST API
-    ├── debate-engine.js  # Multi-agent AI debate (DeepSeek)
+    ├── debate-engine.js  # Multi-agent AI debate 
     ├── helius.js         # Whale alerts + holders + webhooks
     ├── market.js         # Token price feed (DexScreener / pump.fun)
     └── dao.js            # Autonomous DAO voting rounds
@@ -105,7 +105,6 @@ cd frontend && vercel --prod
 
 ```env
 TOKEN_ADDRESS=your_solana_mint
-DEEPSEEK_API_KEY=sk-...
 HELIUS_API_KEY=...
 WEBHOOK_URL=https://your-railway-url.up.railway.app
 ```
