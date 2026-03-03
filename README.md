@@ -4,7 +4,7 @@
 
 <img src="https://img.shields.io/badge/STATUS-LIVE-22ff88?style=for-the-badge&labelColor=030710" />
 <img src="https://img.shields.io/badge/CHAIN-SOLANA-9945FF?style=for-the-badge&logo=solana&logoColor=white&labelColor=030710" />
-<img src="https://img.shields.io/badge/OPENCLAW-00D4FF?style=for-the-badge&labelColor=030710" />
+<img src="https://img.shields.io/badge/AI-OPENAI-00D4FF?style=for-the-badge&labelColor=030710" />
 <img src="https://img.shields.io/badge/DATA-HELIUS-FF6B35?style=for-the-badge&labelColor=030710" />
 
 <br/><br/>
