@@ -139,6 +139,38 @@ app.get('/api/log',   (req, res) => res.json({ log: decisionLog.slice(-50) }));
 app.get('/api/token', (req, res) => res.json(market.getCurrentData()));
 app.get('/api/dao',   (req, res) => res.json(dao.getCurrentState()));
 
+
+// ── Grokroom Bridge — dashboard ↔ mood across browsers/monitors ────
+const agentMsgStore  = {};
+const agentMoodStore = {};
+
+app.post('/api/agent-msg', (req, res) => {
+  const { agentId, agentName, text } = req.body || {};
+  if (!agentId || !text) return res.status(400).json({ error: 'Missing' });
+  if (!agentMsgStore[agentId]) agentMsgStore[agentId] = [];
+  agentMsgStore[agentId].push({ text, agentName, ts: Date.now() });
+  if (agentMsgStore[agentId].length > 20) agentMsgStore[agentId].shift();
+  res.json({ ok: true });
+});
+
+app.get('/api/agent-msgs', (req, res) => {
+  const since = parseInt(req.query.since) || 0;
+  const result = {};
+  Object.entries(agentMsgStore).forEach(([id, msgs]) => {
+    result[id] = msgs.filter(m => m.ts > since).map(m => m.text);
+  });
+  res.json({ messages: result, ts: Date.now() });
+});
+
+app.post('/api/agent-mood', (req, res) => {
+  const { agentId, mood } = req.body || {};
+  if (!agentId || !mood) return res.status(400).json({ error: 'Missing' });
+  agentMoodStore[agentId] = { ...mood, updatedAt: Date.now() };
+  res.json({ ok: true });
+});
+
+app.get('/api/agent-moods', (req, res) => res.json(agentMoodStore));
+
 // ── Helius Webhook Receiver ─────────────────────────────
 // Helius шлёт сюда POST при каждой транзакции с токеном
 app.post('/webhook/helius', (req, res) => {

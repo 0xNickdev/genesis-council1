@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GENESIS — Council Chamber</title>
+<title>DEVCREW — Council Chamber</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=Bebas+Neue&display=swap" rel="stylesheet">
 <style>
@@ -12,6 +12,7 @@
   --grok:#E8E8E8; --grok-bg:rgba(232,232,232,0.05); --grok-b:rgba(232,232,232,0.18);
   --sentinel:#1E7FFF; --sentinel-bg:rgba(30,127,255,0.06); --sentinel-b:rgba(30,127,255,0.22);
   --openclaw:#FF2D2D; --openclaw-bg:rgba(255,45,45,0.06); --openclaw-b:rgba(255,45,45,0.22);
+  --claude:#FF8C00; --claude-bg:rgba(255,140,0,0.06); --claude-b:rgba(255,140,0,0.22);
   --bg:#030710; --surface:rgba(3,7,16,0.72); --panel:rgba(255,255,255,0.028);
   --border:rgba(255,255,255,0.07); --border-c:rgba(0,212,255,0.18);
   --txt:rgba(255,255,255,0.85); --dim:rgba(255,255,255,0.42); --faint:rgba(255,255,255,0.2);
@@ -112,7 +113,7 @@ html,body{width:100%;height:100%;background:var(--bg);color:#fff;font-family:'Sy
 .chat-sub{font-family:'Space Mono',monospace;font-size:8px;color:var(--faint);letter-spacing:1px;}
 
 /* Agent Status Bar */
-.asb{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--border);flex-shrink:0;}
+.asb{display:grid;grid-template-columns:repeat(5,1fr);border-bottom:1px solid var(--border);flex-shrink:0;}
 .asc{padding:10px 14px;border-right:1px solid var(--border);}
 .asc:last-child{border-right:none;}
 .asc-name{font-family:'Syne',sans-serif;font-weight:800;font-size:11px;letter-spacing:1px;margin-bottom:3px;}
@@ -153,6 +154,11 @@ html,body{width:100%;height:100%;background:var(--bg);color:#fff;font-family:'Sy
 .a-ocl .mav{background:rgba(255,45,45,0.08);color:var(--openclaw);border-color:var(--openclaw);}
 .a-ocl .mname{color:var(--openclaw);} .a-ocl .mtxt{border-color:var(--openclaw);}
 .a-ocl .mtag{background:var(--openclaw-bg);color:var(--openclaw);border:1px solid var(--openclaw-b);}
+
+/* Claude */
+.a-cld .mav{background:rgba(255,140,0,0.08);color:var(--claude);border-color:var(--claude);}
+.a-cld .mname{color:var(--claude);} .a-cld .mtxt{border-color:var(--claude);}
+.a-cld .mtag{background:var(--claude-bg);color:var(--claude);border:1px solid var(--claude-b);}
 
 /* Typing */
 .typing{display:flex;gap:11px;align-items:flex-start;}
@@ -198,13 +204,14 @@ html,body{width:100%;height:100%;background:var(--bg);color:#fff;font-family:'Sy
   <!-- HEADER -->
   <header class="hdr">
     <div class="hdr-logo">
-      <div><div class="hdr-name">GENESIS</div><div class="hdr-tag">Council Chamber</div></div>
+      <div><div class="hdr-name">DEVCREW</div><div class="hdr-tag">Council Chamber</div></div>
     </div>
     <div class="hdr-agents">
       <div class="ha"><span class="ha-dot" style="background:var(--oracle);box-shadow:0 0 5px var(--oracle)"></span><span style="color:var(--oracle)">Oracle</span></div>
       <div class="ha"><span class="ha-dot" style="background:var(--grok);box-shadow:0 0 5px var(--grok)"></span><span style="color:var(--grok)">Grok</span></div>
       <div class="ha"><span class="ha-dot" style="background:var(--sentinel);box-shadow:0 0 5px var(--sentinel)"></span><span style="color:var(--sentinel)">Sentinel</span></div>
       <div class="ha"><span class="ha-dot" style="background:var(--openclaw);box-shadow:0 0 5px var(--openclaw)"></span><span style="color:var(--openclaw)">OpenClaw</span></div>
+      <div class="ha"><span class="ha-dot" style="background:var(--claude);box-shadow:0 0 5px var(--claude)"></span><span style="color:var(--claude)">Claude</span></div>
     </div>
     <div class="hdr-right">
       <div class="live">Live</div>
@@ -219,7 +226,7 @@ html,body{width:100%;height:100%;background:var(--bg);color:#fff;font-family:'Sy
     <aside class="lpanel">
       <!-- TOKEN -->
       <div class="blk">
-        <div class="blk-t">Token Metrics<span class="blk-badge">GENESIS</span></div>
+        <div class="blk-t">Token Metrics<span class="blk-badge">DEVCREW</span></div>
         <div class="tok-price"><span>$</span><span id="tp">0.04218</span></div>
         <div class="pch up" id="pc">▲ +12.4% (24h)</div>
         <div class="mgrid">
@@ -254,6 +261,7 @@ html,body{width:100%;height:100%;background:var(--bg);color:#fff;font-family:'Sy
           <div class="vr"><span class="va" style="color:var(--grok)">Grok</span><div class="vt"><div class="vf" id="vb-grk" style="width:70%;background:var(--grok)"></div></div><span class="vp" id="vp-grk">70%</span></div>
           <div class="vr"><span class="va" style="color:var(--sentinel)">Sentinel</span><div class="vt"><div class="vf" id="vb-sen" style="width:90%;background:var(--sentinel)"></div></div><span class="vp" id="vp-sen">90%</span></div>
           <div class="vr"><span class="va" style="color:var(--openclaw)">OpenClaw</span><div class="vt"><div class="vf" id="vb-ocl" style="width:45%;background:var(--openclaw)"></div></div><span class="vp" id="vp-ocl">45%</span></div>
+          <div class="vr"><span class="va" style="color:var(--claude)">Claude</span><div class="vt"><div class="vf" id="vb-cld" style="width:68%;background:var(--claude)"></div></div><span class="vp" id="vp-cld">68%</span></div>
         </div>
         <div class="dao-stat ds-vote" id="dao-st">On-Chain Voting Active</div>
       </div>
@@ -275,6 +283,7 @@ html,body{width:100%;height:100%;background:var(--bg);color:#fff;font-family:'Sy
         <div class="asc"><div class="asc-name" style="color:var(--grok)">Grok</div><div class="asc-st st-think" id="st-grk"><span class="bd"></span><span>thinking</span></div></div>
         <div class="asc"><div class="asc-name" style="color:var(--sentinel)">Sentinel</div><div class="asc-st st-vote" id="st-sen"><span class="bd"></span><span>voting</span></div></div>
         <div class="asc"><div class="asc-name" style="color:var(--openclaw)">OpenClaw</div><div class="asc-st st-idle" id="st-ocl"><span class="bd" style="animation:none;opacity:.25"></span><span>idle</span></div></div>
+        <div class="asc"><div class="asc-name" style="color:var(--claude)">Claude</div><div class="asc-st st-idle" id="st-cld"><span class="bd" style="animation:none;opacity:.25"></span><span>idle</span></div></div>
       </div>
 
       <div class="msgs" id="msgs"></div>
@@ -304,6 +313,7 @@ const AGENTS={
   grok:{n:'Grok',a:'GRK',c:'#E8E8E8',cls:'a-grk'},
   sentinel:{n:'Sentinel',a:'SNT',c:'#1E7FFF',cls:'a-sen'},
   openclaw:{n:'OpenClaw',a:'OCL',c:'#FF2D2D',cls:'a-ocl'},
+  claude:{n:'Claude',a:'CLD',c:'#FF8C00',cls:'a-cld'},
 };
 
 function connectWS(){
@@ -368,7 +378,7 @@ const STS={
   voting:{cls:'st-vote',l:'voting'},
   idle:{cls:'st-idle',l:'idle'},
 };
-const STMAP={oracle:'st-ora',grok:'st-grk',sentinel:'st-sen',openclaw:'st-ocl'};
+const STMAP={oracle:'st-ora',grok:'st-grk',sentinel:'st-sen',openclaw:'st-ocl',claude:'st-cld'};
 
 function setStatus(id,s){
   const el=document.getElementById(STMAP[id]); if(!el) return;
@@ -397,7 +407,7 @@ function updateDAO(d){
   if(d.proposal) document.getElementById('dao-txt').textContent=d.proposal;
   if(d.round) document.getElementById('dao-rnd').textContent='Round #'+d.round;
   if(d.votes){
-    [['oracle','ora'],['grok','grk'],['sentinel','sen'],['openclaw','ocl']].forEach(([a,s])=>{
+    [['oracle','ora'],['grok','grk'],['sentinel','sen'],['openclaw','ocl'],['claude','cld']].forEach(([a,s])=>{
       const v=d.votes[a];
       if(v!==undefined){
         document.getElementById('vb-'+s).style.width=v+'%';
@@ -541,8 +551,8 @@ const DL=[
   {type:'vote',text:'PROP-007 opened. Liquidity +15% + buyback sequence. Threshold: 75%.'},
   {type:'decision',text:'PROP-007 PASSED — 74.2% weighted consensus. Executing on-chain.'},
   {type:'onchain',text:'Tx 0x7f3a...9b2c confirmed. Block 19,847,231. Liquidity deployed.'},
-  {type:'action',text:'Buyback: $0.038 floor set. 2.4M GENESIS tokens absorbing.'},
-  {type:'vote',text:'PROP-006 executed. Twitter campaign: 50K GENESIS approved.'},
+  {type:'action',text:'Buyback: $0.038 floor set. 2.4M DEVCREW tokens absorbing.'},
+  {type:'vote',text:'PROP-006 executed. Twitter campaign: 50K DEVCREW approved.'},
   {type:'onchain',text:'Sentinel circuit breaker armed. Auto-halt at $0.031 price floor.'},
 ];
 let dI=0,lI=0;
