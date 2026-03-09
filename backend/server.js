@@ -26,6 +26,7 @@ const wss    = new WebSocketServer({ server });
 
 // ── In-memory stores ───────────────────────────────────
 const clients       = new Set();
+const activeUsers    = new Map(); // ws -> username
 const messageHistory = [];
 const decisionLog   = [];
 
@@ -53,18 +54,55 @@ wss.on('connection', (ws) => {
   clients.add(ws);
   console.log(`[WS] Connected. Total: ${clients.size}`);
 
+  // Send full history immediately on connect
   ws.send(JSON.stringify({
     type: 'init',
     data: {
-      history: messageHistory.slice(-40),
-      log:     decisionLog.slice(-25),
+      history: messageHistory.slice(-60),
+      log:     decisionLog.slice(-30),
       token:   market.getCurrentData(),
       dao:     dao.getCurrentState(),
+      users:   [...activeUsers.values()],
     }
   }));
 
-  ws.on('close',  () => { clients.delete(ws); });
-  ws.on('error',  () => { clients.delete(ws); });
+  ws.on('message', (raw) => {
+    try {
+      const msg = JSON.parse(raw);
+
+      // Username check before join
+      if (msg.type === 'check_username') {
+        const name = (msg.username || '').trim().toLowerCase();
+        const taken = [...activeUsers.values()].map(u => u.toLowerCase()).includes(name);
+        ws.send(JSON.stringify({ type: taken ? 'username_taken' : 'username_ok' }));
+        return;
+      }
+
+      // User joining with username
+      if (msg.type === 'join') {
+        const username = (msg.username || 'Anonymous').trim();
+        const nameLower = username.toLowerCase();
+        const taken = [...activeUsers.values()].map(u => u.toLowerCase()).includes(nameLower);
+        if (taken) {
+          ws.send(JSON.stringify({ type: 'username_taken' }));
+          return;
+        }
+        activeUsers.set(ws, username);
+        broadcast({ type: 'user_joined', username, total: activeUsers.size });
+        console.log(`[WS] ${username} joined. Active users: ${activeUsers.size}`);
+      }
+    } catch(e) {}
+  });
+
+  ws.on('close',  () => {
+    const username = activeUsers.get(ws);
+    clients.delete(ws);
+    activeUsers.delete(ws);
+    if (username) {
+      broadcast({ type: 'user_left', username, total: activeUsers.size });
+    }
+  });
+  ws.on('error',  () => { clients.delete(ws); activeUsers.delete(ws); });
 });
 
 // ── Debate engine events ────────────────────────────────
@@ -138,38 +176,6 @@ app.get('/api/history', (req, res) => {
 app.get('/api/log',   (req, res) => res.json({ log: decisionLog.slice(-50) }));
 app.get('/api/token', (req, res) => res.json(market.getCurrentData()));
 app.get('/api/dao',   (req, res) => res.json(dao.getCurrentState()));
-
-
-// ── Grokroom Bridge — dashboard ↔ mood across browsers/monitors ────
-const agentMsgStore  = {};
-const agentMoodStore = {};
-
-app.post('/api/agent-msg', (req, res) => {
-  const { agentId, agentName, text } = req.body || {};
-  if (!agentId || !text) return res.status(400).json({ error: 'Missing' });
-  if (!agentMsgStore[agentId]) agentMsgStore[agentId] = [];
-  agentMsgStore[agentId].push({ text, agentName, ts: Date.now() });
-  if (agentMsgStore[agentId].length > 20) agentMsgStore[agentId].shift();
-  res.json({ ok: true });
-});
-
-app.get('/api/agent-msgs', (req, res) => {
-  const since = parseInt(req.query.since) || 0;
-  const result = {};
-  Object.entries(agentMsgStore).forEach(([id, msgs]) => {
-    result[id] = msgs.filter(m => m.ts > since).map(m => m.text);
-  });
-  res.json({ messages: result, ts: Date.now() });
-});
-
-app.post('/api/agent-mood', (req, res) => {
-  const { agentId, mood } = req.body || {};
-  if (!agentId || !mood) return res.status(400).json({ error: 'Missing' });
-  agentMoodStore[agentId] = { ...mood, updatedAt: Date.now() };
-  res.json({ ok: true });
-});
-
-app.get('/api/agent-moods', (req, res) => res.json(agentMoodStore));
 
 // ── Helius Webhook Receiver ─────────────────────────────
 // Helius шлёт сюда POST при каждой транзакции с токеном

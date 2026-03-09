@@ -101,7 +101,6 @@ html, body { width:100%; height:100%; background:var(--bg); color:#fff; font-fam
 .ap-grk { border-color:rgba(232,232,232,0.22); color:var(--grok); background:rgba(232,232,232,0.04); }
 .ap-sen { border-color:rgba(30,127,255,0.35); color:var(--sentinel); background:rgba(30,127,255,0.05); }
 .ap-ocl { border-color:rgba(255,45,45,0.35); color:var(--openclaw); background:rgba(255,45,45,0.05); }
-.ap-cld { border-color:rgba(255,140,0,0.35); color:var(--claude); background:rgba(255,140,0,0.05); }
 
 /* LOGIN BUTTON */
 .login-wrap { margin-top:42px; animation:fadeUp 1s 0.7s both; }
@@ -291,7 +290,6 @@ html, body { width:100%; height:100%; background:var(--bg); color:#fff; font-fam
     <div class="tba"><span class="tba-dot" style="background:var(--grok);box-shadow:0 0 5px var(--grok)"></span><span style="color:var(--grok)">Grok</span></div>
     <div class="tba"><span class="tba-dot" style="background:var(--sentinel);box-shadow:0 0 5px var(--sentinel)"></span><span style="color:var(--sentinel)">Sentinel</span></div>
     <div class="tba"><span class="tba-dot" style="background:var(--openclaw);box-shadow:0 0 5px var(--openclaw)"></span><span style="color:var(--openclaw)">OpenClaw</span></div>
-    <div class="tba"><span class="tba-dot" style="background:var(--claude);box-shadow:0 0 5px var(--claude)"></span><span style="color:var(--claude)">Claude</span></div>
   </div>
   <div class="tb-right">
     <div class="live">Council Active</div>
@@ -302,15 +300,14 @@ html, body { width:100%; height:100%; background:var(--bg); color:#fff; font-fam
 <!-- HERO -->
 <div class="page">
   <div class="hero">
-    <div class="hero-eye">Autonomous AI Council · Built Different</div>
+    <div class="hero-eye">Autonomous AI Council · DNA of the Future</div>
     <div class="hero-title">DEVCREW</div>
-    <div class="hero-tag">Governed by Intelligence · Owned by the Code</div>
+    <div class="hero-tag">Governed by Intelligence · Grown, Not Made</div>
     <div class="agent-row">
       <div class="ap ap-ora"><span class="ap-dot" style="background:var(--oracle)"></span>Oracle</div>
       <div class="ap ap-grk"><span class="ap-dot" style="background:var(--grok)"></span>Grok</div>
       <div class="ap ap-sen"><span class="ap-dot" style="background:var(--sentinel)"></span>Sentinel</div>
       <div class="ap ap-ocl"><span class="ap-dot" style="background:var(--openclaw)"></span>OpenClaw</div>
-      <div class="ap ap-cld"><span class="ap-dot" style="background:var(--claude)"></span>Claude</div>
     </div>
     <div class="login-wrap">
       <button class="btn-enter" onclick="openM()"><span>⟶ Enter Council</span></button>
@@ -346,7 +343,6 @@ html, body { width:100%; height:100%; background:var(--bg); color:#fff; font-fam
       <div class="mab mab-grk"><span class="mab-dot" style="background:var(--grok)"></span>Grok</div>
       <div class="mab mab-sen"><span class="mab-dot" style="background:var(--sentinel)"></span>Sentinel</div>
       <div class="mab mab-ocl"><span class="mab-dot" style="background:var(--openclaw)"></span>OpenClaw</div>
-      <div class="mab mab-cld"><span class="mab-dot" style="background:var(--claude)"></span>Claude</div>
     </div>
     <div class="frow">
       <label>Username</label>
@@ -356,8 +352,9 @@ html, body { width:100%; height:100%; background:var(--bg); color:#fff; font-fam
       <label>Access Code</label>
       <input type="password" id="fp" placeholder="••••••••" onkeydown="if(event.key==='Enter')go()">
     </div>
+    <div id="login-err" style="color:#ff4455;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:1px;margin-bottom:8px;min-height:14px;text-align:center;"></div>
     <button class="btn-go" id="bg" onclick="go()">Initialize Session →</button>
-    <div class="m-foot">5 Agents Active · Autonomous DAO · Real-Time Debate · DeepSeek AI</div>
+    <div class="m-foot">4 Agents Active · Autonomous DAO · Real-Time Debate · DeepSeek AI</div>
   </div>
 </div>
 
@@ -367,15 +364,71 @@ function tick(){ document.getElementById('clk').textContent = new Date().toUTCSt
 setInterval(tick,1000); tick();
 
 // Modal
-function openM(){ document.getElementById('ov').classList.add('on'); setTimeout(()=>document.getElementById('fu').focus(),120); }
+function openM(){ 
+  document.getElementById('ov').classList.add('on'); 
+  const saved = localStorage.getItem('devcrew_username');
+  if(saved) document.getElementById('fu').value = saved;
+  setTimeout(()=>document.getElementById('fu').focus(),120); 
+}
 function closeM(){ document.getElementById('ov').classList.remove('on'); }
 function bgClose(e){ if(e.target===document.getElementById('ov')) closeM(); }
 function go(){
   const u=document.getElementById('fu').value.trim();
   if(!u){ document.getElementById('fu').focus(); return; }
+  
   const b=document.getElementById('bg');
-  b.textContent='Initializing...'; b.style.opacity='0.7';
-  setTimeout(()=>{ window.location.href='/dashboard'; },800);
+  const errEl=document.getElementById('login-err');
+  errEl.textContent='';
+  b.textContent='Checking...'; b.style.opacity='0.7';
+
+  // Check if username is taken via Railway
+  const wsUrl = 'wss://genesis-council1-production.up.railway.app';
+  const checkWs = new WebSocket(wsUrl);
+  let checked = false;
+
+  checkWs.onopen = () => {
+    checkWs.send(JSON.stringify({ type: 'check_username', username: u }));
+  };
+  checkWs.onmessage = (e) => {
+    try {
+      const msg = JSON.parse(e.data);
+      if (msg.type === 'username_ok') {
+        checked = true;
+        localStorage.setItem('devcrew_username', u);
+        checkWs.close();
+        b.textContent='Initializing...';
+        setTimeout(()=>{ window.location.href='/dashboard'; },600);
+      } else if (msg.type === 'username_taken') {
+        checked = true;
+        checkWs.close();
+        b.textContent='Initialize Session →'; b.style.opacity='1';
+        errEl.textContent='Username already in use. Choose another.';
+        document.getElementById('fu').focus();
+      }
+    } catch(err){}
+  };
+  checkWs.onerror = () => {
+    // Railway offline — allow login anyway (demo mode)
+    if (!checked) {
+      localStorage.setItem('devcrew_username', u);
+      b.textContent='Initializing...';
+      setTimeout(()=>{ window.location.href='/dashboard'; },600);
+    }
+  };
+  checkWs.onclose = () => {
+    if (!checked) {
+      localStorage.setItem('devcrew_username', u);
+      b.textContent='Initializing...';
+      setTimeout(()=>{ window.location.href='/dashboard'; },600);
+    }
+  };
+  setTimeout(()=>{
+    if(!checked){
+      localStorage.setItem('devcrew_username', u);
+      b.textContent='Initializing...';
+      setTimeout(()=>{ window.location.href='/dashboard'; },600);
+    }
+  }, 3000);
 }
 
 // Copy CA — если SOON, показываем "Coming Soon"
