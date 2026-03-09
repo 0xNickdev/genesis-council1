@@ -190,6 +190,65 @@ app.post('/webhook/helius', (req, res) => {
   helius.processWebhook(transactions, market.getCurrentData().rawPrice);
 });
 
+
+// ── ADMIN RESET ─────────────────────────────────────────
+app.get('/admin/reset', (req, res) => {
+  if (req.query.key !== 'devcrew') {
+    return res.status(403).json({ error: 'Forbidden' });
+  }
+
+  // Clear all history
+  messageHistory.length = 0;
+  decisionLog.length = 0;
+
+  // Restart debate engine
+  debate.stop();
+  debate.history = [];
+  debate.round = 0;
+  debate.agentIdx = 0;
+  debate.topicIdx = 0;
+  debate.tradeQueue = [];
+
+  // Inject fresh token context
+  const tokenData = market.getCurrentData();
+  const price = tokenData.isLive
+    ? `$${Number(tokenData.price).toFixed(8)}`
+    : 'pre-launch';
+  const holders = tokenData.holders > 0
+    ? tokenData.holders
+    : 'TBA';
+  const vol = tokenData.isLive ? tokenData.volume : 'TBA';
+  const liq = tokenData.isLive ? tokenData.liquidity : 'TBA';
+
+  debate.injectContext(
+    `DEVCREW COUNCIL SESSION RESET. Fresh start. ` +
+    `Token: DEVCREW on Solana. ` +
+    `Price: ${price}. Holders: ${holders}. Volume: ${vol}. Liquidity: ${liq}. ` +
+    `Council mission: govern this token, protect holders, maximize value. Begin debates now.`
+  );
+
+  debate.start();
+
+  // Notify all connected clients
+  broadcast({
+    type: 'council_reset',
+    message: 'Council session reset by admin. New session starting.',
+  });
+
+  // Add reset entry to log
+  pushLog({
+    type: 'decision',
+    text: 'COUNCIL RESET — New session initialized. All agents restarting.',
+  });
+
+  console.log('[ADMIN] Council reset executed');
+  res.json({
+    ok: true,
+    message: 'Council reset. Fresh session started.',
+    context: { price, holders, volume: vol, liquidity: liq },
+  });
+});
+
 // ── Start ───────────────────────────────────────────────
 server.listen(PORT, () => {
   console.log(`
