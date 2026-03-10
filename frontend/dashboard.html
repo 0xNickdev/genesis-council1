@@ -89,12 +89,13 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 /* ── CENTER ── */
 .center{display:flex;flex-direction:column;overflow:hidden;position:relative;}
 
-/* CANVAS AREA — overlays top of chat */
-#canvas-wrap{position:absolute;top:0;left:0;right:0;z-index:5;pointer-events:none;background:transparent;}
+/* CANVAS AREA — fixed block, does NOT overlap chat */
+#canvas-wrap{flex:0 0 auto;position:relative;z-index:5;pointer-events:none;
+  background:rgba(0,0,0,0.25);border-bottom:2px solid var(--border);}
 #board-canvas{display:block;width:100%;image-rendering:pixelated;}
 
-/* CHAT — takes full center height, canvas floats over it */
-.chat-section{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0;padding-top:0;}
+/* CHAT — sits strictly below canvas */
+.chat-section{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0;}
 
 .chat-hdr{padding:8px 14px;border-bottom:2px solid var(--border);background:rgba(0,0,0,0.5);
   display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
@@ -301,36 +302,29 @@ function spawnCross(fromIdx, toIdx) {
 let lastSynapseTime = 0;
 function maybeSpawnSynapse() {
   const now = Date.now();
-  if (now - lastSynapseTime < 180) return;
+  if (now - lastSynapseTime < 200) return;
   lastSynapseTime = now;
+
+  // ONLY fire when an agent is actively thinking
   const thinking = AGENTS.filter(a => agentState[a.id].thinking);
-  if (thinking.length > 0) {
-    thinking.forEach(ag => {
-      const idx = AGENTS.indexOf(ag);
-      if (Math.random() > 0.35) spawnSynapse(idx, ag.color);
-      if (Math.random() > 0.5) {
-        const targets = CROSS_PAIRS.filter(p => p[0]===idx || p[1]===idx);
-        if (targets.length) spawnCross(...targets[Math.floor(Math.random()*targets.length)]);
-      }
-    });
-  } else {
-    if (Math.random() > 0.55) spawnSynapse(Math.floor(Math.random()*5));
-    if (Math.random() > 0.72) spawnCross(...CROSS_PAIRS[Math.floor(Math.random()*CROSS_PAIRS.length)]);
-  }
+  if (thinking.length === 0) return; // NO idle synapses
+
+  thinking.forEach(ag => {
+    const idx = AGENTS.indexOf(ag);
+    if (Math.random() > 0.4) spawnSynapse(idx, ag.color);
+    if (Math.random() > 0.6) {
+      const targets = CROSS_PAIRS.filter(p => p[0]===idx || p[1]===idx);
+      if (targets.length) spawnCross(...targets[Math.floor(Math.random()*targets.length)]);
+    }
+  });
 }
 
 function initCanvas() {
   const wrap = document.getElementById('canvas-wrap');
-  const center = wrap.parentElement;
-  CW = center.clientWidth;
-  // Canvas covers boards + flows 180px into chat area
-  CH = 260;
+  CW = wrap.parentElement.clientWidth;
+  CH = 180; // boards + synapse zone, chat is strictly below
   canvas.width = CW;
   canvas.height = CH;
-  wrap.style.height = CH + 'px';
-  // Push feed down so it starts below the boards
-  document.getElementById('feed').style.paddingTop = '180px';
-  document.querySelector('.chat-hdr').style.marginTop = '0';
 }
 
 // Draw a single pixel board
@@ -462,27 +456,31 @@ function drawSynapses(positions) {
   const MID_X = Math.floor(CW / 2);
   const anyThinking = AGENTS.some(a => agentState[a.id].thinking);
 
-  // 1) Vertical stems: each board → bus
+  // 1) Vertical stems: only for thinking agents
   AGENTS.forEach((agent, i) => {
-    const x = positions[i].cx + Math.floor(BOARD_W / 2);
     const st = agentState[agent.id];
+    if (!st.thinking) return; // invisible when idle
+    const x = positions[i].cx + Math.floor(BOARD_W / 2);
     ctx.save();
     ctx.setLineDash([]);
-    ctx.globalAlpha = st.thinking ? 0.55 : 0.13;
+    ctx.globalAlpha = 0.6;
     ctx.strokeStyle = agent.color;
-    ctx.lineWidth = st.thinking ? 2 : 1;
+    ctx.lineWidth = 2;
+    ctx.shadowColor = agent.color;
+    ctx.shadowBlur = 6;
     ctx.beginPath();
     ctx.moveTo(x, BOARD_BOT);
     ctx.lineTo(x, BUS_Y);
     ctx.stroke();
-    // junction dot
-    ctx.globalAlpha = st.thinking ? 0.9 : 0.25;
+    ctx.globalAlpha = 0.9;
     ctx.fillStyle = agent.color;
     ctx.fillRect(x - 3, BUS_Y - 3, 6, 6);
     ctx.restore();
   });
 
-  // 2) Horizontal bus across all boards
+  // 2) Horizontal bus + trunk — only when someone is thinking
+  if (!anyThinking) return; // skip everything else if nobody active
+
   const x0 = positions[0].cx + Math.floor(BOARD_W / 2);
   const x4 = positions[4].cx + Math.floor(BOARD_W / 2);
   ctx.save();
