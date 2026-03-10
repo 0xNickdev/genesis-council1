@@ -709,13 +709,29 @@ function showTyping(agent) {
 function updateMarket(d) {
   if (!d) return;
   if (d.symbol) document.getElementById('tok-name').textContent = '$' + d.symbol.toUpperCase();
-  if (d.marketCap || d.market_cap) {
-    const mc = d.marketCap || d.market_cap;
-    document.getElementById('tok-mc').textContent = mc === 'TBA' ? 'TBA' : '$' + formatNum(mc);
+
+  // Server sends pre-formatted strings like "$250K" OR raw numbers
+  function display(val, prefix) {
+    if (!val || val === 'TBA' || val === '$0') return 'TBA';
+    if (typeof val === 'string' && val.startsWith('$')) return val; // already formatted
+    const n = Number(val);
+    if (!n || isNaN(n)) return 'TBA';
+    return (prefix || '') + formatNum(n);
   }
-  if (d.volume) document.getElementById('tok-vol').textContent = d.volume === 'TBA' ? 'TBA' : '$' + formatNum(d.volume);
-  if (d.price) document.getElementById('tok-price').textContent = d.price === 'TBA' ? 'TBA' : '$' + Number(d.price).toFixed(6);
-  if (d.holders) document.getElementById('tok-holders').textContent = d.holders === 'TBA' ? 'TBA' : Number(d.holders).toLocaleString();
+
+  const mc = d.marketCap || d.market_cap || d.mcap;
+  document.getElementById('tok-mc').textContent = display(mc, '$');
+  document.getElementById('tok-vol').textContent = display(d.volume, '$');
+
+  if (d.price && d.price !== 'TBA') {
+    const p = Number(d.price);
+    document.getElementById('tok-price').textContent = isNaN(p) ? 'TBA' : '$' + p.toFixed(6);
+  }
+
+  if (d.holders && d.holders !== 'TBA') {
+    const h = Number(d.holders);
+    document.getElementById('tok-holders').textContent = isNaN(h) || h === 0 ? 'TBA' : h.toLocaleString();
+  }
 }
 function formatNum(n) {
   const num = Number(n);
