@@ -273,10 +273,46 @@ AGENTS.forEach(a => {
   agentState[a.id] = { thinking: false, pulse: 0, lastMsg: '', blinkPhase: Math.random() * Math.PI * 2 };
 });
 
+// Synapse pulses — travel along connections
+const synapses = [];
+// All pairs that connect
+const CONN_PAIRS = [[0,1],[1,2],[2,3],[3,4],[0,2],[1,3],[2,4],[0,3],[1,4]];
+
+function spawnSynapse(fromIdx, toIdx, col) {
+  synapses.push({ from: fromIdx, to: toIdx, col: col || AGENTS[fromIdx].color, t: 0, speed: 0.022 + Math.random() * 0.02 });
+}
+
+// Random synapses fire constantly
+let lastSynapseTime = 0;
+function maybeSpawnSynapse() {
+  const now = Date.now();
+  if (now - lastSynapseTime < 250) return;
+  lastSynapseTime = now;
+  // Find any thinking agent and fire synapse from it
+  const thinking = AGENTS.filter(a => agentState[a.id].thinking);
+  if (thinking.length > 0) {
+    const src = thinking[Math.floor(Math.random() * thinking.length)];
+    const srcIdx = AGENTS.indexOf(src);
+    const pairs = CONN_PAIRS.filter(p => p[0] === srcIdx || p[1] === srcIdx);
+    if (pairs.length) {
+      const pair = pairs[Math.floor(Math.random() * pairs.length)];
+      spawnSynapse(pair[0], pair[1], src.color);
+      // Sometimes fire back
+      if (Math.random() > 0.5) spawnSynapse(pair[1], pair[0], src.color);
+    }
+  } else {
+    // Idle — random slow synapses
+    if (Math.random() > 0.3) {
+      const pair = CONN_PAIRS[Math.floor(Math.random() * CONN_PAIRS.length)];
+      spawnSynapse(pair[0], pair[1]);
+    }
+  }
+}
+
 function initCanvas() {
   const wrap = document.getElementById('canvas-wrap');
   CW = wrap.clientWidth;
-  CH = 200;
+  CH = 230;
   canvas.width = CW;
   canvas.height = CH;
   wrap.style.height = CH + 'px';
@@ -394,35 +430,101 @@ function drawBoard(cx, cy, agent, state) {
   if (state.thinking) ctx.restore();
 }
 
-// Draw connection lines between boards
-function drawConnections(positions) {
-  const pairs = [
-    [0,1],[1,2],[2,3],[3,4],[0,2],[1,3],[2,4]
-  ];
-  pairs.forEach(([a, b]) => {
-    const pa = positions[a];
-    const pb = positions[b];
-    const ax = pa.cx + (BOARD_W / 2);
-    const ay = pa.cy + (BOARD_H / PIXEL / 2) * PIXEL;
-    const bx = pb.cx + (BOARD_W / 2);
-    const by = pb.cy + (BOARD_H / PIXEL / 2) * PIXEL;
+// Get board center point
+function boardCenter(pos) {
+  return {
+    x: pos.cx + Math.floor(BOARD_W / 2),
+    y: pos.cy + Math.floor((BOARD_H / PIXEL) * PIXEL / 2)
+  };
+}
 
+// Draw synapse connections + animate pulses
+function drawSynapses(positions) {
+  // Pre-compute wire paths for all pairs
+  const wirePaths = CONN_PAIRS.map(([a, b]) => {
+    const ax = positions[a].cx + Math.floor(BOARD_W / 2);
+    const bx = positions[b].cx + Math.floor(BOARD_W / 2);
+    const botY = positions[0].cy + (BOARD_H / PIXEL) * PIXEL + 4; // below all boards (same row)
+    // stepped: down from ax to botY, horizontal to bx, up to botY
+    // offset each pair slightly so they don't overlap
+    const pairIdx = CONN_PAIRS.findIndex(p => p[0]===a && p[1]===b);
+    const rowY = botY + (pairIdx % 4) * 8;
+    return { ax, bx, botY, rowY, a, b };
+  });
+
+  // 1) Draw static wires
+  CONN_PAIRS.forEach(([a, b], pi) => {
+    const wp = wirePaths[pi];
     const stateA = agentState[AGENTS[a].id];
     const stateB = agentState[AGENTS[b].id];
     const active = stateA.thinking || stateB.thinking;
 
     ctx.save();
-    ctx.globalAlpha = active ? 0.35 : 0.06;
-    ctx.strokeStyle = active ? AGENTS[a].color : 'rgba(0,255,178,0.4)';
-    ctx.lineWidth = active ? 1.5 : 0.5;
-    ctx.setLineDash(active ? [4, 4] : [2, 6]);
-    ctx.lineDashOffset = -Date.now() / 80;
+    ctx.globalAlpha = active ? 0.45 : 0.14;
+    ctx.strokeStyle = active ? AGENTS[a].color : '#00FFB2';
+    ctx.lineWidth = active ? 2 : 1;
+    ctx.setLineDash([]);
     ctx.beginPath();
-    ctx.moveTo(ax, ay);
-    ctx.lineTo(bx, by);
+    ctx.moveTo(wp.ax, wp.botY);
+    ctx.lineTo(wp.ax, wp.rowY);
+    ctx.lineTo(wp.bx, wp.rowY);
+    ctx.lineTo(wp.bx, wp.botY);
     ctx.stroke();
+
+    // Junction dots
+    ctx.globalAlpha = active ? 0.8 : 0.25;
+    ctx.fillStyle = active ? AGENTS[a].color : '#00FFB2';
+    ctx.fillRect(wp.ax - 3, wp.rowY - 3, 6, 6);
+    ctx.fillRect(wp.bx - 3, wp.rowY - 3, 6, 6);
     ctx.restore();
   });
+
+  // 2) Animate synapse pulses
+  maybeSpawnSynapse();
+  for (let i = synapses.length - 1; i >= 0; i--) {
+    const s = synapses[i];
+    s.t += s.speed;
+    if (s.t > 1) { synapses.splice(i, 1); continue; }
+
+    // Find the wire path for this synapse
+    const pairIdx = CONN_PAIRS.findIndex(p => p[0]===s.from && p[1]===s.to);
+    if (pairIdx === -1) { synapses.splice(i, 1); continue; }
+    const wp = wirePaths[pairIdx];
+
+    // Path: ax,botY → ax,rowY → bx,rowY → bx,botY
+    const seg1 = Math.abs(wp.rowY - wp.botY);
+    const seg2 = Math.abs(wp.bx - wp.ax);
+    const seg3 = Math.abs(wp.botY - wp.rowY);
+    const total = seg1 + seg2 + seg3 || 1;
+    const dist = s.t * total;
+
+    let dotX, dotY;
+    if (dist <= seg1) {
+      dotX = wp.ax;
+      dotY = wp.botY + (wp.rowY > wp.botY ? dist : -dist);
+    } else if (dist <= seg1 + seg2) {
+      const d = dist - seg1;
+      const dir = wp.bx > wp.ax ? 1 : -1;
+      dotX = wp.ax + d * dir;
+      dotY = wp.rowY;
+    } else {
+      const d = dist - seg1 - seg2;
+      dotX = wp.bx;
+      dotY = wp.rowY + (wp.botY > wp.rowY ? d : -d);
+    }
+
+    const fade = Math.sin(s.t * Math.PI);
+    ctx.save();
+    ctx.shadowColor = s.col;
+    ctx.shadowBlur = 12;
+    ctx.globalAlpha = fade * 1.0;
+    ctx.fillStyle = s.col;
+    ctx.fillRect(Math.round(dotX) - 4, Math.round(dotY) - 4, 8, 8);
+    ctx.shadowBlur = 0;
+    ctx.globalAlpha = fade * 0.4;
+    ctx.fillRect(Math.round(dotX) - 2, Math.round(dotY) - 2, 4, 4);
+    ctx.restore();
+  }
 }
 
 function renderCanvas() {
@@ -450,8 +552,8 @@ function renderCanvas() {
     if (s.thinking) s.pulse += 0.12;
   });
 
-  // Draw connections first
-  drawConnections(positions);
+  // Draw synaptic connections + pulses
+  drawSynapses(positions);
 
   // Draw boards
   AGENTS.forEach((agent, i) => {
@@ -525,6 +627,15 @@ function addMsg(agent, text) {
 
   // Update vote bar
   if (voteData[key] !== undefined) { voteData[key]++; renderVoteBars(); }
+
+  // Fire synapses burst when agent speaks
+  const fromIdx = AGENTS.findIndex(a => a.id === key);
+  if (fromIdx !== -1) {
+    CONN_PAIRS.filter(p => p[0] === fromIdx || p[1] === fromIdx).forEach(pair => {
+      setTimeout(() => spawnSynapse(pair[0], pair[1], AGENTS[fromIdx].color), Math.random() * 400);
+      setTimeout(() => spawnSynapse(pair[1], pair[0], AGENTS[fromIdx].color), 200 + Math.random() * 400);
+    });
+  }
 
   // Stop thinking anim
   if (agentState[key]) {
