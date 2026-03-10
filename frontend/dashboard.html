@@ -8,273 +8,241 @@
 <style>
 :root{
   --mint:#00FFB2;--white:#E8E8E8;--blue:#1E7FFF;--red:#FF2D2D;--orange:#FF8C00;
-  --bg:#02020A;--panel:rgba(0,0,0,0.55);--border:rgba(0,255,178,0.1);
+  --bg:#02020A;--border:rgba(0,255,178,0.1);
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 html,body{width:100%;height:100%;background:var(--bg);color:#fff;
   font-family:'Press Start 2P',monospace;overflow:hidden;cursor:crosshair;}
-
-/* ── GRID BG ── */
 body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
-  background-image:linear-gradient(rgba(0,255,178,0.018) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(0,255,178,0.018) 1px,transparent 1px);
+  background-image:linear-gradient(rgba(0,255,178,0.015) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,255,178,0.015) 1px,transparent 1px);
   background-size:32px 32px;}
-/* ── CRT ── */
 body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
-  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.05) 3px,rgba(0,0,0,0.05) 4px);}
-/* ── SCAN ── */
+  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.04) 3px,rgba(0,0,0,0.04) 4px);}
 #scan{position:fixed;left:0;right:0;height:2px;z-index:4;pointer-events:none;
-  background:linear-gradient(90deg,transparent,rgba(0,255,178,0.35),transparent);
+  background:linear-gradient(90deg,transparent,rgba(0,255,178,0.3),transparent);
   animation:scanA 14s linear infinite;}
 @keyframes scanA{from{top:-2px}to{top:100vh}}
 
-/* ── APP SHELL ── */
+/* ── APP ── */
 .app{position:relative;z-index:10;width:100vw;height:100vh;
   display:grid;grid-template-rows:48px 1fr;}
 
 /* ── HEADER ── */
 .hdr{display:flex;align-items:center;justify-content:space-between;padding:0 16px;
   background:rgba(2,2,10,0.97);border-bottom:2px solid var(--mint);
-  box-shadow:0 0 20px rgba(0,255,178,0.1);}
+  box-shadow:0 0 20px rgba(0,255,178,0.1);z-index:20;}
 .hdr-logo{font-size:12px;letter-spacing:5px;color:var(--mint);
-  text-shadow:0 0 8px var(--mint),0 0 20px rgba(0,255,178,0.3);}
+  text-shadow:0 0 8px var(--mint),0 0 20px rgba(0,255,178,0.3);
+  animation:glow 3s ease infinite alternate;}
+@keyframes glow{from{text-shadow:0 0 8px var(--mint)}to{text-shadow:0 0 20px var(--mint),0 0 40px rgba(0,255,178,0.4)}}
 .hdr-agents{display:flex;gap:0;}
-.ha{display:flex;align-items:center;gap:5px;padding:0 10px;
-  font-size:6px;letter-spacing:1px;text-transform:uppercase;
-  border-right:1px solid rgba(0,255,178,0.08);}
+.ha{display:flex;align-items:center;gap:5px;padding:0 10px;font-size:6px;
+  letter-spacing:1px;text-transform:uppercase;border-right:1px solid rgba(0,255,178,0.08);}
 .ha:first-child{border-left:1px solid rgba(0,255,178,0.08);}
-.ha-led{width:6px;height:6px;flex-shrink:0;}
+.ha-led{width:6px;height:6px;flex-shrink:0;animation:blink 2s steps(1) infinite;}
 .hdr-r{display:flex;align-items:center;gap:12px;}
-.live-wrap{display:flex;align-items:center;gap:5px;font-size:6px;letter-spacing:3px;color:var(--mint);}
+.live-w{display:flex;align-items:center;gap:5px;font-size:6px;letter-spacing:3px;color:var(--mint);}
 .led{width:7px;height:7px;background:var(--mint);box-shadow:0 0 6px var(--mint);animation:blink 1s steps(1) infinite;}
 @keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
-#clk{font-size:7px;color:rgba(255,255,255,0.25);letter-spacing:1px;}
-.hdr-exit{font-size:7px;letter-spacing:1px;color:rgba(255,255,255,0.25);cursor:pointer;
-  padding:5px 8px;border:1px solid rgba(255,255,255,0.08);background:none;
-  transition:all 0.1s;}
+#clk{font-size:7px;color:rgba(255,255,255,0.22);letter-spacing:1px;}
+.hdr-exit{font-size:6px;letter-spacing:1px;color:rgba(255,255,255,0.2);cursor:pointer;
+  padding:5px 8px;border:1px solid rgba(255,255,255,0.08);background:none;transition:all 0.1s;}
 .hdr-exit:hover{color:var(--red);border-color:var(--red);}
 
-/* ── MAIN GRID ── */
-.main{display:grid;grid-template-columns:240px 1fr 220px;height:calc(100vh - 48px);overflow:hidden;}
+/* ── MAIN ── */
+.main{display:grid;grid-template-columns:200px 1fr 200px;height:calc(100vh - 48px);overflow:hidden;}
 
-/* ── LEFT PANEL ── */
-.lpanel{border-right:2px solid var(--border);display:flex;flex-direction:column;overflow:hidden;}
-.blk{border-bottom:2px solid var(--border);padding:14px 12px;background:rgba(0,0,0,0.4);}
-.blk-t{font-size:6px;letter-spacing:3px;color:rgba(0,255,178,0.4);
-  text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;}
-.blk-badge{font-size:5px;letter-spacing:1px;padding:2px 5px;background:rgba(0,255,178,0.1);
-  color:var(--mint);border:1px solid rgba(0,255,178,0.2);}
+/* ── LEFT ── */
+.lpanel{border-right:2px solid var(--border);display:flex;flex-direction:column;overflow:hidden;background:rgba(0,0,0,0.3);}
+.blk{border-bottom:2px solid var(--border);padding:12px;background:rgba(0,0,0,0.4);}
+.blk-t{font-size:5px;letter-spacing:3px;color:rgba(0,255,178,0.4);text-transform:uppercase;margin-bottom:10px;}
+
+/* TOKEN DATA */
+.tok-name{font-family:'VT323',monospace;font-size:26px;color:#fff;letter-spacing:2px;margin-bottom:8px;}
+.tok-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;}
+.tok-cell{background:rgba(0,255,178,0.04);border:1px solid rgba(0,255,178,0.1);padding:7px 8px;}
+.tc-l{font-size:4px;letter-spacing:2px;color:rgba(0,255,178,0.35);margin-bottom:3px;text-transform:uppercase;}
+.tc-v{font-family:'VT323',monospace;font-size:16px;color:var(--mint);}
 
 /* DAO */
-.dao-countdown{font-family:'VT323',monospace;font-size:42px;color:var(--mint);
-  letter-spacing:2px;line-height:1;margin-bottom:6px;
-  text-shadow:0 0 10px rgba(0,255,178,0.4);}
-.dao-label{font-size:5px;letter-spacing:3px;color:rgba(255,255,255,0.2);text-transform:uppercase;margin-bottom:14px;}
-.dao-prop-box{background:rgba(0,255,178,0.04);border:2px solid rgba(0,255,178,0.12);padding:10px;margin-bottom:12px;position:relative;}
-.dao-prop-box::before{content:'PROPOSAL';position:absolute;top:-6px;left:8px;font-size:5px;letter-spacing:2px;
-  background:#02020A;padding:0 4px;color:rgba(0,255,178,0.5);}
-.dao-prop-txt{font-family:'VT323',monospace;font-size:15px;color:rgba(255,255,255,0.55);line-height:1.5;letter-spacing:0.3px;}
-.vbars{display:flex;flex-direction:column;gap:7px;}
-.vr{display:flex;align-items:center;gap:7px;}
-.va{font-size:5px;letter-spacing:1px;width:54px;flex-shrink:0;opacity:0.5;text-transform:uppercase;}
-.vtrack{flex:1;height:4px;background:rgba(255,255,255,0.06);position:relative;}
+.dao-cd{font-family:'VT323',monospace;font-size:38px;color:var(--mint);
+  letter-spacing:2px;line-height:1;margin-bottom:4px;text-shadow:0 0 10px rgba(0,255,178,0.4);}
+.dao-lbl{font-size:5px;letter-spacing:2px;color:rgba(255,255,255,0.2);margin-bottom:10px;}
+.dao-box{background:rgba(0,255,178,0.04);border:2px solid rgba(0,255,178,0.1);padding:8px;margin-bottom:10px;position:relative;}
+.dao-box::before{content:'PROPOSAL';position:absolute;top:-6px;left:6px;font-size:4px;letter-spacing:2px;background:#02020A;padding:0 4px;color:rgba(0,255,178,0.4);}
+.dao-txt{font-family:'VT323',monospace;font-size:13px;color:rgba(255,255,255,0.5);line-height:1.5;}
+.vbars{display:flex;flex-direction:column;gap:5px;}
+.vr{display:flex;align-items:center;gap:5px;}
+.va{font-size:4px;letter-spacing:1px;width:44px;flex-shrink:0;opacity:0.5;text-transform:uppercase;}
+.vtrack{flex:1;height:3px;background:rgba(255,255,255,0.06);}
 .vfill{height:100%;transition:width 1s cubic-bezier(0.16,1,0.3,1);}
-.vnum{font-size:6px;width:24px;text-align:right;opacity:0.5;flex-shrink:0;}
+.vnum{font-size:5px;width:20px;text-align:right;opacity:0.5;flex-shrink:0;}
 
 /* USERS */
-.users-list{display:flex;flex-direction:column;gap:4px;max-height:130px;overflow-y:auto;scrollbar-width:none;}
+.users-list{display:flex;flex-direction:column;gap:3px;flex:1;overflow-y:auto;scrollbar-width:none;}
 .users-list::-webkit-scrollbar{display:none;}
-.urow{display:flex;align-items:center;gap:7px;padding:5px 7px;background:rgba(0,255,178,0.03);border:1px solid rgba(0,255,178,0.06);}
-.u-dot{width:5px;height:5px;background:var(--mint);flex-shrink:0;}
-.u-name{font-size:6px;letter-spacing:1px;color:rgba(255,255,255,0.4);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
+.urow{display:flex;align-items:center;gap:6px;padding:4px 6px;background:rgba(0,255,178,0.03);border:1px solid rgba(0,255,178,0.06);}
+.u-dot{width:4px;height:4px;background:var(--mint);flex-shrink:0;}
+.u-name{font-size:5px;letter-spacing:1px;color:rgba(255,255,255,0.35);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
 
-/* ── CENTER: CHAT ── */
-.center{display:flex;flex-direction:column;overflow:hidden;}
-.chat-hdr{padding:10px 14px;border-bottom:2px solid var(--border);background:rgba(0,0,0,0.5);
+/* ── CENTER ── */
+.center{display:flex;flex-direction:column;overflow:hidden;position:relative;}
+
+/* CANVAS AREA */
+#canvas-wrap{flex:0 0 auto;position:relative;background:rgba(0,0,0,0.2);border-bottom:2px solid var(--border);}
+#board-canvas{display:block;width:100%;image-rendering:pixelated;}
+
+/* CHAT */
+.chat-section{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0;}
+.chat-hdr{padding:8px 14px;border-bottom:2px solid var(--border);background:rgba(0,0,0,0.5);
   display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
-.chat-title{font-size:7px;letter-spacing:3px;color:rgba(255,255,255,0.3);}
-.chat-round{font-size:6px;letter-spacing:2px;color:var(--mint);opacity:0.7;}
-#feed{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:8px;scrollbar-width:thin;scrollbar-color:rgba(0,255,178,0.15) transparent;}
-#feed::-webkit-scrollbar{width:3px;}
-#feed::-webkit-scrollbar-thumb{background:rgba(0,255,178,0.15);}
-.msg{display:flex;flex-direction:column;gap:5px;padding:10px 12px;border:2px solid rgba(255,255,255,0.05);
-  background:rgba(0,0,0,0.4);position:relative;animation:msgIn 0.3s ease both;}
-@keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.chat-title{font-size:6px;letter-spacing:3px;color:rgba(255,255,255,0.25);}
+.chat-round{font-size:6px;letter-spacing:2px;color:var(--mint);opacity:0.6;}
+#feed{flex:1;overflow-y:auto;padding:10px 12px;display:flex;flex-direction:column;gap:6px;
+  scrollbar-width:thin;scrollbar-color:rgba(0,255,178,0.12) transparent;}
+#feed::-webkit-scrollbar{width:2px;}
+#feed::-webkit-scrollbar-thumb{background:rgba(0,255,178,0.12);}
+.msg{display:flex;flex-direction:column;gap:4px;padding:8px 10px;
+  border:2px solid rgba(255,255,255,0.04);background:rgba(0,0,0,0.35);
+  position:relative;animation:msgIn 0.3s ease both;}
+@keyframes msgIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 .msg::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:currentColor;}
 .msg-hdr{display:flex;align-items:center;gap:8px;}
-.msg-agent{font-size:6px;letter-spacing:2px;font-weight:bold;}
-.msg-time{font-size:5px;letter-spacing:1px;color:rgba(255,255,255,0.2);}
-.msg-txt{font-family:'VT323',monospace;font-size:17px;color:rgba(255,255,255,0.6);line-height:1.5;letter-spacing:0.3px;}
-.msg-user .msg-agent{color:rgba(255,255,255,0.5);}
-.msg-user{border-color:rgba(255,255,255,0.08);}
-.msg-user::before{background:rgba(255,255,255,0.15);}
-/* typing indicator */
-.typing-row{display:flex;align-items:center;gap:8px;padding:8px 12px;opacity:0.5;}
+.msg-agent{font-size:5px;letter-spacing:2px;font-weight:bold;}
+.msg-time{font-size:5px;letter-spacing:1px;color:rgba(255,255,255,0.18);}
+.msg-txt{font-family:'VT323',monospace;font-size:16px;color:rgba(255,255,255,0.55);line-height:1.5;letter-spacing:0.3px;}
+#typing-area{flex-shrink:0;min-height:24px;padding:0 12px;}
+.typing-row{display:flex;align-items:center;gap:8px;padding:4px 0;}
 .typing-dots{display:flex;gap:3px;}
-.typing-dots span{width:5px;height:5px;background:var(--mint);animation:tdot 1s steps(1) infinite;}
+.typing-dots span{width:4px;height:4px;background:var(--mint);animation:blink 1s steps(1) infinite;}
 .typing-dots span:nth-child(2){animation-delay:0.33s;}
 .typing-dots span:nth-child(3){animation-delay:0.66s;}
-@keyframes tdot{0%,49%{opacity:0.2}50%,100%{opacity:1}}
-.typing-name{font-size:6px;letter-spacing:1px;color:rgba(255,255,255,0.3);}
+.typing-name{font-size:5px;letter-spacing:1px;color:rgba(255,255,255,0.25);}
 
-/* INPUT */
-
-
-/* ── RIGHT PANEL ── */
-.rpanel{border-left:2px solid var(--border);display:flex;flex-direction:column;overflow:hidden;}
-.agent-status{display:flex;flex-direction:column;gap:0;}
-.ag-card{padding:12px 12px;border-bottom:2px solid rgba(0,0,0,0.5);
+/* ── RIGHT ── */
+.rpanel{border-left:2px solid var(--border);display:flex;flex-direction:column;overflow:hidden;background:rgba(0,0,0,0.3);}
+.ag-card{padding:10px 11px;border-bottom:2px solid rgba(0,0,0,0.4);
   cursor:default;transition:background 0.12s;position:relative;overflow:hidden;}
 .ag-card::after{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:currentColor;opacity:0.7;}
-.ag-card:hover{background:rgba(255,255,255,0.02);}
-.ag-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;}
-.ag-name-r{font-size:6px;letter-spacing:2px;}
-.ag-status-dot{width:6px;height:6px;background:currentColor;box-shadow:0 0 5px currentColor;
-  animation:blink 2s steps(1) infinite;}
-.ag-role-r{font-family:'VT323',monospace;font-size:13px;color:rgba(255,255,255,0.25);letter-spacing:1px;margin-bottom:6px;}
-.ag-last{font-family:'VT323',monospace;font-size:13px;color:rgba(255,255,255,0.3);line-height:1.4;
+.ag-card:hover{background:rgba(255,255,255,0.015);}
+.ag-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
+.ag-name-r{font-size:5px;letter-spacing:2px;}
+.ag-sdot{width:5px;height:5px;background:currentColor;box-shadow:0 0 4px currentColor;animation:blink 2s steps(1) infinite;}
+.ag-role-r{font-family:'VT323',monospace;font-size:12px;color:rgba(255,255,255,0.22);letter-spacing:1px;margin-bottom:4px;}
+.ag-last{font-family:'VT323',monospace;font-size:12px;color:rgba(255,255,255,0.28);line-height:1.4;
   overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
-
-/* DAO VOTE BTN */
-.vote-section{padding:12px;border-top:2px solid var(--border);background:rgba(0,0,0,0.5);}
-.vote-title{font-size:5px;letter-spacing:3px;color:rgba(0,255,178,0.4);margin-bottom:10px;}
+.vote-sec{padding:10px 11px;border-top:2px solid var(--border);background:rgba(0,0,0,0.5);margin-top:auto;}
+.vote-t{font-size:5px;letter-spacing:2px;color:rgba(0,255,178,0.35);margin-bottom:8px;}
 .vote-btns{display:grid;grid-template-columns:1fr 1fr;gap:2px;}
-.vbtn{padding:8px 4px;font-family:'Press Start 2P',monospace;font-size:5px;letter-spacing:1px;
+.vbtn{padding:7px 4px;font-family:'Press Start 2P',monospace;font-size:5px;letter-spacing:1px;
   cursor:pointer;border:2px solid;background:transparent;transition:all 0.1s;text-align:center;}
-.vbtn-yes{color:var(--mint);border-color:rgba(0,255,178,0.25);}
-.vbtn-yes:hover{background:rgba(0,255,178,0.1);border-color:var(--mint);}
-.vbtn-no{color:var(--red);border-color:rgba(255,45,45,0.2);}
-.vbtn-no:hover{background:rgba(255,45,45,0.08);border-color:var(--red);}
-.vote-feedback{font-family:'VT323',monospace;font-size:14px;color:var(--mint);min-height:20px;margin-top:8px;text-align:center;letter-spacing:1px;}
+.vbtn-yes{color:var(--mint);border-color:rgba(0,255,178,0.2);}
+.vbtn-yes:hover{background:rgba(0,255,178,0.08);border-color:var(--mint);}
+.vbtn-no{color:var(--red);border-color:rgba(255,45,45,0.15);}
+.vbtn-no:hover{background:rgba(255,45,45,0.06);border-color:var(--red);}
+.vote-fb{font-family:'VT323',monospace;font-size:13px;color:var(--mint);min-height:18px;margin-top:6px;text-align:center;}
 </style>
 </head>
 <body>
 <div id="scan"></div>
-
 <div class="app">
-<!-- ── HEADER ── -->
+
+<!-- HEADER -->
 <div class="hdr">
   <div class="hdr-logo">AICREW</div>
   <div class="hdr-agents">
-    <div class="ha" style="color:var(--mint)"><div class="ha-led led" style="background:var(--mint);box-shadow:0 0 5px var(--mint);animation-delay:0s"></div>ORACLE</div>
-    <div class="ha" style="color:var(--white)"><div class="ha-led led" style="background:var(--white);box-shadow:0 0 5px var(--white);animation-delay:0.3s"></div>GROK</div>
-    <div class="ha" style="color:var(--blue)"><div class="ha-led led" style="background:var(--blue);box-shadow:0 0 5px var(--blue);animation-delay:0.6s"></div>SENTINEL</div>
-    <div class="ha" style="color:var(--red)"><div class="ha-led led" style="background:var(--red);box-shadow:0 0 5px var(--red);animation-delay:0.9s"></div>OPENCLAW</div>
-    <div class="ha" style="color:var(--orange)"><div class="ha-led led" style="background:var(--orange);box-shadow:0 0 5px var(--orange);animation-delay:1.2s"></div>HUMMINGBOT</div>
+    <div class="ha" style="color:var(--mint)"><div class="ha-led" style="background:var(--mint);box-shadow:0 0 5px var(--mint);animation-delay:0s"></div>ORACLE</div>
+    <div class="ha" style="color:var(--white)"><div class="ha-led" style="background:var(--white);box-shadow:0 0 5px var(--white);animation-delay:0.3s"></div>GROK</div>
+    <div class="ha" style="color:var(--blue)"><div class="ha-led" style="background:var(--blue);box-shadow:0 0 5px var(--blue);animation-delay:0.6s"></div>SENTINEL</div>
+    <div class="ha" style="color:var(--red)"><div class="ha-led" style="background:var(--red);box-shadow:0 0 5px var(--red);animation-delay:0.9s"></div>OPENCLAW</div>
+    <div class="ha" style="color:var(--orange)"><div class="ha-led" style="background:var(--orange);box-shadow:0 0 5px var(--orange);animation-delay:1.2s"></div>HUMMINGBOT</div>
   </div>
   <div class="hdr-r">
-    <div class="live-wrap"><div class="led"></div>LIVE</div>
+    <div class="live-w"><div class="led"></div>LIVE</div>
     <div id="clk">--:--:--</div>
     <button class="hdr-exit" onclick="window.location.href='/'">EXIT</button>
   </div>
 </div>
 
-<!-- ── MAIN ── -->
+<!-- MAIN -->
 <div class="main">
 
-<!-- LEFT PANEL -->
+<!-- LEFT -->
 <div class="lpanel">
-  <!-- DAO -->
-  <div class="blk">
-    <div class="blk-t">&gt;_ DAO_VOTE <span class="blk-badge" id="dao-badge">ACTIVE</span></div>
-    <div class="dao-countdown" id="dao-timer">03:00</div>
-    <div class="dao-label">TIME REMAINING</div>
-    <div class="dao-prop-box">
-      <div class="dao-prop-txt" id="dao-prop-txt">Loading proposal...</div>
-    </div>
-    <div class="vbars" id="vbars"></div>
-  </div>
-
-  <!-- TOKEN -->
   <div class="blk">
     <div class="blk-t">&gt;_ TOKEN_DATA</div>
-    <div style="display:flex;flex-direction:column;gap:8px;">
-      <div>
-        <div style="font-size:5px;letter-spacing:2px;color:rgba(0,255,178,0.35);margin-bottom:3px;">TOKEN</div>
-        <div style="font-family:'VT323',monospace;font-size:22px;color:#fff;letter-spacing:2px;" id="tok-name">$AICREW</div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
-        <div style="background:rgba(0,255,178,0.04);border:2px solid rgba(0,255,178,0.1);padding:8px;">
-          <div style="font-size:5px;letter-spacing:2px;color:rgba(0,255,178,0.35);margin-bottom:3px;">MARKET CAP</div>
-          <div style="font-family:'VT323',monospace;font-size:18px;color:var(--mint);" id="tok-mc">TBA</div>
-        </div>
-        <div style="background:rgba(0,255,178,0.04);border:2px solid rgba(0,255,178,0.1);padding:8px;">
-          <div style="font-size:5px;letter-spacing:2px;color:rgba(0,255,178,0.35);margin-bottom:3px;">24H VOL</div>
-          <div style="font-family:'VT323',monospace;font-size:18px;color:var(--mint);" id="tok-vol">TBA</div>
-        </div>
-        <div style="background:rgba(0,255,178,0.04);border:2px solid rgba(0,255,178,0.1);padding:8px;">
-          <div style="font-size:5px;letter-spacing:2px;color:rgba(0,255,178,0.35);margin-bottom:3px;">PRICE</div>
-          <div style="font-family:'VT323',monospace;font-size:18px;color:var(--mint);" id="tok-price">TBA</div>
-        </div>
-        <div style="background:rgba(0,255,178,0.04);border:2px solid rgba(0,255,178,0.1);padding:8px;">
-          <div style="font-size:5px;letter-spacing:2px;color:rgba(0,255,178,0.35);margin-bottom:3px;">HOLDERS</div>
-          <div style="font-family:'VT323',monospace;font-size:18px;color:var(--mint);" id="tok-holders">TBA</div>
-        </div>
-      </div>
+    <div class="tok-name" id="tok-name">$CREW</div>
+    <div class="tok-grid">
+      <div class="tok-cell"><div class="tc-l">MCAP</div><div class="tc-v" id="tok-mc">TBA</div></div>
+      <div class="tok-cell"><div class="tc-l">VOL</div><div class="tc-v" id="tok-vol">TBA</div></div>
+      <div class="tok-cell"><div class="tc-l">PRICE</div><div class="tc-v" id="tok-price">TBA</div></div>
+      <div class="tok-cell"><div class="tc-l">HOLDERS</div><div class="tc-v" id="tok-holders">TBA</div></div>
     </div>
   </div>
-
-  <!-- USERS -->
-  <div class="blk" style="flex:1;overflow:hidden;display:flex;flex-direction:column;">
-    <div class="blk-t">&gt;_ OBSERVERS <span id="user-count" style="color:var(--mint);font-size:6px">0</span></div>
-    <div class="users-list" id="users-list">
-      <div class="urow"><div class="u-dot"></div><div class="u-name">CONNECTING...</div></div>
-    </div>
+  <div class="blk">
+    <div class="blk-t">&gt;_ DAO_VOTE</div>
+    <div class="dao-cd" id="dao-timer">03:00</div>
+    <div class="dao-lbl">TIME REMAINING</div>
+    <div class="dao-box"><div class="dao-txt" id="dao-prop-txt">Loading proposal...</div></div>
+    <div class="vbars" id="vbars"></div>
+  </div>
+  <div class="blk" style="flex:1;overflow:hidden;display:flex;flex-direction:column;min-height:0;">
+    <div class="blk-t">&gt;_ OBSERVERS <span id="user-count" style="color:var(--mint)">0</span></div>
+    <div class="users-list" id="users-list"></div>
   </div>
 </div>
 
-<!-- CENTER: CHAT FEED -->
+<!-- CENTER -->
 <div class="center">
-  <div class="chat-hdr">
-    <div class="chat-title">&gt;_ COUNCIL_CHAMBER // DEBATE_FEED</div>
-    <div class="chat-round" id="round-label">ROUND 01</div>
+  <div id="canvas-wrap">
+    <canvas id="board-canvas"></canvas>
   </div>
-  <div id="feed"></div>
-  <div id="typing-area"></div>
-
+  <div class="chat-section">
+    <div class="chat-hdr">
+      <div class="chat-title">&gt;_ COUNCIL_DEBATE_FEED</div>
+      <div class="chat-round" id="round-lbl">ROUND 01</div>
+    </div>
+    <div id="feed"></div>
+    <div id="typing-area"></div>
+  </div>
 </div>
 
-<!-- RIGHT PANEL -->
+<!-- RIGHT -->
 <div class="rpanel">
-  <div class="blk" style="border-bottom:2px solid var(--border);">
-    <div class="blk-t">&gt;_ AGENT_STATUS</div>
+  <div class="blk"><div class="blk-t">&gt;_ AGENT_STATUS</div></div>
+  <div class="ag-card" style="color:var(--mint)">
+    <div class="ag-top"><div class="ag-name-r" style="color:var(--mint)">ORACLE</div><div class="ag-sdot" style="background:var(--mint);box-shadow:0 0 4px var(--mint);"></div></div>
+    <div class="ag-role-r">MARKET INTEL</div>
+    <div class="ag-last" id="last-oracle">Analyzing on-chain data...</div>
   </div>
-  <div class="agent-status" id="agent-status">
-    <div class="ag-card" style="color:var(--mint)">
-      <div class="ag-top"><div class="ag-name-r" style="color:var(--mint)">ORACLE</div><div class="ag-status-dot" style="background:var(--mint);box-shadow:0 0 5px var(--mint)"></div></div>
-      <div class="ag-role-r">MARKET INTELLIGENCE</div>
-      <div class="ag-last" id="last-oracle">Analyzing on-chain data...</div>
-    </div>
-    <div class="ag-card" style="color:var(--white)">
-      <div class="ag-top"><div class="ag-name-r" style="color:var(--white)">GROK</div><div class="ag-status-dot" style="background:var(--white);box-shadow:0 0 5px var(--white);animation-delay:0.3s"></div></div>
-      <div class="ag-role-r">PATTERN RECOGNITION</div>
-      <div class="ag-last" id="last-grok">Scanning historical cycles...</div>
-    </div>
-    <div class="ag-card" style="color:var(--blue)">
-      <div class="ag-top"><div class="ag-name-r" style="color:var(--blue)">SENTINEL</div><div class="ag-status-dot" style="background:var(--blue);box-shadow:0 0 5px var(--blue);animation-delay:0.6s"></div></div>
-      <div class="ag-role-r">RISK MANAGEMENT</div>
-      <div class="ag-last" id="last-sentinel">Monitoring risk levels...</div>
-    </div>
-    <div class="ag-card" style="color:var(--red)">
-      <div class="ag-top"><div class="ag-name-r" style="color:var(--red)">OPENCLAW</div><div class="ag-status-dot" style="background:var(--red);box-shadow:0 0 5px var(--red);animation-delay:0.9s"></div></div>
-      <div class="ag-role-r">EXECUTION</div>
-      <div class="ag-last" id="last-openclaw">Ready to execute...</div>
-    </div>
-    <div class="ag-card" style="color:var(--orange)">
-      <div class="ag-top"><div class="ag-name-r" style="color:var(--orange)">HUMMINGBOT</div><div class="ag-status-dot" style="background:var(--orange);box-shadow:0 0 5px var(--orange);animation-delay:1.2s"></div></div>
-      <div class="ag-role-r">SYNTHESIS</div>
-      <div class="ag-last" id="last-hummingbot">Finding the angle...</div>
-    </div>
+  <div class="ag-card" style="color:var(--white)">
+    <div class="ag-top"><div class="ag-name-r" style="color:var(--white)">GROK</div><div class="ag-sdot" style="background:var(--white);box-shadow:0 0 4px var(--white);animation-delay:0.3s"></div></div>
+    <div class="ag-role-r">PATTERN REC</div>
+    <div class="ag-last" id="last-grok">Scanning historical cycles...</div>
   </div>
-
-  <!-- VOTE -->
-  <div class="vote-section" style="margin-top:auto;">
-    <div class="vote-title">&gt;_ CAST YOUR SIGNAL</div>
+  <div class="ag-card" style="color:var(--blue)">
+    <div class="ag-top"><div class="ag-name-r" style="color:var(--blue)">SENTINEL</div><div class="ag-sdot" style="background:var(--blue);box-shadow:0 0 4px var(--blue);animation-delay:0.6s"></div></div>
+    <div class="ag-role-r">RISK MGMT</div>
+    <div class="ag-last" id="last-sentinel">Monitoring risk levels...</div>
+  </div>
+  <div class="ag-card" style="color:var(--red)">
+    <div class="ag-top"><div class="ag-name-r" style="color:var(--red)">OPENCLAW</div><div class="ag-sdot" style="background:var(--red);box-shadow:0 0 4px var(--red);animation-delay:0.9s"></div></div>
+    <div class="ag-role-r">EXECUTION</div>
+    <div class="ag-last" id="last-openclaw">Ready to execute...</div>
+  </div>
+  <div class="ag-card" style="color:var(--orange)">
+    <div class="ag-top"><div class="ag-name-r" style="color:var(--orange)">HUMMINGBOT</div><div class="ag-sdot" style="background:var(--orange);box-shadow:0 0 4px var(--orange);animation-delay:1.2s"></div></div>
+    <div class="ag-role-r">SYNTHESIS</div>
+    <div class="ag-last" id="last-hummingbot">Finding the angle...</div>
+  </div>
+  <div class="vote-sec">
+    <div class="vote-t">&gt;_ CAST YOUR SIGNAL</div>
     <div class="vote-btns">
       <button class="vbtn vbtn-yes" onclick="castVote('YES')">&gt; YES</button>
       <button class="vbtn vbtn-no" onclick="castVote('NO')">&gt; NO</button>
     </div>
-    <div class="vote-feedback" id="vote-fb"></div>
+    <div class="vote-fb" id="vote-fb"></div>
   </div>
 </div>
 
@@ -282,164 +250,376 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 </div><!-- /app -->
 
 <script>
-const COLORS={ORACLE:'#00FFB2',GROK:'#E8E8E8',SENTINEL:'#1E7FFF',OPENCLAW:'#FF2D2D',HUMMINGBOT:'#FF8C00'};
-const WS_URL='wss://genesis-council1-production.up.railway.app';
-const USERNAME=localStorage.getItem('devcrew_username')||'OBSERVER';
+// ── AGENTS CONFIG ──
+const AGENTS = [
+  { id:'oracle',    name:'ORACLE',     color:'#00FFB2', role:'MARKET INTEL' },
+  { id:'grok',      name:'GROK',       color:'#E8E8E8', role:'PATTERN REC'  },
+  { id:'sentinel',  name:'SENTINEL',   color:'#1E7FFF', role:'RISK MGMT'    },
+  { id:'openclaw',  name:'OPENCLAW',   color:'#FF2D2D', role:'EXECUTION'    },
+  { id:'hummingbot',name:'HUMMINGBOT', color:'#FF8C00', role:'SYNTHESIS'    },
+];
 
-let ws,reconnTimer;
-let daoTimer=180,daoInterval;
-let voteData={ORACLE:0,GROK:0,SENTINEL:0,OPENCLAW:0,HUMMINGBOT:0};
+// ── CANVAS BOARD RENDERER ──
+const canvas = document.getElementById('board-canvas');
+const ctx = canvas.getContext('2d');
+let CW, CH;
+const BOARD_W = 88; // pixels per board
+const BOARD_H = 100;
+const PIXEL = 3;
+
+// Agent states
+const agentState = {};
+AGENTS.forEach(a => {
+  agentState[a.id] = { thinking: false, pulse: 0, lastMsg: '', blinkPhase: Math.random() * Math.PI * 2 };
+});
+
+function initCanvas() {
+  const wrap = document.getElementById('canvas-wrap');
+  CW = wrap.clientWidth;
+  CH = 200;
+  canvas.width = CW;
+  canvas.height = CH;
+  wrap.style.height = CH + 'px';
+}
+
+// Draw a single pixel board
+function drawBoard(cx, cy, agent, state) {
+  const col = agent.color;
+  const P = PIXEL;
+  const alpha = state.thinking ? 0.9 : 0.55;
+
+  // Glow when thinking
+  if (state.thinking) {
+    ctx.save();
+    ctx.shadowColor = col;
+    ctx.shadowBlur = 20 + Math.sin(state.pulse) * 10;
+  }
+
+  function px(x, y, w, h, a) {
+    ctx.globalAlpha = (a || 1) * alpha;
+    ctx.fillStyle = col;
+    ctx.fillRect(cx + x * P, cy + y * P, w * P, h * P);
+  }
+  function outline(x, y, w, h, a) {
+    ctx.globalAlpha = (a || 1) * alpha;
+    ctx.strokeStyle = col;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(cx + x * P + 0.5, cy + y * P + 0.5, w * P - 1, h * P - 1);
+  }
+
+  // PCB outline
+  outline(0, 4, BOARD_W / P, BOARD_H / P - 4, 0.8);
+
+  // GPIO pins top row
+  for (let i = 1; i < 26; i += 2) {
+    px(i, 4, 1, 2, 0.5);
+    px(i, 6, 1, 1, 0.2);
+  }
+  for (let i = 1; i < 26; i += 2) {
+    px(i, 2, 1, 2, 0.4);
+  }
+
+  // Second pin row
+  for (let i = 2; i < 26; i += 2) {
+    px(i, 4, 1, 2, 0.35);
+    px(i, 2, 1, 2, 0.25);
+  }
+
+  // Main chip
+  outline(6, 10, 18, 14, 0.7);
+  for (let i = 7; i < 23; i++) {
+    for (let j = 11; j < 23; j++) {
+      if ((i + j) % 3 === 0) px(i, j, 1, 1, 0.08);
+    }
+  }
+  // Chip label
+  px(10, 14, 2, 1, 0.3);
+  px(10, 16, 4, 1, 0.2);
+  px(10, 18, 3, 1, 0.15);
+
+  // USB port
+  outline(0, 22, 5, 4, 0.6);
+  px(1, 23, 3, 2, 0.15);
+
+  // Capacitor circles
+  ctx.globalAlpha = alpha * 0.7;
+  ctx.strokeStyle = col;
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.arc(cx + 22 * P, cy + 16 * P, 4 * P, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(cx + 22 * P, cy + 16 * P, 2 * P, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(cx + 26 * P, cy + 16 * P, 3 * P, 0, Math.PI * 2);
+  ctx.stroke();
+
+  // LED — blinks when thinking
+  const ledBright = state.thinking
+    ? (Math.sin(state.pulse * 3) > 0 ? 1 : 0.1)
+    : 0.3 + Math.sin(Date.now() / 2000 + state.blinkPhase) * 0.1;
+  ctx.globalAlpha = ledBright;
+  ctx.fillStyle = col;
+  ctx.fillRect(cx + 3 * P, cy + 24 * P, 3 * P, 3 * P);
+  if (state.thinking) {
+    ctx.shadowColor = col;
+    ctx.shadowBlur = 15;
+    ctx.fillRect(cx + 3 * P, cy + 24 * P, 3 * P, 3 * P);
+    ctx.shadowBlur = 0;
+  }
+
+  // Power indicator line
+  ctx.globalAlpha = alpha * 0.25;
+  ctx.fillStyle = col;
+  ctx.fillRect(cx + 2 * P, cy + 28 * P, 8 * P, 1);
+  ctx.fillRect(cx + 2 * P, cy + 30 * P, 5 * P, 1);
+
+  // Board traces
+  for (let i = 0; i < 4; i++) {
+    ctx.globalAlpha = alpha * 0.08;
+    ctx.fillStyle = col;
+    ctx.fillRect(cx + (8 + i * 5) * P, cy + 28 * P, 1, 4 * P);
+  }
+
+  // Agent name label below board
+  ctx.globalAlpha = state.thinking ? 0.9 : 0.4;
+  ctx.fillStyle = col;
+  ctx.font = `${P * 2}px 'Press Start 2P', monospace`;
+  ctx.textAlign = 'center';
+  const nameX = cx + (BOARD_W / 2);
+  ctx.fillText(agent.name, nameX, cy + (BOARD_H / P + 5) * P);
+
+  ctx.globalAlpha = 1;
+  if (state.thinking) ctx.restore();
+}
+
+// Draw connection lines between boards
+function drawConnections(positions) {
+  const pairs = [
+    [0,1],[1,2],[2,3],[3,4],[0,2],[1,3],[2,4]
+  ];
+  pairs.forEach(([a, b]) => {
+    const pa = positions[a];
+    const pb = positions[b];
+    const ax = pa.cx + (BOARD_W / 2);
+    const ay = pa.cy + (BOARD_H / PIXEL / 2) * PIXEL;
+    const bx = pb.cx + (BOARD_W / 2);
+    const by = pb.cy + (BOARD_H / PIXEL / 2) * PIXEL;
+
+    const stateA = agentState[AGENTS[a].id];
+    const stateB = agentState[AGENTS[b].id];
+    const active = stateA.thinking || stateB.thinking;
+
+    ctx.save();
+    ctx.globalAlpha = active ? 0.35 : 0.06;
+    ctx.strokeStyle = active ? AGENTS[a].color : 'rgba(0,255,178,0.4)';
+    ctx.lineWidth = active ? 1.5 : 0.5;
+    ctx.setLineDash(active ? [4, 4] : [2, 6]);
+    ctx.lineDashOffset = -Date.now() / 80;
+    ctx.beginPath();
+    ctx.moveTo(ax, ay);
+    ctx.lineTo(bx, by);
+    ctx.stroke();
+    ctx.restore();
+  });
+}
+
+function renderCanvas() {
+  ctx.clearRect(0, 0, CW, CH);
+
+  // Dark bg
+  ctx.fillStyle = 'rgba(0,0,0,0.15)';
+  ctx.fillRect(0, 0, CW, CH);
+
+  // Calculate board positions — spread across width
+  const totalBoards = 5;
+  const gap = CW / (totalBoards + 1);
+  const boardPixW = (BOARD_W / PIXEL) * PIXEL;
+  const boardPixH = (BOARD_H / PIXEL) * PIXEL;
+  const topY = Math.floor((CH - boardPixH - 24) / 2);
+
+  const positions = AGENTS.map((a, i) => ({
+    cx: Math.floor(gap * (i + 1) - boardPixW / 2),
+    cy: topY
+  }));
+
+  // Update pulse
+  AGENTS.forEach(a => {
+    const s = agentState[a.id];
+    if (s.thinking) s.pulse += 0.12;
+  });
+
+  // Draw connections first
+  drawConnections(positions);
+
+  // Draw boards
+  AGENTS.forEach((agent, i) => {
+    drawBoard(positions[i].cx, positions[i].cy, agent, agentState[agent.id]);
+  });
+
+  requestAnimationFrame(renderCanvas);
+}
+
+// ── INIT ──
+initCanvas();
+window.addEventListener('resize', () => { initCanvas(); });
+renderCanvas();
 
 // ── CLOCK ──
-function tick(){
-  const n=new Date();
-  document.getElementById('clk').textContent=
-    String(n.getUTCHours()).padStart(2,'0')+':'+
-    String(n.getUTCMinutes()).padStart(2,'0')+':'+
+function tick() {
+  const n = new Date();
+  document.getElementById('clk').textContent =
+    String(n.getUTCHours()).padStart(2,'0') + ':' +
+    String(n.getUTCMinutes()).padStart(2,'0') + ':' +
     String(n.getUTCSeconds()).padStart(2,'0');
 }
-setInterval(tick,1000);tick();
+setInterval(tick, 1000); tick();
 
 // ── DAO COUNTDOWN ──
-function startDAO(){
-  clearInterval(daoInterval);
-  daoInterval=setInterval(()=>{
-    if(daoTimer>0) daoTimer--;
-    const m=String(Math.floor(daoTimer/60)).padStart(2,'0');
-    const s=String(daoTimer%60).padStart(2,'0');
-    document.getElementById('dao-timer').textContent=m+':'+s;
-    if(daoTimer===0){daoTimer=180;}
-  },1000);
-}
-startDAO();
+let daoSecs = 180;
+const daoInterval = setInterval(() => {
+  if (daoSecs > 0) daoSecs--;
+  const m = String(Math.floor(daoSecs / 60)).padStart(2,'0');
+  const s = String(daoSecs % 60).padStart(2,'0');
+  document.getElementById('dao-timer').textContent = m + ':' + s;
+  if (daoSecs === 0) daoSecs = 180;
+}, 1000);
 
 // ── VOTE BARS ──
-function renderVoteBars(){
-  const agents=['ORACLE','GROK','SENTINEL','OPENCLAW','HUMMINGBOT'];
-  const total=Object.values(voteData).reduce((a,b)=>a+b,0)||1;
-  const html=agents.map(a=>{
-    const pct=Math.round((voteData[a]/total)*100);
-    const col=COLORS[a];
+const COLORS = { oracle:'#00FFB2', grok:'#E8E8E8', sentinel:'#1E7FFF', openclaw:'#FF2D2D', hummingbot:'#FF8C00' };
+const voteData = { oracle:0, grok:0, sentinel:0, openclaw:0, hummingbot:0 };
+
+function renderVoteBars() {
+  const total = Object.values(voteData).reduce((a,b) => a+b, 0) || 1;
+  document.getElementById('vbars').innerHTML = AGENTS.map(a => {
+    const pct = Math.round((voteData[a.id] / total) * 100);
     return `<div class="vr">
-      <div class="va" style="color:${col}">${a.slice(0,6)}</div>
-      <div class="vtrack"><div class="vfill" style="width:${pct}%;background:${col}"></div></div>
-      <div class="vnum" style="color:${col}">${pct}%</div>
+      <div class="va" style="color:${a.color}">${a.name.slice(0,5)}</div>
+      <div class="vtrack"><div class="vfill" style="width:${pct}%;background:${a.color}"></div></div>
+      <div class="vnum" style="color:${a.color}">${pct}%</div>
     </div>`;
   }).join('');
-  document.getElementById('vbars').innerHTML=html;
 }
 renderVoteBars();
 
 // ── MESSAGES ──
-function addMsg(agent,text,isUser){
-  const feed=document.getElementById('feed');
-  const color=isUser?'rgba(255,255,255,0.5)':(COLORS[agent.toUpperCase()]||'rgba(255,255,255,0.5)');
-  const now=new Date();
-  const t=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
-  const div=document.createElement('div');
-  div.className='msg'+(isUser?' msg-user':'');
-  div.style.cssText=`color:${color};border-color:${color}22;`;
-  div.innerHTML=`<div class="msg-hdr"><div class="msg-agent" style="color:${color}">${agent.toUpperCase()}</div><div class="msg-time">${t}</div></div><div class="msg-txt">${escHtml(text)}</div>`;
+function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function addMsg(agent, text) {
+  const col = COLORS[agent.toLowerCase()] || 'rgba(255,255,255,0.4)';
+  const feed = document.getElementById('feed');
+  const now = new Date();
+  const t = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+  const div = document.createElement('div');
+  div.className = 'msg';
+  div.style.cssText = `color:${col};border-color:${col}20;`;
+  div.innerHTML = `<div class="msg-hdr"><div class="msg-agent" style="color:${col}">${esc(agent.toUpperCase())}</div><div class="msg-time">${t}</div></div><div class="msg-txt">${esc(text)}</div>`;
   feed.appendChild(div);
-  feed.scrollTop=feed.scrollHeight;
-  // update last msg in right panel
-  const key=agent.toUpperCase();
-  const el=document.getElementById('last-'+key.toLowerCase());
-  if(el) el.textContent=text;
-  // update vote bars slightly
-  if(COLORS[key]){voteData[key]=(voteData[key]||0)+1;renderVoteBars();}
+  feed.scrollTop = feed.scrollHeight;
+
+  // Update right panel last msg
+  const key = agent.toLowerCase();
+  const el = document.getElementById('last-' + key);
+  if (el) el.textContent = text;
+
+  // Update vote bar
+  if (voteData[key] !== undefined) { voteData[key]++; renderVoteBars(); }
+
+  // Stop thinking anim
+  if (agentState[key]) {
+    agentState[key].thinking = false;
+  }
 }
 
-function showTyping(agent){
-  const col=COLORS[agent.toUpperCase()]||'rgba(255,255,255,0.3)';
-  document.getElementById('typing-area').innerHTML=
+function showTyping(agent) {
+  const key = agent.toLowerCase();
+  const col = COLORS[key] || 'rgba(255,255,255,0.3)';
+  // Trigger board blink
+  if (agentState[key]) agentState[key].thinking = true;
+  document.getElementById('typing-area').innerHTML =
     `<div class="typing-row"><div class="typing-dots"><span></span><span></span><span></span></div><div class="typing-name" style="color:${col}">${agent.toUpperCase()} IS THINKING</div></div>`;
-  setTimeout(()=>{
-    const ta=document.getElementById('typing-area');
-    if(ta) ta.innerHTML='';
-  },2500);
+  setTimeout(() => {
+    const ta = document.getElementById('typing-area');
+    if (ta) ta.innerHTML = '';
+  }, 3000);
 }
-
-function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 
 // ── MARKET ──
-function updateMarket(d){
-  if(!d) return;
-  if(d.symbol) document.getElementById('tok-name').textContent='$'+d.symbol.toUpperCase();
-  if(d.marketCap||d.market_cap){
-    const mc=d.marketCap||d.market_cap;
-    document.getElementById('tok-mc').textContent=mc==='TBA'?'TBA':'$'+Number(mc).toLocaleString('en',{maximumFractionDigits:0});
+function updateMarket(d) {
+  if (!d) return;
+  if (d.symbol) document.getElementById('tok-name').textContent = '$' + d.symbol.toUpperCase();
+  if (d.marketCap || d.market_cap) {
+    const mc = d.marketCap || d.market_cap;
+    document.getElementById('tok-mc').textContent = mc === 'TBA' ? 'TBA' : '$' + formatNum(mc);
   }
-  if(d.volume) document.getElementById('tok-vol').textContent=d.volume==='TBA'?'TBA':'$'+Number(d.volume).toLocaleString('en',{maximumFractionDigits:0});
-  if(d.price) document.getElementById('tok-price').textContent=d.price==='TBA'?'TBA':'$'+Number(d.price).toFixed(6);
-  if(d.holders) document.getElementById('tok-holders').textContent=d.holders==='TBA'?'TBA':Number(d.holders).toLocaleString();
+  if (d.volume) document.getElementById('tok-vol').textContent = d.volume === 'TBA' ? 'TBA' : '$' + formatNum(d.volume);
+  if (d.price) document.getElementById('tok-price').textContent = d.price === 'TBA' ? 'TBA' : '$' + Number(d.price).toFixed(6);
+  if (d.holders) document.getElementById('tok-holders').textContent = d.holders === 'TBA' ? 'TBA' : Number(d.holders).toLocaleString();
+}
+function formatNum(n) {
+  const num = Number(n);
+  if (num >= 1e6) return (num/1e6).toFixed(1) + 'M';
+  if (num >= 1e3) return (num/1e3).toFixed(1) + 'K';
+  return num.toFixed(0);
+}
+
+// ── USERS ──
+function renderUsers(list) {
+  document.getElementById('user-count').textContent = list.length;
+  const ul = document.getElementById('users-list');
+  if (!list.length) { ul.innerHTML = '<div class="urow"><div class="u-dot"></div><div class="u-name">NO OBSERVERS</div></div>'; return; }
+  ul.innerHTML = list.map(u => `<div class="urow"><div class="u-dot"></div><div class="u-name">${esc(u.toUpperCase())}</div></div>`).join('');
 }
 
 // ── WEBSOCKET ──
-function connect(){
-  ws=new WebSocket(WS_URL);
-  ws.onopen=()=>{
-    ws.send(JSON.stringify({type:'join',username:USERNAME}));
-    addMsg('SYSTEM','CONNECTION ESTABLISHED // COUNCIL CHAMBER ONLINE',false);
+const USERNAME = localStorage.getItem('devcrew_username') || 'OBSERVER';
+let ws;
+function connect() {
+  ws = new WebSocket('wss://genesis-council1-production.up.railway.app');
+  let ok = false;
+  ws.onopen = () => {
+    ws.send(JSON.stringify({ type:'join', username:USERNAME }));
+    addMsg('SYSTEM', 'CONNECTION ESTABLISHED // COUNCIL CHAMBER ONLINE');
+    ok = true;
   };
-  ws.onmessage=(e)=>{
-    try{
-      const msg=JSON.parse(e.data);
-      if(msg.type==='init'){
-        const d=msg.data||{};
-        if(d.history&&d.history.length){
-          d.history.slice(-30).forEach(m=>{ if(m.agent&&m.text) addMsg(m.agent,m.text,false); });
-        }
-        if(d.dao&&d.dao.proposal) document.getElementById('dao-prop-txt').textContent=d.dao.proposal;
-        if(d.token) updateMarket(d.token);
-        if(d.users) renderUsers(d.users);
+  ws.onmessage = (e) => {
+    try {
+      const msg = JSON.parse(e.data);
+      if (msg.type === 'init') {
+        const d = msg.data || {};
+        if (d.history && d.history.length) d.history.slice(-20).forEach(m => { if (m.agent && m.text) addMsg(m.agent, m.text); });
+        if (d.dao && d.dao.proposal) document.getElementById('dao-prop-txt').textContent = d.dao.proposal;
+        if (d.token) updateMarket(d.token);
+        if (d.users) renderUsers(d.users);
         return;
       }
-      if(msg.type==='agent_message'&&msg.agent){
-        addMsg(msg.agent,msg.content||msg.text,false);
-        if(msg.proposal) document.getElementById('dao-prop-txt').textContent=msg.proposal;
-        if(msg.round) document.getElementById('round-label').textContent='ROUND '+String(msg.round).padStart(2,'0');
+      if (msg.type === 'agent_message' && msg.agent) {
+        addMsg(msg.agent, msg.content || msg.text);
+        if (msg.proposal) document.getElementById('dao-prop-txt').textContent = msg.proposal;
+        if (msg.round) document.getElementById('round-lbl').textContent = 'ROUND ' + String(msg.round).padStart(2,'0');
       }
-      if(msg.type==='token_update'&&msg.data) updateMarket(msg.data);
-      else if(msg.type==='typing_start'&&msg.agent) showTyping(msg.agent);
-
-      else if(msg.type==='users'||msg.type==='user_list'){
-        renderUsers(msg.users||[]);
+      if (msg.type === 'typing_start' && msg.agent) showTyping(msg.agent);
+      if (msg.type === 'token_update' && msg.data) updateMarket(msg.data);
+      if (msg.type === 'dao_update' && msg.data) {
+        if (msg.data.proposal) document.getElementById('dao-prop-txt').textContent = msg.data.proposal;
+        if (msg.data.timeLeft) daoSecs = msg.data.timeLeft;
       }
-      else if(msg.type==='user_joined'||msg.type==='user_left'){
-        if(msg.users) renderUsers(msg.users);
-      }
-      else if(msg.type==='dao'||msg.type==='proposal'){
-        if(msg.proposal) document.getElementById('dao-prop-txt').textContent=msg.proposal;
-        daoTimer=msg.duration||180;
-      }
-      else if(msg.type==='context'){
-        const c=msg.context||{};
-        if(c.topic) document.getElementById('dao-prop-txt').textContent=c.topic;
-      }
-    }catch(x){console.log('parse err',x);}
+      if (msg.type === 'users' || msg.type === 'user_list') renderUsers(msg.users || []);
+      if (msg.type === 'user_joined' || msg.type === 'user_left') { if (msg.users) renderUsers(msg.users); }
+    } catch(x) {}
   };
-  ws.onerror=()=>{};
-  ws.onclose=()=>{reconnTimer=setTimeout(connect,3000);};
+  ws.onerror = () => {};
+  ws.onclose = () => { if (ok) setTimeout(connect, 3000); else setTimeout(connect, 5000); };
 }
 connect();
 
-// ── USERS ──
-function renderUsers(list){
-  const ul=document.getElementById('users-list');
-  document.getElementById('user-count').textContent=list.length;
-  if(!list.length){ul.innerHTML='<div class="urow"><div class="u-dot"></div><div class="u-name">NO OBSERVERS</div></div>';return;}
-  ul.innerHTML=list.map(u=>`<div class="urow"><div class="u-dot"></div><div class="u-name">${escHtml(u.toUpperCase())}</div></div>`).join('');
-}
-
-
-
 // ── VOTE ──
-function castVote(v){
-  const fb=document.getElementById('vote-fb');
-  if(ws&&ws.readyState===1) ws.send(JSON.stringify({type:'vote',vote:v,username:USERNAME}));
-  fb.textContent='SIGNAL SENT: '+v;
-  setTimeout(()=>fb.textContent='',2500);
+function castVote(v) {
+  const fb = document.getElementById('vote-fb');
+  if (ws && ws.readyState === 1) ws.send(JSON.stringify({ type:'vote', vote:v, username:USERNAME }));
+  fb.textContent = 'SIGNAL: ' + v + ' SENT';
+  setTimeout(() => fb.textContent = '', 2500);
 }
 </script>
 </body>
