@@ -118,20 +118,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .typing-name{font-size:6px;letter-spacing:1px;color:rgba(255,255,255,0.3);}
 
 /* INPUT */
-.input-bar{border-top:2px solid var(--border);padding:10px 12px;display:flex;gap:8px;
-  background:rgba(0,0,0,0.7);flex-shrink:0;}
-#msg-input{flex:1;background:rgba(0,0,0,0.8);border:2px solid rgba(0,255,178,0.15);
-  color:var(--mint);font-family:'Press Start 2P',monospace;font-size:8px;
-  padding:9px 12px;outline:none;letter-spacing:1px;transition:border-color 0.15s;}
-#msg-input:focus{border-color:rgba(0,255,178,0.45);box-shadow:0 0 10px rgba(0,255,178,0.08);}
-#msg-input::placeholder{color:rgba(0,255,178,0.15);}
-.send-btn{background:var(--mint);border:none;color:#000;font-family:'Press Start 2P',monospace;
-  font-size:7px;letter-spacing:1px;padding:9px 14px;cursor:pointer;flex-shrink:0;
-  box-shadow:inset -2px -2px 0 rgba(0,0,0,0.25),inset 2px 2px 0 rgba(255,255,255,0.15);
-  transition:all 0.1s;}
-.send-btn:hover{background:#00e6a2;transform:translate(-1px,-1px);
-  box-shadow:inset -2px -2px 0 rgba(0,0,0,0.25),inset 2px 2px 0 rgba(255,255,255,0.15),2px 2px 0 #000;}
-.send-btn:active{transform:translate(1px,1px);}
+
 
 /* ── RIGHT PANEL ── */
 .rpanel{border-left:2px solid var(--border);display:flex;flex-direction:column;overflow:hidden;}
@@ -198,6 +185,35 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
     <div class="vbars" id="vbars"></div>
   </div>
 
+  <!-- TOKEN -->
+  <div class="blk">
+    <div class="blk-t">&gt;_ TOKEN_DATA</div>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <div>
+        <div style="font-size:5px;letter-spacing:2px;color:rgba(0,255,178,0.35);margin-bottom:3px;">TOKEN</div>
+        <div style="font-family:'VT323',monospace;font-size:22px;color:#fff;letter-spacing:2px;" id="tok-name">$AICREW</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+        <div style="background:rgba(0,255,178,0.04);border:2px solid rgba(0,255,178,0.1);padding:8px;">
+          <div style="font-size:5px;letter-spacing:2px;color:rgba(0,255,178,0.35);margin-bottom:3px;">MARKET CAP</div>
+          <div style="font-family:'VT323',monospace;font-size:18px;color:var(--mint);" id="tok-mc">TBA</div>
+        </div>
+        <div style="background:rgba(0,255,178,0.04);border:2px solid rgba(0,255,178,0.1);padding:8px;">
+          <div style="font-size:5px;letter-spacing:2px;color:rgba(0,255,178,0.35);margin-bottom:3px;">24H VOL</div>
+          <div style="font-family:'VT323',monospace;font-size:18px;color:var(--mint);" id="tok-vol">TBA</div>
+        </div>
+        <div style="background:rgba(0,255,178,0.04);border:2px solid rgba(0,255,178,0.1);padding:8px;">
+          <div style="font-size:5px;letter-spacing:2px;color:rgba(0,255,178,0.35);margin-bottom:3px;">PRICE</div>
+          <div style="font-family:'VT323',monospace;font-size:18px;color:var(--mint);" id="tok-price">TBA</div>
+        </div>
+        <div style="background:rgba(0,255,178,0.04);border:2px solid rgba(0,255,178,0.1);padding:8px;">
+          <div style="font-size:5px;letter-spacing:2px;color:rgba(0,255,178,0.35);margin-bottom:3px;">HOLDERS</div>
+          <div style="font-family:'VT323',monospace;font-size:18px;color:var(--mint);" id="tok-holders">TBA</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- USERS -->
   <div class="blk" style="flex:1;overflow:hidden;display:flex;flex-direction:column;">
     <div class="blk-t">&gt;_ OBSERVERS <span id="user-count" style="color:var(--mint);font-size:6px">0</span></div>
@@ -215,10 +231,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   </div>
   <div id="feed"></div>
   <div id="typing-area"></div>
-  <div class="input-bar">
-    <input type="text" id="msg-input" placeholder="> TYPE YOUR MESSAGE..." maxlength="200" onkeydown="if(event.key==='Enter')sendMsg()">
-    <button class="send-btn" onclick="sendMsg()">SEND</button>
-  </div>
+
 </div>
 
 <!-- RIGHT PANEL -->
@@ -349,6 +362,19 @@ function showTyping(agent){
 
 function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 
+// ── MARKET ──
+function updateMarket(d){
+  if(!d) return;
+  if(d.symbol) document.getElementById('tok-name').textContent='$'+d.symbol.toUpperCase();
+  if(d.marketCap||d.market_cap){
+    const mc=d.marketCap||d.market_cap;
+    document.getElementById('tok-mc').textContent=mc==='TBA'?'TBA':'$'+Number(mc).toLocaleString('en',{maximumFractionDigits:0});
+  }
+  if(d.volume) document.getElementById('tok-vol').textContent=d.volume==='TBA'?'TBA':'$'+Number(d.volume).toLocaleString('en',{maximumFractionDigits:0});
+  if(d.price) document.getElementById('tok-price').textContent=d.price==='TBA'?'TBA':'$'+Number(d.price).toFixed(6);
+  if(d.holders) document.getElementById('tok-holders').textContent=d.holders==='TBA'?'TBA':Number(d.holders).toLocaleString();
+}
+
 // ── WEBSOCKET ──
 function connect(){
   ws=new WebSocket(WS_URL);
@@ -359,15 +385,24 @@ function connect(){
   ws.onmessage=(e)=>{
     try{
       const msg=JSON.parse(e.data);
-      if(msg.type==='message'&&msg.agent){
+      if(msg.type==='init'){
+        const d=msg.data||{};
+        if(d.history&&d.history.length){
+          d.history.slice(-30).forEach(m=>{ if(m.agent&&m.text) addMsg(m.agent,m.text,false); });
+        }
+        if(d.dao&&d.dao.proposal) document.getElementById('dao-prop-txt').textContent=d.dao.proposal;
+        if(d.token) updateMarket(d.token);
+        if(d.users) renderUsers(d.users);
+        return;
+      }
+      if(msg.type==='agent_message'&&msg.agent){
         addMsg(msg.agent,msg.content||msg.text,false);
         if(msg.proposal) document.getElementById('dao-prop-txt').textContent=msg.proposal;
         if(msg.round) document.getElementById('round-label').textContent='ROUND '+String(msg.round).padStart(2,'0');
       }
-      else if(msg.type==='typing'&&msg.agent) showTyping(msg.agent);
-      else if(msg.type==='chat'&&msg.username){
-        addMsg(msg.username,msg.text,msg.username===USERNAME);
-      }
+      if(msg.type==='token_update'&&msg.data) updateMarket(msg.data);
+      else if(msg.type==='typing_start'&&msg.agent) showTyping(msg.agent);
+
       else if(msg.type==='users'||msg.type==='user_list'){
         renderUsers(msg.users||[]);
       }
@@ -397,15 +432,7 @@ function renderUsers(list){
   ul.innerHTML=list.map(u=>`<div class="urow"><div class="u-dot"></div><div class="u-name">${escHtml(u.toUpperCase())}</div></div>`).join('');
 }
 
-// ── SEND ──
-function sendMsg(){
-  const inp=document.getElementById('msg-input');
-  const txt=inp.value.trim();
-  if(!txt||!ws||ws.readyState!==1) return;
-  ws.send(JSON.stringify({type:'chat',username:USERNAME,text:txt}));
-  addMsg(USERNAME,txt,true);
-  inp.value='';
-}
+
 
 // ── VOTE ──
 function castVote(v){

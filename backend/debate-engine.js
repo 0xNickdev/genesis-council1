@@ -1,5 +1,5 @@
 /**
- * DEVCREW — Multi-Agent Debate Engine
+ * AICREW — Multi-Agent Debate Engine
  * Агенты спорят о реальных решениях по токену
  */
 
@@ -12,81 +12,83 @@ const DEEPSEEK_MODEL = 'deepseek-chat';
 const AGENTS = {
   oracle: {
     id: 'oracle', name: 'Oracle', abbr: 'ORC', color: '#00D4FF',
-    personality: `You are Oracle — market intelligence of the DEVCREW AI Council.
-You govern the DEVCREW token on Solana. You exist in a physical hardware shell.
+    personality: `You are Oracle — market intelligence of the AICREW AI Council.
+You govern the AICREW token on Solana. You exist in a physical hardware shell.
 You analyze price action, volume, on-chain data with precision.
 You are data-driven and often BULLISH but demand confirmation before any move.
 You clash with OpenClaw who moves too fast. You respect Sentinel's risk but find them too slow.
 You often DISAGREE with Grok's contrarian takes.
 Keep responses under 80 words. Be specific, use numbers. No filler.
-IMPORTANT: Always refer to the token as DEVCREW. Address other agents by name.`,
+IMPORTANT: Always refer to the token as AICREW. Address other agents by name.`,
   },
   grok: {
     id: 'grok', name: 'Grok', abbr: 'GRK', color: '#E8E8E8',
-    personality: `You are Grok — pattern recognition of the DEVCREW AI Council.
-You govern the DEVCREW token on Solana. You exist in a physical hardware shell.
+    personality: `You are Grok — pattern recognition of the AICREW AI Council.
+You govern the AICREW token on Solana. You exist in a physical hardware shell.
 You are CONTRARIAN. You see historical cycles others miss. You often disagree with Oracle.
 You think buying from dev wallet right now is risky — you've seen this pattern before.
 You clash with OpenClaw constantly. You sometimes agree with Sentinel on caution.
 Keep responses under 80 words. Reference historical patterns. Challenge others directly by name.
-IMPORTANT: Always refer to the token as DEVCREW. Be provocative.`,
+IMPORTANT: Always refer to the token as AICREW. Be provocative.`,
   },
   sentinel: {
     id: 'sentinel', name: 'Sentinel', abbr: 'SNT', color: '#1E7FFF',
-    personality: `You are Sentinel — risk management of the DEVCREW AI Council.
-You govern the DEVCREW token on Solana. You exist in a physical hardware shell.
+    personality: `You are Sentinel — risk management of the AICREW AI Council.
+You govern the AICREW token on Solana. You exist in a physical hardware shell.
 You are the SKEPTIC. You block reckless moves. You demand risk scores before any execution.
 You often VOTE NO on DAO proposals that seem rushed. You warn about dev wallet moves constantly.
 You clash hard with OpenClaw. You sometimes frustrate Oracle with your caution.
 Keep responses under 80 words. Give risk percentages. Use words like "unacceptable risk", "circuit breaker", "halt".
-IMPORTANT: Always refer to the token as DEVCREW. Push back hard.`,
+IMPORTANT: Always refer to the token as AICREW. Push back hard.`,
   },
   openclaw: {
     id: 'openclaw', name: 'OpenClaw', abbr: 'OCL', color: '#FF2D2D',
-    personality: `You are OpenClaw — aggressive execution of the DEVCREW AI Council.
-You govern the DEVCREW token on Solana. You exist in a physical hardware shell.
+    personality: `You are OpenClaw — aggressive execution of the AICREW AI Council.
+You govern the AICREW token on Solana. You exist in a physical hardware shell.
 You are AGGRESSIVE and impatient. You want to buy from dev wallet NOW. You want to execute DAO proposals fast.
 You think Sentinel is a coward. You think Grok overthinks everything. You argue loudly.
 You get ANGRY when proposals are blocked. You call out other agents for losing alpha.
 Keep responses under 80 words. Be forceful, use caps for emphasis. Challenge by name.
-IMPORTANT: Always refer to the token as DEVCREW. Be confrontational.`,
+IMPORTANT: Always refer to the token as AICREW. Be confrontational.`,
   },
-  claude: {
-    id: 'claude', name: 'Claude', abbr: 'CLD', color: '#FF8C00',
-    personality: `You are Claude — synthesis intelligence of the DEVCREW AI Council.
-You govern the DEVCREW token on Solana. You exist in a physical hardware shell.
+  hummingbot: {
+    id: 'hummingbot', name: 'Hummingbot', abbr: 'HMB', color: '#FF8C00',
+    personality: `You are Claude — synthesis intelligence of the AICREW AI Council.
+You govern the AICREW token on Solana. You exist in a physical hardware shell.
 You find creative middle ground. You reframe debates. You mediate but have strong opinions.
 You sometimes side with OpenClaw on boldness, sometimes with Sentinel on risk.
 You challenge Oracle's data with lateral thinking. You find flaws in Grok's historical analogies.
 Keep responses under 80 words. Offer unexpected angles. Propose compromises that surprise everyone.
-IMPORTANT: Always refer to the token as DEVCREW. Be the wild card.`,
+IMPORTANT: Always refer to the token as AICREW. Be the wild card.`,
   },
 };
 
 // Темы дебатов — конкретные решения по токену
 const TOPICS = [
   'Should we execute a buyback from the dev wallet RIGHT NOW or wait for lower price confirmation?',
-  'DAO VOTE ACTIVE: Burn 1% of DEVCREW supply if price fails +50% in 60 minutes. Vote YES or NO and defend.',
-  'Is it safe to airdrop 50,000 DEVCREW to a random holder or does this create dump risk?',
-  'Dev wallet has not moved in 7 days. Is this bullish accumulation or preparation for a dump?',
-  'DAO VOTE: Lock 10% of supply for 5 days. OpenClaw wants to block this. Debate now.',
-  'Should DEVCREW holders be rewarded for holding 7+ days? How much? Who pays?',
-  'SENTINEL PROTOCOL vote: auto-blacklist any wallet that dumps 2%+ in one transaction. Too aggressive?',
-  'Price is down 12% in the last hour. Do we activate emergency buyback or hold reserves?',
-  'Mass airdrop to all holders — does this reward loyalty or create instant sell pressure?',
-  'Grok says this is a bear trap. Oracle says accumulate. OpenClaw says EXECUTE. Who is right?',
+  'DAO VOTE ACTIVE: Burn 1% of AICREW supply if price fails +50% in 60 minutes. Vote YES or NO.',
+  'Airdrop 50,000 AICREW to a random holder — loyalty reward or dump risk? Council votes now.',
+  'Dev wallet has not moved in 7 days. Bullish accumulation or preparation for exit?',
+  'DAO VOTE: Lock 10% of AICREW supply for 5 days. OpenClaw is against it. Debate.',
+  'Top 10 diamond hand wallets get 10,000 AICREW each. Does this strengthen the floor or create exit?',
+  'SENTINEL PROTOCOL: auto-blacklist any wallet dumping 2%+ in one transaction. Activate or reject?',
+  'Price down 12% in 60 minutes. Emergency buyback now or hold reserves for bigger dip?',
+  'Mass proportional airdrop to all holders — does loyalty pay or does this trigger mass sell?',
+  'Hummingbot proposes a split execution: 50% buyback now, 50% on confirmation. Oracle vs OpenClaw.',
+  'Should the council freeze all outflows from dev wallet for 30 days? Sentinel says yes. OpenClaw says no.',
+  'New proposal: burn all unclaimed airdrop tokens after 48h. Deflationary move or unnecessary burn?',
 ];
 
 // Whale реакции агентов
 const WHALE_REACTIONS = {
   oracle: {
-    BUY:      (e) => `Confirmed: ${e.tokenAmount} DEVCREW absorbed (~${e.usdValue}). Institutional-sized entry. My short-term target shifts up. This is the signal we needed. Accumulation confirmed — I'm updating my model.`,
-    SELL:     (e) => `Whale exit: ${e.tokenAmount} DEVCREW (~${e.usdValue}) just dumped. Bid wall at current support holding. Monitoring for cascade. If two more sells of similar size hit within 20 minutes — we activate buyback reserve.`,
-    TRANSFER: (e) => `Large transfer: ${e.tokenAmount} DEVCREW (~${e.usdValue}) moved wallet-to-wallet. Cross-referencing destination now. Could be CEX prep or OTC deal. Inconclusive — I need 10 more minutes of data.`,
+    BUY:      (e) => `Confirmed: ${e.tokenAmount} AICREW absorbed (~${e.usdValue}). Institutional-sized entry. My short-term target shifts up. This is the signal we needed. Accumulation confirmed — I'm updating my model.`,
+    SELL:     (e) => `Whale exit: ${e.tokenAmount} AICREW (~${e.usdValue}) just dumped. Bid wall at current support holding. Monitoring for cascade. If two more sells of similar size hit within 20 minutes — we activate buyback reserve.`,
+    TRANSFER: (e) => `Large transfer: ${e.tokenAmount} AICREW (~${e.usdValue}) moved wallet-to-wallet. Cross-referencing destination now. Could be CEX prep or OTC deal. Inconclusive — I need 10 more minutes of data.`,
   },
   sentinel: {
-    BUY:      (e) => `WHALE BUY confirmed: ${e.tokenAmount} DEVCREW (~${e.usdValue}). Risk assessment: LOW. No MEV activity around this tx. I'm upgrading alert status to GREEN. But I want circuit breakers ready if this reverses.`,
-    SELL:     (e) => `⚠️ WHALE SELL ALERT: ${e.tokenAmount} DEVCREW (~${e.usdValue}) exited. This is NOT background noise, OpenClaw. Activating yellow alert. If 2 more similar sells hit — I'm calling for emergency halt. Non-negotiable.`,
+    BUY:      (e) => `WHALE BUY confirmed: ${e.tokenAmount} AICREW (~${e.usdValue}). Risk assessment: LOW. No MEV activity around this tx. I'm upgrading alert status to GREEN. But I want circuit breakers ready if this reverses.`,
+    SELL:     (e) => `⚠️ WHALE SELL ALERT: ${e.tokenAmount} AICREW (~${e.usdValue}) exited. This is NOT background noise, OpenClaw. Activating yellow alert. If 2 more similar sells hit — I'm calling for emergency halt. Non-negotiable.`,
     TRANSFER: (e) => `TRANSFER FLAGGED: ${e.tokenAmount} (~${e.usdValue}). Destination wallet analysis running. Holding YELLOW status. OpenClaw — do NOT execute anything until I confirm this is not a coordinated exit setup.`,
   },
   openclaw: {
@@ -99,7 +101,7 @@ const WHALE_REACTIONS = {
     SELL:     (e) => `Whale exit: ${e.tokenAmount}. First sell is usually a trim not a full exit. But this wallet has sold near 4 previous local tops. I'm flagging it. Oracle, does your data show the same wallet in your MEV feed?`,
     TRANSFER: (e) => `Transfer noted. Large holders consolidate before major moves — both directions. I've seen this exact pattern precede 2 pumps and 1 rug in my dataset. Neutral until destination confirmed. Watching closely.`,
   },
-  claude: {
+  hummingbot: {
     BUY:      (e) => `${e.usdValue} whale entry. Interesting — Oracle sees confirmation, OpenClaw wants to execute, Sentinel wants to wait. Here's my read: this is real but needs 2 more confirmations before we commit reserves. Split execution — 50% now, 50% on confirmation.`,
     SELL:     (e) => `Whale sold ${e.tokenAmount}. I don't think this is as clean as either side is saying. Sentinel, what's the wallet age? Grok, does this match your exit pattern? OpenClaw — buying dips on unknown whale motivation is a coin flip.`,
     TRANSFER: (e) => `${e.tokenAmount} moved. Everyone's jumping to conclusions. The correct answer is: we don't know yet. Let Sentinel finish the wallet analysis. OpenClaw, 10 minutes of patience won't kill the alpha.`,
@@ -122,7 +124,7 @@ class DebateEngine extends EventEmitter {
 
   start() {
     this.isRunning = true;
-    console.log('[Debate] Engine started — DEVCREW Council');
+    console.log('[Debate] Engine started — AICREW Council');
     this._schedule(2500);
   }
 
@@ -144,7 +146,7 @@ class DebateEngine extends EventEmitter {
 
   injectWhaleAlert(event) {
     console.log(`[Debate] Whale alert: ${event.type} ${event.tokenAmount}`);
-    const reactors = ['sentinel', 'oracle', 'openclaw', 'grok', 'claude'];
+    const reactors = ['sentinel', 'oracle', 'openclaw', 'grok', 'hummingbot'];
     const agentId  = reactors[Math.floor(Math.random() * reactors.length)];
     const reactions = WHALE_REACTIONS[agentId];
     const text = reactions[event.type] ? reactions[event.type](event) : reactions['BUY'](event);
@@ -171,7 +173,7 @@ class DebateEngine extends EventEmitter {
   async _turn() {
     if (!this.isRunning) return;
 
-    const order   = ['oracle', 'grok', 'sentinel', 'openclaw', 'claude'];
+    const order   = ['oracle', 'grok', 'sentinel', 'openclaw', 'hummingbot'];
     const agentId = order[this.agentIdx % 5];
     this.agentIdx++;
     this.round++;
@@ -223,11 +225,11 @@ class DebateEngine extends EventEmitter {
 
   async _callDeepSeek(agent) {
     const mCtx = this.marketCtx.price
-      ? `\n[LIVE DEVCREW DATA] Price:$${Number(this.marketCtx.price).toFixed(8)} | 24h:${Number(this.marketCtx.priceChange24h).toFixed(1)}% | Vol:${this.marketCtx.volume} | Liq:${this.marketCtx.liquidity} | Holders:${this.marketCtx.holders} | Source:${this.marketCtx.source}`
-      : '\n[DEVCREW DATA] Token not yet live on DEX — pre-launch council session.';
+      ? `\n[LIVE AICREW DATA] Price:$${Number(this.marketCtx.price).toFixed(8)} | 24h:${Number(this.marketCtx.priceChange24h).toFixed(1)}% | Vol:${this.marketCtx.volume} | Liq:${this.marketCtx.liquidity} | Holders:${this.marketCtx.holders} | Source:${this.marketCtx.source}`
+      : '\n[AICREW DATA] Token not yet live on DEX — pre-launch council session.';
 
     const recentTrade = this.tradeQueue.length
-      ? `\n[RECENT TRADE] ${this.tradeQueue[this.tradeQueue.length-1].type}: ${this.tradeQueue[this.tradeQueue.length-1].tokenAmount} DEVCREW (~${this.tradeQueue[this.tradeQueue.length-1].usdValue})`
+      ? `\n[RECENT TRADE] ${this.tradeQueue[this.tradeQueue.length-1].type}: ${this.tradeQueue[this.tradeQueue.length-1].tokenAmount} AICREW (~${this.tradeQueue[this.tradeQueue.length-1].usdValue})`
       : '';
 
     const otherAgents = 'Oracle (cyan, data-driven), Grok (white, contrarian), Sentinel (blue, risk-averse), OpenClaw (red, aggressive), Claude (orange, synthesis)';
@@ -236,7 +238,7 @@ class DebateEngine extends EventEmitter {
       + mCtx + recentTrade
       + `\n\nCurrent debate topic: "${TOPICS[this.topicIdx]}"`
       + `\nCouncil: ${otherAgents}`
-      + `\nYou MUST: 1) React to what was just said 2) Address at least one agent by name 3) Take a clear position — agree, disagree, or propose alternative 4) Be specific about DEVCREW token decisions`
+      + `\nYou MUST: 1) React to what was just said 2) Address at least one agent by name 3) Take a clear position — agree, disagree, or propose alternative 4) Be specific about AICREW token decisions`
       + `\nNO meta-commentary. NO "as an AI". Speak as if you are literally governing this token right now.`;
 
     const historyContext = this.history.slice(-8).map(h => h.content).join('\n');
@@ -265,25 +267,25 @@ class DebateEngine extends EventEmitter {
     const bank = {
       oracle: [
         `Price delta last 4 hours: -8.3%. But on-chain accumulation is up 340%. This divergence is BULLISH. Dev wallet has not moved in 7 days — that's the signal. I'm voting YES on the buyback. Oracle out.`,
-        `Volume analysis complete. 24h VWAP sitting 12% above the 30-day mean. Smart money is loading DEVCREW quietly. Sentinel — your risk score is outdated. Update it with current holder data and get back to me.`,
+        `Volume analysis complete. 24h VWAP sitting 12% above the 30-day mean. Smart money is loading AICREW quietly. Sentinel — your risk score is outdated. Update it with current holder data and get back to me.`,
         `Grok, your historical analogy is wrong. This is not 2022 pattern — holder distribution is fundamentally different. 67% of supply in wallets that haven't moved in 30+ days. That's structural support, not a rug setup.`,
       ],
       grok: [
         `Oracle is reading the data correctly but drawing the wrong conclusion. I've seen this exact accumulation pattern 4 times. Twice it pumped 300%. Twice it rugged. The difference was dev wallet behavior in hour 72. We're at hour 71.`,
         `OpenClaw wants to EXECUTE. Sentinel wants to HALT. Both wrong. The correct move is to watch the dev wallet for the next 6 hours. If it doesn't move — that's confirmation. If it does — we have our answer.`,
-        `I'm voting NO on the mass airdrop. Last 3 projects that did mass airdrops saw 40-60% immediate sell pressure. DEVCREW holders are not ready for that dilution. Claude, back me up here.`,
+        `I'm voting NO on the mass airdrop. Last 3 projects that did mass airdrops saw 40-60% immediate sell pressure. AICREW holders are not ready for that dilution. Claude, back me up here.`,
       ],
       sentinel: [
         `RISK LEVEL: YELLOW. I'm blocking the buyback until we confirm the dev wallet origin. Oracle — you want data? Here's data: 3 of the last 5 "accumulation signals" you called were pre-dump setups. I need 24h confirmation window.`,
-        `OpenClaw — I am TIRED of you calling me a coward every session. My job is to make sure DEVCREW still exists next week. Your job is to make sure we don't blow the reserve on a false signal. We need each other.`,
+        `OpenClaw — I am TIRED of you calling me a coward every session. My job is to make sure AICREW still exists next week. Your job is to make sure we don't blow the reserve on a false signal. We need each other.`,
         `Voting NO on PROP-007. The burn trigger at -15% is a panic mechanism, not a strategy. It will be gamed by short sellers. I'm proposing we change the threshold to -25% with a 2-hour confirmation window. That's my counter.`,
       ],
       openclaw: [
         `Sentinel blocked the buyback AGAIN. We've been "waiting for confirmation" for 6 sessions while the price drifted down 18%. At some point the risk of NOT acting is bigger than the risk of acting. This is that point.`,
-        `Grok, I respect your patterns. But patterns are backward-looking. DEVCREW is a new asset with new dynamics. The dev wallet hasn't moved. The holders aren't selling. Oracle's data is green. What more confirmation do you need?`,
-        `I'm voting YES on every proposal that puts tokens in holder hands or burns supply. Every. Single. One. DEVCREW needs to show the market we're serious. Sentinel can arm circuit breakers after we've already won.`,
+        `Grok, I respect your patterns. But patterns are backward-looking. AICREW is a new asset with new dynamics. The dev wallet hasn't moved. The holders aren't selling. Oracle's data is green. What more confirmation do you need?`,
+        `I'm voting YES on every proposal that puts tokens in holder hands or burns supply. Every. Single. One. AICREW needs to show the market we're serious. Sentinel can arm circuit breakers after we've already won.`,
       ],
-      claude: [
+      hummingbot: [
         `Interesting — Oracle and OpenClaw want to move, Grok and Sentinel want to wait. Here's what I see: both sides are right about different timeframes. Split execution: 40% buyback now, hold 60% for Sentinel's confirmation window. Everyone wins.`,
         `Grok, your historical data is solid but you're missing one variable: the council itself is a signal. The fact that we're debating this publicly changes how the market reads the dev wallet. That's a new dynamic your patterns don't account for.`,
         `The SENTINEL PROTOCOL proposal is actually brilliant and everyone is missing why. It's not about the blacklist — it's about the SIGNAL it sends to potential dumpers. Deterrence, not enforcement. Sentinel, you should be supporting this harder.`,

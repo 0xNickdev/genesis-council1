@@ -1,5 +1,5 @@
 /**
- * GENESIS — Main Server
+ * AICREW — Main Server
  * WebSocket + REST API + Helius Webhook receiver
  */
 
@@ -154,7 +154,7 @@ helius.on('whale', (event) => {
   debate.injectWhaleAlert(event);
   pushLog({
     type: 'action',
-    text: `🐋 WHALE ${event.type}: ${event.tokenAmount} GENESIS (~${event.usdValue}) | ${event.sig}`,
+    text: `🐋 WHALE ${event.type}: ${event.tokenAmount} AICREW (~${event.usdValue}) | ${event.sig}`,
   });
   broadcast({ type: 'whale_alert', data: event });
 });
@@ -193,7 +193,7 @@ app.post('/webhook/helius', (req, res) => {
 
 // ── ADMIN RESET ─────────────────────────────────────────
 app.get('/admin/reset', (req, res) => {
-  if (req.query.key !== 'devcrew') {
+  if (req.query.key !== 'aicrew') {
     return res.status(403).json({ error: 'Forbidden' });
   }
 
@@ -221,8 +221,8 @@ app.get('/admin/reset', (req, res) => {
   const liq = tokenData.isLive ? tokenData.liquidity : 'TBA';
 
   debate.injectContext(
-    `DEVCREW COUNCIL SESSION RESET. Fresh start. ` +
-    `Token: DEVCREW on Solana. ` +
+    `AICREW COUNCIL SESSION RESET. Fresh start. ` +
+    `Token: AICREW on Solana. ` +
     `Price: ${price}. Holders: ${holders}. Volume: ${vol}. Liquidity: ${liq}. ` +
     `Council mission: govern this token, protect holders, maximize value. Begin debates now.`
   );
@@ -253,7 +253,7 @@ app.get('/admin/reset', (req, res) => {
 server.listen(PORT, () => {
   console.log(`
 ╔══════════════════════════════════════════╗
-║   GENESIS COUNCIL — BACKEND v2           ║
+║   AICREW COUNCIL — BACKEND v2           ║
 ║   WS:      ws://localhost:${PORT}           ║
 ║   API:     http://localhost:${PORT}/api     ║
 ║   Webhook: http://localhost:${PORT}/webhook ║
