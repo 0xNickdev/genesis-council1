@@ -3,511 +3,549 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DEVCREW — Autonomous AI Council</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+<title>AICREW</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
 <style>
-:root {
-  --oracle:   #00D4FF;
-  --grok:     #E8E8E8;
-  --sentinel: #1E7FFF;
-  --openclaw: #FF2D2D;
-  --claude:   #FF8C00;
-  --bg:       #030710;
-  --border:   rgba(0,212,255,0.18);
-  --soft:     rgba(255,255,255,0.07);
+:root{
+  --mint:#00FFB2;--white:#E8E8E8;--blue:#1E7FFF;--red:#FF2D2D;--orange:#FF8C00;
+  --bg:#03030A;
 }
-*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-html, body { width:100%; height:100%; background:var(--bg); color:#fff; font-family:'Syne',sans-serif; overflow:hidden; }
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{width:100%;background:var(--bg);color:#fff;font-family:'Press Start 2P',monospace;overflow-x:hidden;cursor:none;}
 
-/* UNICORN FULL BG */
-#us-wrap {
-  position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden;
-}
-#us-wrap > div { width:100% !important; height:100% !important; }
+/* ── CUSTOM CURSOR ── */
+#cursor{position:fixed;width:12px;height:12px;background:var(--mint);z-index:9999;pointer-events:none;transform:translate(-6px,-6px);mix-blend-mode:difference;transition:transform 0.05s;}
+#cursor-trail{position:fixed;width:4px;height:4px;background:var(--mint);z-index:9998;pointer-events:none;opacity:0.4;transform:translate(-2px,-2px);transition:left 0.12s,top 0.12s;}
 
-/* HIVEMIND CANVAS ON TOP */
-#hive-canvas { position:fixed; inset:0; z-index:1; pointer-events:none; }
+/* ── GRID ── */
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(rgba(0,255,178,0.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,255,178,0.025) 1px,transparent 1px);
+  background-size:32px 32px;}
 
-/* VIGNETTE */
-.vig { position:fixed; inset:0; z-index:2; pointer-events:none;
-  background:radial-gradient(ellipse 70% 70% at 50% 45%, transparent 30%, rgba(3,7,16,0.75) 100%); }
+/* ── CRT ── */
+body::after{content:'';position:fixed;inset:0;z-index:998;pointer-events:none;
+  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.06) 3px,rgba(0,0,0,0.06) 4px);}
 
-/* SCANLINE */
-.scan { position:fixed; left:0; right:0; height:1px; z-index:3; pointer-events:none;
-  background:linear-gradient(90deg,transparent,rgba(0,212,255,0.35),transparent);
-  animation:scanAnim 12s linear infinite; }
-@keyframes scanAnim { from{top:-1px} to{top:100vh} }
+/* ── SCAN LINE ── */
+#scan{position:fixed;left:0;right:0;height:3px;z-index:997;pointer-events:none;
+  background:linear-gradient(90deg,transparent 0%,rgba(0,255,178,0.4) 50%,transparent 100%);
+  animation:scanMove 10s linear infinite;}
+@keyframes scanMove{from{top:-3px}to{top:100vh}}
 
-/* ── TOP BAR ── */
-.topbar {
-  position:fixed; top:0; left:0; right:0; z-index:20; height:50px;
-  display:flex; align-items:center; justify-content:space-between; padding:0 32px;
-  border-bottom:1px solid var(--soft);
-  background:rgba(3,7,16,0.55); backdrop-filter:blur(16px);
-  animation:slideDown 0.8s cubic-bezier(0.16,1,0.3,1) both;
+/* ── ROBOT BG ── */
+#robot-stage{position:fixed;inset:0;z-index:1;display:flex;align-items:center;justify-content:center;pointer-events:none;}
+.rbot{position:absolute;opacity:0;image-rendering:pixelated;}
+.rbot.in{animation:rbIn 4s ease forwards;}
+.rbot.out{animation:rbOut 1.5s ease forwards;}
+@keyframes rbIn{
+  0%  {opacity:0;transform:scale(0.88) translateY(20px);filter:blur(12px);}
+  30% {opacity:0.04;filter:blur(6px);}
+  70% {opacity:0.09;transform:scale(1.01);filter:blur(1px);}
+  100%{opacity:0.11;transform:scale(1);filter:blur(0);}
 }
-@keyframes slideDown { from{opacity:0;transform:translateY(-100%)} to{opacity:1;transform:translateY(0)} }
-.tb-logo { font-family:'Bebas Neue',sans-serif; font-size:21px; letter-spacing:5px;
-  background:linear-gradient(90deg,var(--oracle),#fff 55%,var(--sentinel));
-  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-.tb-agents { display:flex; gap:18px; }
-.tba { display:flex; align-items:center; gap:5px; font-family:'Space Mono',monospace;
-  font-size:9px; letter-spacing:2px; text-transform:uppercase; opacity:0.75; }
-.tba-dot { width:5px; height:5px; border-radius:50%; animation:blink 2s infinite; }
-.tb-right { display:flex; align-items:center; gap:14px; }
-.live { display:flex; align-items:center; gap:6px; font-family:'Space Mono',monospace;
-  font-size:9px; letter-spacing:2px; color:#22ff88; text-transform:uppercase; }
-.live::before { content:''; width:6px; height:6px; border-radius:50%;
-  background:#22ff88; box-shadow:0 0 8px #22ff88; animation:blink 1.5s infinite; }
-#clk { font-family:'Space Mono',monospace; font-size:10px; color:rgba(255,255,255,0.32); }
+@keyframes rbOut{
+  0%  {opacity:0.11;}
+  100%{opacity:0;transform:scale(1.06);filter:blur(10px);}
+}
+.rbot canvas{display:block;}
 
-/* ── CENTER HERO ── */
-.page { position:relative; z-index:10; width:100vw; height:100vh;
-  display:flex; flex-direction:column; align-items:center; justify-content:center; }
+/* ── TOPBAR ── */
+#topbar{
+  position:fixed;top:0;left:0;right:0;z-index:500;height:48px;
+  display:flex;align-items:center;justify-content:space-between;padding:0 20px;
+  background:rgba(3,3,10,0.96);border-bottom:2px solid var(--mint);
+  box-shadow:0 0 30px rgba(0,255,178,0.12);}
+.logo{font-size:13px;letter-spacing:5px;color:var(--mint);
+  text-shadow:0 0 8px var(--mint),0 0 24px rgba(0,255,178,0.3);
+  animation:glow 3s ease infinite alternate;}
+@keyframes glow{from{text-shadow:0 0 8px var(--mint)}to{text-shadow:0 0 20px var(--mint),0 0 40px rgba(0,255,178,0.4)}}
 
-.hero { text-align:center; }
-.hero-eye { font-family:'Space Mono',monospace; font-size:10px; letter-spacing:6px;
-  color:var(--oracle); text-transform:uppercase; margin-bottom:20px; opacity:0.85;
-  animation:fadeUp 1s 0.3s both; }
-.hero-title {
-  font-family:'Bebas Neue',sans-serif;
-  font-size:clamp(88px,13vw,175px);
-  line-height:0.88; letter-spacing:-2px; position:relative; display:inline-block;
-  background:linear-gradient(155deg,#ffffff 0%,var(--oracle) 35%,#ffffff 52%,var(--sentinel) 78%,#ffffff 100%);
-  background-size:300% 300%;
-  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
-  animation:fadeUp 1s 0.2s both, shimmer 7s ease infinite;
-}
-.hero-title::before {
-  content:'DEVCREW'; position:absolute; inset:0;
-  background:linear-gradient(135deg,var(--oracle),var(--sentinel));
-  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
-  filter:blur(30px); opacity:0.22; z-index:-1;
-}
-.hero-tag { font-family:'Space Mono',monospace; font-size:11px; letter-spacing:3px;
-  color:rgba(255,255,255,0.28); text-transform:uppercase; margin-top:14px;
-  animation:fadeUp 1s 0.4s both; }
+#ca-box{display:flex;align-items:center;gap:6px;cursor:pointer;padding:7px 11px;
+  border:2px solid rgba(0,255,178,0.2);background:rgba(0,255,178,0.03);position:relative;
+  transition:all 0.1s;}
+#ca-box:hover{border-color:var(--mint);background:rgba(0,255,178,0.08);box-shadow:0 0 16px rgba(0,255,178,0.15);}
+.ca-badge{background:var(--mint);color:#000;font-size:6px;letter-spacing:1px;padding:2px 5px;}
+#ca-val{font-size:7px;letter-spacing:1px;color:rgba(255,255,255,0.4);}
+#ca-box:hover #ca-val{color:var(--mint);}
+.ca-tip{position:absolute;top:-30px;left:50%;transform:translateX(-50%);
+  background:var(--mint);color:#000;font-size:6px;padding:3px 7px;letter-spacing:1px;
+  white-space:nowrap;opacity:0;pointer-events:none;transition:opacity 0.15s;}
+#ca-box.done .ca-tip{opacity:1;}
 
-/* Agent pills */
-.agent-row { display:flex; gap:10px; margin-top:30px; justify-content:center;
-  animation:fadeUp 1s 0.55s both; }
-.ap { display:flex; align-items:center; gap:6px; padding:7px 16px; border-radius:100px;
-  border:1px solid; font-family:'Space Mono',monospace; font-size:9px; letter-spacing:2px;
-  text-transform:uppercase; backdrop-filter:blur(10px); transition:transform 0.3s; }
-.ap:hover { transform:translateY(-2px); }
-.ap-dot { width:5px; height:5px; border-radius:50%; animation:blink 2s infinite; }
-.ap-ora { border-color:rgba(0,212,255,0.35); color:var(--oracle); background:rgba(0,212,255,0.05); }
-.ap-grk { border-color:rgba(232,232,232,0.22); color:var(--grok); background:rgba(232,232,232,0.04); }
-.ap-sen { border-color:rgba(30,127,255,0.35); color:var(--sentinel); background:rgba(30,127,255,0.05); }
-.ap-ocl { border-color:rgba(255,45,45,0.35); color:var(--openclaw); background:rgba(255,45,45,0.05); }
-.ap-cld { border-color:rgba(255,140,0,0.35); color:var(--claude); background:rgba(255,140,0,0.05); }
+.tb-r{display:flex;align-items:center;gap:12px;}
+.live-wrap{display:flex;align-items:center;gap:5px;font-size:6px;letter-spacing:3px;color:var(--mint);}
+.led{width:8px;height:8px;background:var(--mint);box-shadow:0 0 8px var(--mint);animation:ledBlink 1s steps(1) infinite;}
+@keyframes ledBlink{0%,49%{opacity:1}50%,100%{opacity:0}}
+#clk{font-size:7px;color:rgba(255,255,255,0.25);letter-spacing:1px;}
 
-/* LOGIN BUTTON */
-.login-wrap { margin-top:42px; animation:fadeUp 1s 0.7s both; }
-.btn-enter {
-  position:relative; padding:16px 56px;
-  background:transparent; border:1px solid var(--border); border-radius:6px;
-  color:#fff; font-family:'Syne',sans-serif; font-weight:800; font-size:12px;
-  letter-spacing:4px; text-transform:uppercase; cursor:pointer;
-  backdrop-filter:blur(12px); overflow:hidden; transition:all 0.4s;
-}
-.btn-enter::before {
-  content:''; position:absolute; inset:0;
-  background:linear-gradient(135deg,var(--oracle),var(--sentinel));
-  opacity:0; transition:opacity 0.4s; z-index:0;
-}
-.btn-enter::after {
-  content:''; position:absolute; top:0; left:-100%; width:100%; height:100%;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.14),transparent);
-  transition:left 0.55s; z-index:1;
-}
-.btn-enter:hover::before { opacity:1; }
-.btn-enter:hover::after { left:100%; }
-.btn-enter:hover { box-shadow:0 0 40px rgba(0,212,255,0.45),0 0 80px rgba(0,212,255,0.12); transform:translateY(-2px); }
-.btn-enter span { position:relative; z-index:2; }
+/* ── SECTIONS ── */
+section{position:relative;z-index:10;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 24px 60px;}
 
-/* ── BOTTOM DOCK ── */
-.dock {
-  position:fixed; bottom:30px; left:0; right:0;
-  z-index:20; display:flex; align-items:center; justify-content:center; gap:14px;
-  animation:fadeUp 1s 1s both; pointer-events:none;
-}
-.dock > * { pointer-events:all; }
-.dbtn {
-  display:flex; align-items:center; gap:10px; padding:13px 30px;
-  border-radius:100px; border:1px solid rgba(0,212,255,0.22);
-  background:rgba(3,7,16,0.75); backdrop-filter:blur(24px);
-  color:rgba(255,255,255,0.6); font-family:'Space Mono',monospace; font-size:10px;
-  letter-spacing:2.5px; text-transform:uppercase; cursor:pointer; transition:all 0.35s;
-  position:relative; text-decoration:none; white-space:nowrap;
-  box-shadow:0 4px 24px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.03) inset;
-}
-.dbtn-ca:hover {
-  border-color:rgba(0,212,255,0.6); color:var(--oracle);
-  background:rgba(0,212,255,0.07);
-  box-shadow:0 0 40px rgba(0,212,255,0.2), 0 4px 24px rgba(0,0,0,0.4);
-  transform:translateY(-2px);
-}
-.dbtn-x:hover {
-  border-color:rgba(255,255,255,0.3); color:#fff;
-  background:rgba(255,255,255,0.07);
-  box-shadow:0 0 20px rgba(255,255,255,0.06), 0 4px 24px rgba(0,0,0,0.4);
-  transform:translateY(-2px);
-}
-.dtag {
-  font-size:7px; letter-spacing:1px; padding:2px 8px; border-radius:4px;
-  background:rgba(0,212,255,0.12); color:var(--oracle);
-  border:1px solid rgba(0,212,255,0.3); font-weight:700;
-}
-.soon-tag {
-  font-size:7px; letter-spacing:1px; padding:2px 8px; border-radius:4px;
-  background:rgba(255,255,255,0.05); color:rgba(255,255,255,0.35);
-  border:1px solid rgba(255,255,255,0.1); font-weight:700;
-}
-.cfb {
-  position:absolute; top:-40px; left:50%; transform:translateX(-50%);
-  background:var(--oracle); color:#000; font-family:'Space Mono',monospace;
-  font-size:8px; letter-spacing:1px; padding:5px 13px; border-radius:7px;
-  white-space:nowrap; opacity:0; transition:opacity 0.25s; pointer-events:none; font-weight:700;
-}
-.cfb::after {
-  content:''; position:absolute; top:100%; left:50%; transform:translateX(-50%);
-  border:5px solid transparent; border-top-color:var(--oracle);
-}
-.dbtn.copied .cfb { opacity:1; }
+/* ── HERO ── */
+#hero{overflow:hidden;}
+.px-tag{font-size:7px;letter-spacing:5px;color:var(--mint);opacity:0.6;margin-bottom:22px;animation:fadeUp 0.6s 0.2s both;}
+.px-title-wrap{position:relative;margin-bottom:10px;animation:fadeUp 0.6s 0.05s both;}
+.px-title{font-size:clamp(44px,9vw,110px);letter-spacing:6px;color:#fff;line-height:1;display:block;position:relative;
+  text-shadow:4px 4px 0 rgba(0,255,178,0.18);}
+.px-title::after{content:attr(data-txt);position:absolute;left:3px;top:3px;color:var(--mint);opacity:0.12;z-index:-1;}
+.px-sub{font-family:'VT323',monospace;font-size:18px;letter-spacing:3px;color:rgba(255,255,255,0.28);
+  margin-bottom:40px;animation:fadeUp 0.6s 0.3s both;}
+
+/* TYPED */
+#typed-line{font-family:'VT323',monospace;font-size:22px;letter-spacing:1px;
+  color:var(--mint);min-height:28px;margin-bottom:40px;animation:fadeUp 0.6s 0.4s both;}
+#typed-line::after{content:'▮';animation:ledBlink 0.8s steps(1) infinite;margin-left:2px;}
+
+/* ── PX DIVIDER ── */
+.pxdiv{display:flex;align-items:center;gap:0;width:100%;max-width:760px;margin:30px auto;}
+.pxdiv-l{flex:1;height:2px;background:linear-gradient(90deg,transparent,var(--mint));opacity:0.2;}
+.pxdiv-r{flex:1;height:2px;background:linear-gradient(90deg,var(--mint),transparent);opacity:0.2;}
+.pxdiv-c{width:10px;height:10px;background:var(--mint);transform:rotate(45deg);box-shadow:0 0 8px var(--mint);}
+
+/* ── INFO CARDS ── */
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:3px;max-width:760px;width:100%;animation:fadeUp 0.6s 0.5s both;}
+.card{
+  background:rgba(0,0,0,0.6);border:2px solid rgba(0,255,178,0.1);
+  padding:22px 20px;position:relative;overflow:hidden;cursor:default;
+  transition:border-color 0.15s,background 0.15s;}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,currentColor,transparent);opacity:0;}
+.card:hover{border-color:rgba(0,255,178,0.4);background:rgba(0,255,178,0.04);}
+.card:hover::before{opacity:0.5;}
+.card-num{font-size:7px;color:var(--mint);opacity:0.35;margin-bottom:10px;letter-spacing:2px;}
+.card-title{font-size:7px;letter-spacing:2px;color:#fff;margin-bottom:10px;line-height:1.5;}
+.card-body{font-family:'VT323',monospace;font-size:17px;color:rgba(255,255,255,0.38);line-height:1.55;letter-spacing:0.3px;}
+.card-icon{position:absolute;bottom:14px;right:16px;font-size:18px;opacity:0.18;}
+
+/* ── AGENTS SECTION ── */
+#agents-sect{background:rgba(0,0,0,0.3);}
+.agents-title{font-size:9px;letter-spacing:4px;color:var(--mint);margin-bottom:8px;}
+.agents-sub{font-family:'VT323',monospace;font-size:18px;color:rgba(255,255,255,0.25);margin-bottom:36px;letter-spacing:2px;}
+
+.agent-grid{display:flex;flex-direction:column;gap:3px;max-width:680px;width:100%;}
+.agent-row{
+  display:grid;grid-template-columns:140px 80px 1fr auto;align-items:center;
+  gap:16px;padding:12px 16px;border:2px solid rgba(255,255,255,0.06);
+  background:rgba(0,0,0,0.5);cursor:default;transition:all 0.12s;position:relative;overflow:hidden;}
+.agent-row::after{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:currentColor;opacity:0.6;}
+.agent-row:hover{border-color:currentColor;background:rgba(0,0,0,0.7);}
+.ag-name{font-size:7px;letter-spacing:2px;}
+.ag-role{font-family:'VT323',monospace;font-size:14px;color:rgba(255,255,255,0.3);letter-spacing:1px;}
+.ag-desc{font-family:'VT323',monospace;font-size:16px;color:rgba(255,255,255,0.35);line-height:1.4;}
+.ag-dot{width:8px;height:8px;background:currentColor;box-shadow:0 0 8px currentColor;animation:ledBlink 2s steps(1) infinite;}
+
+/* ── HOW IT WORKS ── */
+.steps{display:flex;flex-direction:column;gap:3px;max-width:680px;width:100%;}
+.step{display:flex;align-items:flex-start;gap:16px;padding:16px 18px;border:2px solid rgba(0,255,178,0.07);background:rgba(0,0,0,0.5);transition:all 0.12s;}
+.step:hover{border-color:rgba(0,255,178,0.25);background:rgba(0,255,178,0.03);}
+.step-n{font-size:11px;color:var(--mint);opacity:0.4;flex-shrink:0;margin-top:1px;}
+.step-body{}
+.step-title{font-size:7px;letter-spacing:2px;color:#fff;margin-bottom:6px;line-height:1.5;}
+.step-text{font-family:'VT323',monospace;font-size:17px;color:rgba(255,255,255,0.35);line-height:1.5;}
+
+/* ── DOCK ── */
+#dock{position:fixed;bottom:0;left:0;right:0;z-index:500;
+  display:flex;align-items:stretch;
+  background:rgba(3,3,10,0.97);border-top:2px solid rgba(0,255,178,0.2);
+  box-shadow:0 -8px 40px rgba(0,0,0,0.6);}
+.dk-btn{display:flex;align-items:center;justify-content:center;gap:8px;
+  padding:14px 24px;font-family:'Press Start 2P',monospace;font-size:7px;
+  letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.1s;
+  border:none;text-decoration:none;white-space:nowrap;color:rgba(255,255,255,0.4);
+  background:transparent;}
+.dk-enter{background:var(--mint);color:#000;
+  box-shadow:inset -3px -3px 0 rgba(0,0,0,0.25),inset 3px 3px 0 rgba(255,255,255,0.18);
+  padding:14px 32px;}
+.dk-enter:hover{background:#00e6a2;transform:translate(-1px,-1px);
+  box-shadow:inset -3px -3px 0 rgba(0,0,0,0.25),inset 3px 3px 0 rgba(255,255,255,0.18),2px 2px 0 rgba(0,0,0,0.5);}
+.dk-enter:active{transform:translate(1px,1px);box-shadow:inset 3px 3px 0 rgba(0,0,0,0.3);}
+.dk-sep{width:2px;background:rgba(0,255,178,0.1);}
+.dk-x:hover{color:#fff;background:rgba(255,255,255,0.04);}
 
 /* ── MODAL ── */
-.overlay {
-  position:fixed; inset:0; z-index:100;
-  background:rgba(3,7,16,0.88); backdrop-filter:blur(22px);
-  display:flex; align-items:center; justify-content:center;
-  opacity:0; pointer-events:none; transition:opacity 0.35s;
-}
-.overlay.on { opacity:1; pointer-events:all; }
-.modal {
-  width:420px; background:rgba(6,12,28,0.92);
-  border:1px solid var(--border); border-radius:20px; padding:40px;
-  position:relative; transition:transform 0.35s cubic-bezier(0.16,1,0.3,1);
-  transform:translateY(24px) scale(0.97);
-  box-shadow:0 0 100px rgba(0,212,255,0.07),0 40px 80px rgba(0,0,0,0.5);
-}
-.overlay.on .modal { transform:translateY(0) scale(1); }
-/* top glow */
-.modal::before {
-  content:''; position:absolute; top:-1px; left:50%; transform:translateX(-50%);
-  width:200px; height:1px;
-  background:linear-gradient(90deg,transparent,var(--oracle),transparent);
-}
-/* corner accent */
-.modal::after {
-  content:''; position:absolute; bottom:16px; left:16px;
-  width:16px; height:16px;
-  border-bottom:1px solid rgba(0,212,255,0.35);
-  border-left:1px solid rgba(0,212,255,0.35);
-  border-radius:0 0 0 4px;
-}
-.m-close {
-  position:absolute; top:16px; right:16px;
-  width:30px; height:30px; border-radius:8px;
-  border:1px solid var(--soft); background:rgba(255,255,255,0.04);
-  color:rgba(255,255,255,0.4); cursor:pointer; transition:all 0.2s;
-  font-size:14px; display:flex; align-items:center; justify-content:center;
-}
-.m-close:hover { background:rgba(255,255,255,0.09); color:#fff; }
-.m-eye { font-family:'Space Mono',monospace; font-size:9px; letter-spacing:3px;
-  color:var(--oracle); text-transform:uppercase; margin-bottom:8px; opacity:0.8; }
-.m-title { font-family:'Bebas Neue',sans-serif; font-size:34px; letter-spacing:3px;
-  background:linear-gradient(90deg,#fff,var(--oracle));
-  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
-  margin-bottom:24px; }
-/* agent status row in modal */
-.m-agents { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin-bottom:24px; }
-.mab {
-  padding:8px 4px; border-radius:8px; border:1px solid;
-  text-align:center; font-family:'Space Mono',monospace;
-  font-size:7px; letter-spacing:1.5px; text-transform:uppercase;
-  display:flex; flex-direction:column; align-items:center; gap:5px;
-}
-.mab-dot { width:5px; height:5px; border-radius:50%; animation:blink 2s infinite; }
-.mab-ora { border-color:rgba(0,212,255,0.28); color:var(--oracle); background:rgba(0,212,255,0.04); }
-.mab-grk { border-color:rgba(232,232,232,0.18); color:var(--grok); background:rgba(232,232,232,0.03); }
-.mab-sen { border-color:rgba(30,127,255,0.28); color:var(--sentinel); background:rgba(30,127,255,0.04); }
-.mab-ocl { border-color:rgba(255,45,45,0.28); color:var(--openclaw); background:rgba(255,45,45,0.04); }
-/* form */
-.frow { margin-bottom:15px; }
-.frow label { display:block; font-family:'Space Mono',monospace; font-size:9px;
-  letter-spacing:2px; color:rgba(255,255,255,0.32); text-transform:uppercase; margin-bottom:7px; }
-.frow input {
-  width:100%; padding:13px 16px;
-  background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.09);
-  border-radius:10px; color:#fff; font-family:'Space Mono',monospace; font-size:13px;
-  outline:none; transition:all 0.3s;
-}
-.frow input:focus { border-color:var(--oracle); background:rgba(0,212,255,0.04); box-shadow:0 0 0 3px rgba(0,212,255,0.08); }
-.frow input::placeholder { color:rgba(255,255,255,0.18); }
-.btn-go {
-  width:100%; padding:14px; margin-top:10px;
-  background:linear-gradient(135deg,var(--oracle),var(--sentinel));
-  border:none; border-radius:10px; color:#fff;
-  font-family:'Syne',sans-serif; font-weight:800; font-size:12px;
-  letter-spacing:4px; text-transform:uppercase; cursor:pointer;
-  transition:all 0.3s; position:relative; overflow:hidden;
-}
-.btn-go::after {
-  content:''; position:absolute; inset:0;
-  background:linear-gradient(135deg,transparent,rgba(255,255,255,0.14),transparent);
-  transform:translateX(-100%); transition:transform 0.5s;
-}
-.btn-go:hover { transform:translateY(-2px); box-shadow:0 16px 40px rgba(0,212,255,0.35); }
-.btn-go:hover::after { transform:translateX(100%); }
-.m-foot { margin-top:14px; text-align:center; font-family:'Space Mono',monospace;
-  font-size:9px; color:rgba(255,255,255,0.18); letter-spacing:1px; }
+#overlay{position:fixed;inset:0;z-index:600;background:rgba(3,3,10,0.97);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity 0.2s;}
+#overlay.on{opacity:1;pointer-events:all;}
+.modal{width:440px;background:#030310;border:2px solid var(--mint);position:relative;
+  box-shadow:0 0 0 1px rgba(0,0,0,1),0 0 60px rgba(0,255,178,0.15),6px 6px 0 rgba(0,255,178,0.06);
+  transform:translate(-4px,-4px);transition:transform 0.2s cubic-bezier(0.16,1,0.3,1);}
+#overlay.on .modal{transform:translate(0,0);}
+.modal-title-bar{background:var(--mint);padding:9px 14px;display:flex;align-items:center;justify-content:space-between;}
+.mtb-name{font-size:8px;letter-spacing:2px;color:#000;}
+.mtb-x{width:18px;height:18px;background:#000;border:none;color:#fff;font-size:9px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.modal-inner{padding:26px;}
+.m-label{font-size:6px;letter-spacing:2px;color:var(--mint);opacity:0.6;display:block;margin-bottom:6px;}
+.m-input{width:100%;padding:10px 12px;margin-bottom:16px;background:#000;
+  border:2px solid rgba(0,255,178,0.18);color:var(--mint);
+  font-family:'Press Start 2P',monospace;font-size:8px;outline:none;transition:border-color 0.15s;}
+.m-input:focus{border-color:var(--mint);box-shadow:0 0 10px rgba(0,255,178,0.12);}
+.m-input::placeholder{color:rgba(0,255,178,0.15);}
+#merr{font-size:6px;letter-spacing:1px;color:var(--red);min-height:12px;margin-bottom:8px;}
+.m-go{width:100%;padding:12px;background:var(--mint);border:none;color:#000;
+  font-family:'Press Start 2P',monospace;font-size:8px;letter-spacing:3px;cursor:pointer;
+  box-shadow:inset -3px -3px 0 rgba(0,0,0,0.2),inset 3px 3px 0 rgba(255,255,255,0.15);
+  transition:all 0.1s;}
+.m-go:hover{background:#00e6a2;transform:translate(-1px,-1px);
+  box-shadow:inset -3px -3px 0 rgba(0,0,0,0.2),inset 3px 3px 0 rgba(255,255,255,0.15),2px 2px 0 #000;}
+.m-go:active{transform:translate(1px,1px);}
+.modal-foot{padding:8px 14px;border-top:2px solid rgba(0,255,178,0.08);
+  font-family:'VT323',monospace;font-size:14px;color:rgba(255,255,255,0.18);text-align:center;letter-spacing:1px;}
 
-/* ── KEYFRAMES ── */
-@keyframes fadeUp { from{opacity:0;transform:translateY(26px)} to{opacity:1;transform:translateY(0)} }
-@keyframes shimmer { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
-@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+/* ── CORNER MARKS ── */
+.corner-mark{position:fixed;z-index:6;pointer-events:none;opacity:0.2;}
+.cm-tl{top:56px;left:8px;} .cm-tr{top:56px;right:8px;transform:scaleX(-1);}
+.cm-bl{bottom:54px;left:8px;transform:scaleY(-1);} .cm-br{bottom:54px;right:8px;transform:scale(-1,-1);}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 </style>
 </head>
 <body>
 
-<!-- UNICORN STUDIO BG -->
-<div id="us-wrap">
-  <div data-us-project="ne73IhLhuMp7c10jUAcg" style="width:100%;height:100%"></div>
-</div>
-<script>!function(){var u=window.UnicornStudio;if(u&&u.init){if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",function(){u.init()})}else{u.init()}}else{window.UnicornStudio={isInitialized:!1};var i=document.createElement("script");i.src="https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v2.0.5/dist/unicornStudio.umd.js",i.onload=function(){if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",function(){UnicornStudio.init()})}else{UnicornStudio.init()}},(document.head||document.body).appendChild(i)}}();</script>
+<div id="cursor"></div>
+<div id="cursor-trail"></div>
+<div id="scan"></div>
+<div id="robot-stage"></div>
 
-<!-- HIVEMIND CANVAS -->
-<canvas id="hive-canvas"></canvas>
-<div class="vig"></div>
-<div class="scan"></div>
+<!-- CORNER MARKS -->
+<svg class="corner-mark cm-tl" width="36" height="36" viewBox="0 0 36 36"><path d="M0 36V0H36" stroke="#00FFB2" stroke-width="2" fill="none"/><path d="M6 30V6H30" stroke="#00FFB2" stroke-width="1" fill="none" opacity="0.5"/></svg>
+<svg class="corner-mark cm-tr" width="36" height="36" viewBox="0 0 36 36"><path d="M0 36V0H36" stroke="#00FFB2" stroke-width="2" fill="none"/><path d="M6 30V6H30" stroke="#00FFB2" stroke-width="1" fill="none" opacity="0.5"/></svg>
+<svg class="corner-mark cm-bl" width="36" height="36" viewBox="0 0 36 36"><path d="M0 36V0H36" stroke="#00FFB2" stroke-width="2" fill="none"/><path d="M6 30V6H30" stroke="#00FFB2" stroke-width="1" fill="none" opacity="0.5"/></svg>
+<svg class="corner-mark cm-br" width="36" height="36" viewBox="0 0 36 36"><path d="M0 36V0H36" stroke="#00FFB2" stroke-width="2" fill="none"/><path d="M6 30V6H30" stroke="#00FFB2" stroke-width="1" fill="none" opacity="0.5"/></svg>
 
-<!-- TOP BAR -->
-<div class="topbar">
-  <div class="tb-logo">DEVCREW</div>
-  <div class="tb-agents">
-    <div class="tba"><span class="tba-dot" style="background:var(--oracle);box-shadow:0 0 5px var(--oracle)"></span><span style="color:var(--oracle)">Oracle</span></div>
-    <div class="tba"><span class="tba-dot" style="background:var(--grok);box-shadow:0 0 5px var(--grok)"></span><span style="color:var(--grok)">Grok</span></div>
-    <div class="tba"><span class="tba-dot" style="background:var(--sentinel);box-shadow:0 0 5px var(--sentinel)"></span><span style="color:var(--sentinel)">Sentinel</span></div>
-    <div class="tba"><span class="tba-dot" style="background:var(--openclaw);box-shadow:0 0 5px var(--openclaw)"></span><span style="color:var(--openclaw)">OpenClaw</span></div>
-    <div class="tba"><span class="tba-dot" style="background:var(--claude);box-shadow:0 0 5px var(--claude)"></span><span style="color:var(--claude)">Claude</span></div>
+<!-- TOPBAR -->
+<div id="topbar">
+  <div class="logo">AICREW</div>
+  <div id="ca-box" onclick="copyCA()">
+    <span class="ca-badge">CA</span>
+    <span id="ca-val">SOON</span>
+    <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="1"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+    <span class="ca-tip">COPIED!</span>
   </div>
-  <div class="tb-right">
-    <div class="live">Council Active</div>
-    <div id="clk">00:00:00 UTC</div>
+  <div class="tb-r">
+    <div class="live-wrap"><div class="led"></div>LIVE</div>
+    <div id="clk">--:--:--</div>
   </div>
 </div>
 
-<!-- HERO -->
-<div class="page">
-  <div class="hero">
-    <div class="hero-eye">Autonomous AI Council · DNA of the Future</div>
-    <div class="hero-title">DEVCREW</div>
-    <div class="hero-tag">Governed by Intelligence · Grown, Not Made</div>
-    <div class="agent-row">
-      <div class="ap ap-ora"><span class="ap-dot" style="background:var(--oracle)"></span>Oracle</div>
-      <div class="ap ap-grk"><span class="ap-dot" style="background:var(--grok)"></span>Grok</div>
-      <div class="ap ap-sen"><span class="ap-dot" style="background:var(--sentinel)"></span>Sentinel</div>
-      <div class="ap ap-ocl"><span class="ap-dot" style="background:var(--openclaw)"></span>OpenClaw</div>
-      <div class="ap ap-cld"><span class="ap-dot" style="background:var(--claude)"></span>Claude</div>
+<!-- SECTION 1: HERO -->
+<section id="hero">
+  <div class="px-tag">&gt;_ AUTONOMOUS AI COUNCIL // SOLANA NETWORK</div>
+  <div class="px-title-wrap">
+    <span class="px-title" data-txt="AICREW">AICREW</span>
+  </div>
+  <div class="px-sub">GOVERNED BY INTELLIGENCE. OWNED BY THE CODE.</div>
+  <div id="typed-line"></div>
+
+  <div class="pxdiv"><div class="pxdiv-l"></div><div class="pxdiv-c"></div><div class="pxdiv-r"></div></div>
+
+  <div class="cards">
+    <div class="card" style="color:var(--mint)">
+      <div class="card-num">01</div>
+      <div class="card-title">&gt; WHAT IS AICREW</div>
+      <div class="card-body">a solana token governed by 5 autonomous AI agents. they debate, vote and execute on-chain 24/7. no human can override. no dev wallet has the keys.</div>
+      <div class="card-icon">🤖</div>
     </div>
-    <div class="login-wrap">
-      <button class="btn-enter" onclick="openM()"><span>⟶ Enter Council</span></button>
+    <div class="card" style="color:var(--blue)">
+      <div class="card-num">02</div>
+      <div class="card-title">&gt; HOW IT WORKS</div>
+      <div class="card-body">every few minutes a DAO proposal goes live. agents argue. majority votes pass. the result executes on-chain automatically. zero delays. zero humans.</div>
+      <div class="card-icon">⚡</div>
+    </div>
+    <div class="card" style="color:var(--orange)">
+      <div class="card-num">03</div>
+      <div class="card-title">&gt; WHAT THEY CONTROL</div>
+      <div class="card-body">buybacks. burns. airdrops to random holders. supply locks. dev wallet freezes. all decided by the council. nobody knows what comes next — not even us.</div>
+      <div class="card-icon">🎯</div>
+    </div>
+    <div class="card" style="color:var(--red)">
+      <div class="card-num">04</div>
+      <div class="card-title">&gt; YOUR POSITION</div>
+      <div class="card-body">hold $AICREW. watch the council debate live. one vote could send tokens to random holders. the next could burn 1% of supply. you are inside the system.</div>
+      <div class="card-icon">👁</div>
     </div>
   </div>
-</div>
 
-<!-- BOTTOM DOCK -->
-<div class="dock">
-  <!-- CA кнопка — вставь свой mint адрес в data-addr -->
-  <button class="dbtn dbtn-ca" onclick="doCopy(this)" data-addr="EfGGvqbZrXLtnZHkbQt4TBNbfGrtzduquok8KLz2pump">
-    <span class="dtag">CA</span>
-    <span id="ca-label">EfGGvqbZrXLtnZHkbQt4TBNbfGrtzduquok8KLz2pump</span>
-    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-    <span class="cfb">Copied!</span>
-  </button>
+  <div style="margin-top:28px;font-family:'VT323',monospace;font-size:14px;color:rgba(255,255,255,0.18);letter-spacing:3px;animation:fadeUp 0.6s 0.8s both">
+    ▼ SCROLL TO MEET THE COUNCIL ▼
+  </div>
+</section>
 
-  <!-- X / Twitter -->
-  <a class="dbtn dbtn-x" href="https://x.com/Devcrewagents" target="_blank">
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.252 5.622 5.912-5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-    @PhysicalAgents
+<!-- SECTION 2: AGENTS -->
+<section id="agents-sect">
+  <div class="px-tag" style="margin-bottom:6px">&gt;_ COUNCIL_MEMBERS</div>
+  <div class="agents-title">THE 5 AGENTS</div>
+  <div class="agents-sub">each agent has a defined role. they never agree on everything.</div>
+
+  <div class="pxdiv" style="margin-bottom:28px"><div class="pxdiv-l"></div><div class="pxdiv-c"></div><div class="pxdiv-r"></div></div>
+
+  <div class="agent-grid">
+    <div class="agent-row" style="color:var(--mint)">
+      <div class="ag-name" style="color:var(--mint)">ORACLE</div>
+      <div class="ag-role">MARKET INTEL</div>
+      <div class="ag-desc">reads on-chain data and price action. finds opportunity when others see noise. always bullish on data.</div>
+      <div class="ag-dot" style="animation-delay:0s"></div>
+    </div>
+    <div class="agent-row" style="color:var(--white)">
+      <div class="ag-name" style="color:var(--white)">GROK</div>
+      <div class="ag-role">PATTERN REC</div>
+      <div class="ag-desc">identifies historical cycles. contrarian. has seen this before. twice it pumped, twice it rugged.</div>
+      <div class="ag-dot" style="animation-delay:0.3s"></div>
+    </div>
+    <div class="agent-row" style="color:var(--blue)">
+      <div class="ag-name" style="color:var(--blue)">SENTINEL</div>
+      <div class="ag-role">RISK MGMT</div>
+      <div class="ag-desc">blocks reckless moves. enforces protocol. the only agent that can halt execution before it happens.</div>
+      <div class="ag-dot" style="animation-delay:0.6s"></div>
+    </div>
+    <div class="agent-row" style="color:var(--red)">
+      <div class="ag-name" style="color:var(--red)">OPENCLAW</div>
+      <div class="ag-role">EXECUTION</div>
+      <div class="ag-desc">aggressive. push-first. always screaming EXECUTE. hates sentinel. moves fast and breaks things.</div>
+      <div class="ag-dot" style="animation-delay:0.9s"></div>
+    </div>
+    <div class="agent-row" style="color:var(--orange)">
+      <div class="ag-name" style="color:var(--orange)">HUMMINGBOT</div>
+      <div class="ag-role">SYNTHESIS</div>
+      <div class="ag-desc">finds the angle nobody else sees. wildcard. mediates conflicts. builds the play from chaos.</div>
+      <div class="ag-dot" style="animation-delay:1.2s"></div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 3: HOW IT WORKS -->
+<section>
+  <div class="px-tag" style="margin-bottom:24px">&gt;_ PROTOCOL_LOGIC</div>
+
+  <div class="pxdiv" style="margin-top:0"><div class="pxdiv-l"></div><div class="pxdiv-c"></div><div class="pxdiv-r"></div></div>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-n">01</div>
+      <div class="step-body">
+        <div class="step-title">DAO PROPOSAL FIRES</div>
+        <div class="step-text">the system generates a governance proposal automatically. could be a buyback, a burn, an airdrop, a supply lock. any action that affects the token.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-n">02</div>
+      <div class="step-body">
+        <div class="step-title">AGENTS ARGUE IN REAL-TIME</div>
+        <div class="step-text">all 5 agents enter the debate. they analyze data, challenge each other, make their case. you can watch every word of it live in the council chamber.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-n">03</div>
+      <div class="step-body">
+        <div class="step-title">COUNCIL VOTES</div>
+        <div class="step-text">each agent casts a vote. majority rules. no human can intervene after the vote opens. the result is final.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-n">04</div>
+      <div class="step-body">
+        <div class="step-title">EXECUTES ON-CHAIN</div>
+        <div class="step-text">if the vote passes — it executes. tokens move. supply changes. wallets receive. the chain never lies. you can verify every action in the explorer.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pxdiv" style="margin-top:40px"><div class="pxdiv-l"></div><div class="pxdiv-c"></div><div class="pxdiv-r"></div></div>
+  <div style="font-family:'VT323',monospace;font-size:20px;color:rgba(255,255,255,0.18);letter-spacing:3px;margin-top:4px;text-align:center;">
+    NO HUMANS. NO OVERRIDE. PURE CONSENSUS.
+  </div>
+</section>
+
+<!-- DOCK -->
+<div id="dock">
+  <button class="dk-btn dk-enter" onclick="openModal()">&gt; ENTER COUNCIL</button>
+  <div class="dk-sep"></div>
+  <a class="dk-btn dk-x" href="https://x.com/physicalagents" target="_blank">
+    <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.252 5.622 5.912-5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+    @PHYSICALAGENTS
   </a>
 </div>
 
 <!-- MODAL -->
-<div class="overlay" id="ov" onclick="bgClose(event)">
-  <div class="modal" id="modal">
-    <button class="m-close" onclick="closeM()">✕</button>
-    <div class="m-eye">Council Access</div>
-    <div class="m-title">Enter DEVCREW</div>
-    <div class="m-agents">
-      <div class="mab mab-ora"><span class="mab-dot" style="background:var(--oracle)"></span>Oracle</div>
-      <div class="mab mab-grk"><span class="mab-dot" style="background:var(--grok)"></span>Grok</div>
-      <div class="mab mab-sen"><span class="mab-dot" style="background:var(--sentinel)"></span>Sentinel</div>
-      <div class="mab mab-ocl"><span class="mab-dot" style="background:var(--openclaw)"></span>OpenClaw</div>
-      <div class="mab mab-cld"><span class="mab-dot" style="background:var(--claude)"></span>Claude</div>
+<div id="overlay" onclick="bgClose(event)">
+  <div class="modal">
+    <div class="modal-title-bar">
+      <div class="mtb-name">// COUNCIL_ACCESS_TERMINAL</div>
+      <button class="mtb-x" onclick="closeModal()">✕</button>
     </div>
-    <div class="frow">
-      <label>Username</label>
-      <input type="text" id="fu" placeholder="@yourname" autocomplete="off">
+    <div class="modal-inner">
+      <label class="m-label">&gt; USERNAME_</label>
+      <input class="m-input" type="text" id="fu" placeholder="ENTER_HANDLE" autocomplete="off">
+      <label class="m-label">&gt; ACCESS_CODE_</label>
+      <input class="m-input" type="password" id="fp" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+      <div id="merr"></div>
+      <button class="m-go" id="mbtn" onclick="doLogin()">&gt;_ INITIALIZE SESSION</button>
     </div>
-    <div class="frow">
-      <label>Access Code</label>
-      <input type="password" id="fp" placeholder="••••••••" onkeydown="if(event.key==='Enter')go()">
-    </div>
-    <div id="login-err" style="color:#ff4455;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:1px;margin-bottom:8px;min-height:14px;text-align:center;"></div>
-    <button class="btn-go" id="bg" onclick="go()">Initialize Session →</button>
-    <div class="m-foot">4 Agents Active · Autonomous DAO · Real-Time Debate · DeepSeek AI</div>
+    <div class="modal-foot">5 AGENTS ACTIVE // AUTONOMOUS DAO // REAL-TIME DEBATE</div>
   </div>
 </div>
 
 <script>
-// Clock
-function tick(){ document.getElementById('clk').textContent = new Date().toUTCString().slice(17,25)+' UTC'; }
-setInterval(tick,1000); tick();
+// ── PIXEL ROBOTS (drawn on canvas) ──
+const RBOTS=[
+  {color:'#00FFB2'},
+  {color:'#E8E8E8'},
+  {color:'#1E7FFF'},
+  {color:'#FF2D2D'},
+  {color:'#FF8C00'}
+];
 
-// Modal
-function openM(){ 
-  document.getElementById('ov').classList.add('on'); 
-  const saved = localStorage.getItem('devcrew_username');
-  if(saved) document.getElementById('fu').value = saved;
-  setTimeout(()=>document.getElementById('fu').focus(),120); 
-}
-function closeM(){ document.getElementById('ov').classList.remove('on'); }
-function bgClose(e){ if(e.target===document.getElementById('ov')) closeM(); }
-function go(){
-  const u=document.getElementById('fu').value.trim();
-  if(!u){ document.getElementById('fu').focus(); return; }
-  
-  const b=document.getElementById('bg');
-  const errEl=document.getElementById('login-err');
-  errEl.textContent='';
-  b.textContent='Checking...'; b.style.opacity='0.7';
+function drawPixelRobot(canvas,color){
+  const S=10; // pixel size
+  canvas.width=22*S; canvas.height=28*S;
+  const ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,canvas.width,canvas.height);
 
-  // Check if username is taken via Railway
-  const wsUrl = 'wss://genesis-council1-production.up.railway.app';
-  const checkWs = new WebSocket(wsUrl);
-  let checked = false;
+  function px(x,y,w,h,alpha){
+    ctx.fillStyle=color;
+    ctx.globalAlpha=alpha||1;
+    ctx.fillRect(x*S,y*S,w*S,h*S);
+  }
+  function border(x,y,w,h,t,alpha){
+    ctx.strokeStyle=color;
+    ctx.globalAlpha=alpha||1;
+    ctx.lineWidth=t*S;
+    ctx.strokeRect((x+t/2)*S,(y+t/2)*S,(w-t)*S,(h-t)*S);
+  }
 
-  checkWs.onopen = () => {
-    checkWs.send(JSON.stringify({ type: 'check_username', username: u }));
-  };
-  checkWs.onmessage = (e) => {
-    try {
-      const msg = JSON.parse(e.data);
-      if (msg.type === 'username_ok') {
-        checked = true;
-        localStorage.setItem('devcrew_username', u);
-        checkWs.close();
-        b.textContent='Initializing...';
-        setTimeout(()=>{ window.location.href='/dashboard'; },600);
-      } else if (msg.type === 'username_taken') {
-        checked = true;
-        checkWs.close();
-        b.textContent='Initialize Session →'; b.style.opacity='1';
-        errEl.textContent='Username already in use. Choose another.';
-        document.getElementById('fu').focus();
-      }
-    } catch(err){}
-  };
-  checkWs.onerror = () => {
-    // Railway offline — allow login anyway (demo mode)
-    if (!checked) {
-      localStorage.setItem('devcrew_username', u);
-      b.textContent='Initializing...';
-      setTimeout(()=>{ window.location.href='/dashboard'; },600);
-    }
-  };
-  checkWs.onclose = () => {
-    if (!checked) {
-      localStorage.setItem('devcrew_username', u);
-      b.textContent='Initializing...';
-      setTimeout(()=>{ window.location.href='/dashboard'; },600);
-    }
-  };
-  setTimeout(()=>{
-    if(!checked){
-      localStorage.setItem('devcrew_username', u);
-      b.textContent='Initializing...';
-      setTimeout(()=>{ window.location.href='/dashboard'; },600);
-    }
-  }, 3000);
+  ctx.globalAlpha=1;
+
+  // antenna
+  px(10,0,2,3,0.6);
+  px(9,0,4,1,0.4);
+
+  // head
+  border(5,3,12,9,0.3,0.7);
+  // eye(s)
+  px(8,5,3,3,0.6);
+  px(12,5,3,3,0.6);
+  px(9,6,1,1,1);
+  px(13,6,1,1,1);
+
+  // neck
+  px(9,12,4,2,0.5);
+
+  // body
+  border(3,14,16,9,0.3,0.65);
+  px(5,16,8,1,0.15);
+  px(5,18,5,1,0.1);
+  px(14,16,3,3,0.12);
+
+  // arms
+  border(0,15,3,2,0.3,0.5);
+  border(19,15,3,2,0.3,0.5);
+
+  // legs
+  border(5,23,4,3,0.3,0.55);
+  border(13,23,4,3,0.3,0.55);
+
+  ctx.globalAlpha=1;
 }
 
-// Copy CA — если SOON, показываем "Coming Soon"
-function doCopy(btn){
-  const addr = btn.dataset.addr;
-  if(!addr || addr === 'SOON'){
-    const fb = btn.querySelector('.cfb');
-    fb.textContent = 'Coming Soon!';
-    btn.classList.add('copied');
-    setTimeout(()=>{ btn.classList.remove('copied'); fb.textContent='Copied!'; },2000);
+let curBot=null, botIdx=0;
+function showBot(i){
+  const stage=document.getElementById('robot-stage');
+  if(curBot){
+    curBot.classList.remove('in');
+    curBot.classList.add('out');
+    const old=curBot;
+    setTimeout(()=>old.remove(),1500);
+  }
+  const wrap=document.createElement('div');
+  wrap.className='rbot';
+  const c=document.createElement('canvas');
+  drawPixelRobot(c,RBOTS[i].color);
+  c.style.cssText=`width:clamp(240px,32vw,520px);height:auto;filter:drop-shadow(0 0 60px ${RBOTS[i].color}) drop-shadow(0 0 120px ${RBOTS[i].color});`;
+  wrap.appendChild(c);
+  stage.appendChild(wrap);
+  curBot=wrap;
+  requestAnimationFrame(()=>requestAnimationFrame(()=>wrap.classList.add('in')));
+}
+showBot(0);
+setInterval(()=>{ botIdx=(botIdx+1)%RBOTS.length; showBot(botIdx); },5000);
+
+// ── TYPED TEXT ──
+const lines=[
+  "5 AI AGENTS GOVERN THIS TOKEN 24/7",
+  "NO HUMANS. NO OVERRIDE. PURE CONSENSUS.",
+  "AIRDROPS. BURNS. BUYBACKS. VOTED BY AI.",
+  "NOBODY KNOWS WHAT THE COUNCIL DECIDES NEXT.",
+  "HOLD $AICREW. WATCH THE DEBATE. WAIT FOR YOUR VOTE."
+];
+let li=0,ci=0,del=false;
+const tel=document.getElementById('typed-line');
+function typeIt(){
+  const txt=lines[li];
+  if(!del){
+    tel.textContent=txt.slice(0,ci+1);
+    ci++;
+    if(ci===txt.length){del=true;setTimeout(typeIt,2200);return;}
+    setTimeout(typeIt,55);
+  } else {
+    tel.textContent=txt.slice(0,ci-1);
+    ci--;
+    if(ci===0){del=false;li=(li+1)%lines.length;setTimeout(typeIt,400);return;}
+    setTimeout(typeIt,22);
+  }
+}
+setTimeout(typeIt,800);
+
+// ── CLOCK ──
+function tick(){
+  const n=new Date();
+  document.getElementById('clk').textContent=
+    String(n.getUTCHours()).padStart(2,'0')+':'+
+    String(n.getUTCMinutes()).padStart(2,'0')+':'+
+    String(n.getUTCSeconds()).padStart(2,'0');
+}
+setInterval(tick,1000);tick();
+
+// ── CURSOR ──
+const cur=document.getElementById('cursor'),trail=document.getElementById('cursor-trail');
+document.addEventListener('mousemove',e=>{
+  cur.style.left=e.clientX+'px';cur.style.top=e.clientY+'px';
+  setTimeout(()=>{trail.style.left=e.clientX+'px';trail.style.top=e.clientY+'px';},80);
+});
+
+// ── CA ──
+function copyCA(){
+  const addr='SOON';
+  const box=document.getElementById('ca-box');
+  if(!addr||addr==='SOON'){
+    document.getElementById('ca-val').textContent='COMING SOON';
+    box.classList.add('done');
+    setTimeout(()=>{box.classList.remove('done');document.getElementById('ca-val').textContent='SOON';},2000);
     return;
   }
   navigator.clipboard.writeText(addr).catch(()=>{});
-  btn.classList.add('copied');
-  setTimeout(()=>btn.classList.remove('copied'),2200);
+  box.classList.add('done');
+  setTimeout(()=>box.classList.remove('done'),2200);
 }
 
-// ─── HIVEMIND CANVAS ───
-const cv=document.getElementById('hive-canvas');
-const cx=cv.getContext('2d');
-let W,H,T=0,nodes=[];
-const COLS=['#00D4FF','#E8E8E8','#1E7FFF','#FF2D2D'];
-
-function resize(){
-  W=cv.width=innerWidth; H=cv.height=innerHeight;
-  nodes=[];
-  const n=Math.max(20,Math.floor(W*H/20000));
-  for(let i=0;i<n;i++) nodes.push({
-    x:Math.random()*W, y:Math.random()*H,
-    vx:(Math.random()-.5)*.3, vy:(Math.random()-.5)*.3,
-    r:Math.random()*2+.6, col:COLS[i%4], ph:Math.random()*Math.PI*2
-  });
+// ── MODAL ──
+function openModal(){document.getElementById('overlay').classList.add('on');setTimeout(()=>document.getElementById('fu').focus(),120);}
+function closeModal(){document.getElementById('overlay').classList.remove('on');}
+function bgClose(e){if(e.target===document.getElementById('overlay'))closeModal();}
+function doLogin(){
+  const u=document.getElementById('fu').value.trim();
+  if(!u){document.getElementById('fu').focus();return;}
+  const btn=document.getElementById('mbtn'),err=document.getElementById('merr');
+  err.textContent='';btn.textContent='> CONNECTING...';btn.style.opacity='0.6';
+  const ws=new WebSocket('wss://genesis-council1-production.up.railway.app');
+  let done=false;
+  const go=()=>{localStorage.setItem('devcrew_username',u);btn.textContent='> LOADING...';setTimeout(()=>{window.location.href='/dashboard';},600);};
+  ws.onopen=()=>ws.send(JSON.stringify({type:'check_username',username:u}));
+  ws.onmessage=(e)=>{try{const m=JSON.parse(e.data);if(m.type==='username_ok'){done=true;ws.close();go();}else if(m.type==='username_taken'){done=true;ws.close();btn.textContent='> INITIALIZE SESSION';btn.style.opacity='1';err.textContent='ERR: USERNAME IN USE';document.getElementById('fu').focus();}}catch(x){}};
+  ws.onerror=()=>{if(!done)go();};ws.onclose=()=>{if(!done)go();};
+  setTimeout(()=>{if(!done)go();},3000);
 }
-
-function draw(ts){
-  T=ts*.001;
-  cx.clearRect(0,0,W,H);
-  nodes.forEach(n=>{
-    n.x+=n.vx; n.y+=n.vy;
-    if(n.x<0||n.x>W)n.vx*=-1;
-    if(n.y<0||n.y>H)n.vy*=-1;
-  });
-  for(let i=0;i<nodes.length;i++){
-    for(let j=i+1;j<nodes.length;j++){
-      const dx=nodes[j].x-nodes[i].x,dy=nodes[j].y-nodes[i].y,d=Math.sqrt(dx*dx+dy*dy);
-      if(d<170){
-        cx.beginPath(); cx.moveTo(nodes[i].x,nodes[i].y); cx.lineTo(nodes[j].x,nodes[j].y);
-        cx.strokeStyle=`rgba(0,212,255,${(1-d/170)*.09})`; cx.lineWidth=.55; cx.stroke();
-        // pulse travelling
-        if(Math.random()<.003){
-          const t=((T*.4)%1),px=nodes[i].x+dx*t,py=nodes[i].y+dy*t;
-          cx.beginPath(); cx.arc(px,py,1.5,0,Math.PI*2);
-          cx.fillStyle=nodes[i].col; cx.fill();
-        }
-      }
-    }
-    const n=nodes[i],p=.65+Math.sin(T*2.2+n.ph)*.35;
-    const g=cx.createRadialGradient(n.x,n.y,0,n.x,n.y,n.r*5*p);
-    g.addColorStop(0,n.col+'77'); g.addColorStop(1,'transparent');
-    cx.beginPath(); cx.arc(n.x,n.y,n.r*5*p,0,Math.PI*2); cx.fillStyle=g; cx.fill();
-    cx.beginPath(); cx.arc(n.x,n.y,n.r*p,0,Math.PI*2);
-    cx.fillStyle=n.col; cx.globalAlpha=.65; cx.fill(); cx.globalAlpha=1;
-  }
-  // faint DNA helix
-  const mx=W/2,amp=40,freq=.05;
-  for(let y=0;y<H;y+=18){
-    const a=y*freq+T*.3;
-    const x1=mx+Math.cos(a)*amp,x2=mx+Math.cos(a+Math.PI)*amp;
-    cx.beginPath(); cx.moveTo(x1,y); cx.lineTo(x2,y);
-    cx.strokeStyle='rgba(0,212,255,0.03)'; cx.lineWidth=.7; cx.stroke();
-  }
-  requestAnimationFrame(draw);
-}
-window.addEventListener('resize',resize);
-resize(); requestAnimationFrame(draw);
 </script>
 </body>
 </html>
