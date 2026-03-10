@@ -623,12 +623,18 @@ setInterval(tick, 1000); tick();
 
 // ── DAO COUNTDOWN ──
 let daoSecs = 180;
+function setDaoTimer(val) {
+  // Server may send seconds (180) or milliseconds (180000) — normalise
+  const n = Number(val);
+  if (!n || isNaN(n)) return;
+  daoSecs = n > 10000 ? Math.floor(n / 1000) : n; // convert ms→s if needed
+  daoSecs = Math.max(0, Math.min(daoSecs, 900)); // clamp 0–15min
+}
 const daoInterval = setInterval(() => {
   if (daoSecs > 0) daoSecs--;
   const m = String(Math.floor(daoSecs / 60)).padStart(2,'0');
   const s = String(daoSecs % 60).padStart(2,'0');
   document.getElementById('dao-timer').textContent = m + ':' + s;
-  if (daoSecs === 0) daoSecs = 180;
 }, 1000);
 
 // ── VOTE BARS ──
@@ -765,7 +771,10 @@ function connect() {
       if (msg.type === 'init') {
         const d = msg.data || {};
         if (d.history && d.history.length) d.history.slice(-20).forEach(m => { if (m.agent && m.text) addMsg(m.agent, m.text); });
-        if (d.dao && d.dao.proposal) document.getElementById('dao-prop-txt').textContent = d.dao.proposal;
+        if (d.dao) {
+          if (d.dao.proposal) document.getElementById('dao-prop-txt').textContent = d.dao.proposal;
+          if (d.dao.timeLeft != null) setDaoTimer(d.dao.timeLeft); // sync from server on connect
+        }
         if (d.token) updateMarket(d.token);
         if (d.users) renderUsers(d.users);
         return;
@@ -779,7 +788,7 @@ function connect() {
       if (msg.type === 'token_update' && msg.data) updateMarket(msg.data);
       if (msg.type === 'dao_update' && msg.data) {
         if (msg.data.proposal) document.getElementById('dao-prop-txt').textContent = msg.data.proposal;
-        if (msg.data.timeLeft) daoSecs = msg.data.timeLeft;
+        if (msg.data.timeLeft != null) setDaoTimer(msg.data.timeLeft);
       }
       if (msg.type === 'users' || msg.type === 'user_list') renderUsers(msg.users || []);
       if (msg.type === 'user_joined' || msg.type === 'user_left') { if (msg.users) renderUsers(msg.users); }
