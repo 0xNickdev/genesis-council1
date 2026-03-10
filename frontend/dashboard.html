@@ -691,14 +691,18 @@ function addMsg(agent, text) {
 function showTyping(agent) {
   const key = agent.toLowerCase();
   const col = COLORS[key] || 'rgba(255,255,255,0.3)';
-  // Trigger board blink
+  // Reset any previously thinking agent first
+  AGENTS.forEach(a => { agentState[a.id].thinking = false; });
+  // Set only this agent
   if (agentState[key]) agentState[key].thinking = true;
   document.getElementById('typing-area').innerHTML =
     `<div class="typing-row"><div class="typing-dots"><span></span><span></span><span></span></div><div class="typing-name" style="color:${col}">${agent.toUpperCase()} IS THINKING</div></div>`;
+  // Reset thinking after 4s if no message arrived
   setTimeout(() => {
+    if (agentState[key]) agentState[key].thinking = false;
     const ta = document.getElementById('typing-area');
     if (ta) ta.innerHTML = '';
-  }, 3000);
+  }, 4000);
 }
 
 // ── MARKET ──
