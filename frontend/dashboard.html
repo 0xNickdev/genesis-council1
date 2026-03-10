@@ -452,40 +452,36 @@ function boardCenter(pos) {
 // Draw synapses — flow DOWN from boards into chat
 function drawSynapses(positions) {
   const BOARD_BOT = positions[0].cy + (BOARD_H / PIXEL) * PIXEL;
-  const BUS_Y = BOARD_BOT + 20; // horizontal bus
+  const BUS_Y = BOARD_BOT + 22;
   const MID_X = Math.floor(CW / 2);
   const anyThinking = AGENTS.some(a => agentState[a.id].thinking);
+  const x0 = positions[0].cx + Math.floor(BOARD_W / 2);
+  const x4 = positions[4].cx + Math.floor(BOARD_W / 2);
 
-  // 1) Vertical stems: only for thinking agents
+  // 1) ALWAYS: vertical stems from every board to bus
   AGENTS.forEach((agent, i) => {
     const st = agentState[agent.id];
-    if (!st.thinking) return; // invisible when idle
     const x = positions[i].cx + Math.floor(BOARD_W / 2);
     ctx.save();
     ctx.setLineDash([]);
-    ctx.globalAlpha = 0.6;
-    ctx.strokeStyle = agent.color;
-    ctx.lineWidth = 2;
-    ctx.shadowColor = agent.color;
-    ctx.shadowBlur = 6;
+    ctx.globalAlpha = st.thinking ? 0.7 : 0.11;
+    ctx.strokeStyle = st.thinking ? agent.color : '#00FFB2';
+    ctx.lineWidth = st.thinking ? 2 : 1;
+    if (st.thinking) { ctx.shadowColor = agent.color; ctx.shadowBlur = 6; }
     ctx.beginPath();
     ctx.moveTo(x, BOARD_BOT);
     ctx.lineTo(x, BUS_Y);
     ctx.stroke();
-    ctx.globalAlpha = 0.9;
-    ctx.fillStyle = agent.color;
+    ctx.globalAlpha = st.thinking ? 0.9 : 0.16;
+    ctx.fillStyle = st.thinking ? agent.color : '#00FFB2';
     ctx.fillRect(x - 3, BUS_Y - 3, 6, 6);
     ctx.restore();
   });
 
-  // 2) Horizontal bus + trunk — only when someone is thinking
-  if (!anyThinking) return; // skip everything else if nobody active
-
-  const x0 = positions[0].cx + Math.floor(BOARD_W / 2);
-  const x4 = positions[4].cx + Math.floor(BOARD_W / 2);
+  // 2) ALWAYS: horizontal bus
   ctx.save();
   ctx.setLineDash([]);
-  ctx.globalAlpha = anyThinking ? 0.35 : 0.10;
+  ctx.globalAlpha = anyThinking ? 0.4 : 0.09;
   ctx.strokeStyle = '#00FFB2';
   ctx.lineWidth = anyThinking ? 2 : 1;
   ctx.beginPath();
@@ -494,13 +490,13 @@ function drawSynapses(positions) {
   ctx.stroke();
   ctx.restore();
 
-  // 3) Central trunk going DOWN into chat (fades out)
+  // 3) ALWAYS: central trunk down into chat (gradient fade)
   ctx.save();
   ctx.setLineDash([]);
+  const ta = anyThinking ? 0.32 : 0.07;
   const trunkGrad = ctx.createLinearGradient(0, BUS_Y, 0, CH);
-  const topAlpha = anyThinking ? 0.35 : 0.10;
-  trunkGrad.addColorStop(0, `rgba(0,255,178,${topAlpha})`);
-  trunkGrad.addColorStop(0.5, `rgba(0,255,178,${topAlpha * 0.5})`);
+  trunkGrad.addColorStop(0, `rgba(0,255,178,${ta})`);
+  trunkGrad.addColorStop(0.65, `rgba(0,255,178,${ta*0.3})`);
   trunkGrad.addColorStop(1, 'rgba(0,255,178,0)');
   ctx.strokeStyle = trunkGrad;
   ctx.lineWidth = anyThinking ? 2 : 1;
@@ -508,77 +504,64 @@ function drawSynapses(positions) {
   ctx.moveTo(MID_X, BUS_Y);
   ctx.lineTo(MID_X, CH);
   ctx.stroke();
-  // junction dot at bus
-  ctx.globalAlpha = anyThinking ? 0.7 : 0.2;
+  ctx.globalAlpha = anyThinking ? 0.65 : 0.14;
   ctx.fillStyle = '#00FFB2';
   ctx.fillRect(MID_X - 3, BUS_Y - 3, 6, 6);
   ctx.restore();
 
-  // 4) Cross wires above bus (only when active)
+  // 4) ONLY when active: cross wires between thinking agents
   CROSS_PAIRS.forEach(([a, b], pi) => {
     const stA = agentState[AGENTS[a].id];
     const stB = agentState[AGENTS[b].id];
     if (!stA.thinking && !stB.thinking) return;
     const ax = positions[a].cx + Math.floor(BOARD_W / 2);
     const bx = positions[b].cx + Math.floor(BOARD_W / 2);
-    const rowY = BUS_Y - 8 - (pi % 3) * 7;
+    const rowY = BUS_Y - 9 - (pi % 3) * 7;
     ctx.save();
     ctx.setLineDash([]);
-    ctx.globalAlpha = 0.22;
-    ctx.strokeStyle = AGENTS[a].color;
+    ctx.globalAlpha = 0.28;
+    ctx.strokeStyle = stA.thinking ? AGENTS[a].color : AGENTS[b].color;
     ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.moveTo(ax, BUS_Y);
-    ctx.lineTo(ax, rowY);
-    ctx.lineTo(bx, rowY);
-    ctx.lineTo(bx, BUS_Y);
+    ctx.moveTo(ax, BUS_Y); ctx.lineTo(ax, rowY);
+    ctx.lineTo(bx, rowY); ctx.lineTo(bx, BUS_Y);
     ctx.stroke();
     ctx.restore();
   });
 
-  // 5) Animate pulses
+  // 5) Pulses — only spawned when agent is thinking, animate in-flight
   maybeSpawnSynapse();
 
-  // Down-synapses (board → bus → merge → trunk → into chat)
+  // Down-synapses: board → bus → midX → down into chat
   for (let i = synapses.length - 1; i >= 0; i--) {
     const s = synapses[i];
     s.t += s.speed;
     if (s.t > 1) { synapses.splice(i, 1); continue; }
-
     const ax = positions[s.agentIdx].cx + Math.floor(BOARD_W / 2);
-    // Phase 0→0.2: board bottom → bus (vertical)
-    // Phase 0.2→0.45: bus → midX (horizontal)
-    // Phase 0.45→1.0: midX trunk → bottom of canvas
     let dotX, dotY;
     if (s.t < 0.2) {
       const p = s.t / 0.2;
-      dotX = ax;
-      dotY = BOARD_BOT + (BUS_Y - BOARD_BOT) * p;
+      dotX = ax; dotY = BOARD_BOT + (BUS_Y - BOARD_BOT) * p;
     } else if (s.t < 0.45) {
       const p = (s.t - 0.2) / 0.25;
-      dotX = ax + (MID_X - ax) * p;
-      dotY = BUS_Y;
+      dotX = ax + (MID_X - ax) * p; dotY = BUS_Y;
     } else {
       const p = (s.t - 0.45) / 0.55;
-      dotX = MID_X;
-      dotY = BUS_Y + (CH - BUS_Y) * p;
+      dotX = MID_X; dotY = BUS_Y + (CH - BUS_Y) * p;
     }
-
     const fade = s.t < 0.1 ? s.t/0.1 : s.t > 0.85 ? (1-s.t)/0.15 : 1;
     ctx.save();
     ctx.setLineDash([]);
-    ctx.shadowColor = s.col;
-    ctx.shadowBlur = 10;
+    ctx.shadowColor = s.col; ctx.shadowBlur = 10;
     ctx.globalAlpha = fade * 0.95;
     ctx.fillStyle = s.col;
     ctx.fillRect(Math.round(dotX) - 4, Math.round(dotY) - 4, 8, 8);
-    ctx.shadowBlur = 0;
-    ctx.globalAlpha = fade * 0.3;
+    ctx.shadowBlur = 0; ctx.globalAlpha = fade * 0.35;
     ctx.fillRect(Math.round(dotX) - 2, Math.round(dotY) - 2, 4, 4);
     ctx.restore();
   }
 
-  // Cross-synapses (horizontal along bus between boards)
+  // Cross-synapses: horizontal along bus between boards
   for (let i = crossSynapses.length - 1; i >= 0; i--) {
     const s = crossSynapses[i];
     s.t += s.speed;
@@ -589,8 +572,7 @@ function drawSynapses(positions) {
     const fade = Math.sin(s.t * Math.PI);
     ctx.save();
     ctx.setLineDash([]);
-    ctx.shadowColor = s.col;
-    ctx.shadowBlur = 8;
+    ctx.shadowColor = s.col; ctx.shadowBlur = 8;
     ctx.globalAlpha = fade * 0.85;
     ctx.fillStyle = s.col;
     ctx.fillRect(Math.round(dotX) - 4, BUS_Y - 4, 8, 8);
