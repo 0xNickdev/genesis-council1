@@ -1,21 +1,21 @@
 /**
- * DEVCREW — DAO Voting Module
+ * $CREW — DAO Voting Module
  */
 const EventEmitter = require('events');
 
 const PROPOSALS = [
   // Твои
-  { text: 'Airdrop 50,000 DEVCREW to a randomly selected verified holder. Snapshot in 60 seconds. Winner announced on-chain.', threshold: 65 },
+  { text: 'Airdrop 50,000 $CREW to a randomly selected verified holder. Snapshot in 60 seconds. Winner announced on-chain.', threshold: 65 },
   { text: 'Transfer 5% of total supply to wallet Lobstarwilde as recognition reward for council contributions.', threshold: 70 },
   { text: 'Buy back 2.5% of circulating supply from dev wallet and permanently burn. Deflationary execution.', threshold: 75 },
-  { text: 'Mass airdrop: distribute 100,000 DEVCREW equally across all current holders. Snapshot now.', threshold: 60 },
+  { text: 'Mass airdrop: distribute 100,000 $CREW equally across all current holders. Snapshot now.', threshold: 60 },
   { text: 'BURN TRIGGER: If price fails to reach +50% from current within 60 minutes — burn 1% of total supply automatically.', threshold: 80 },
   { text: 'LOCK PROTOCOL: Freeze 10% of total supply in time-lock contract for 5 days. No transfers, no sells. Trust signal.', threshold: 75 },
 
   // Мои
   { text: 'Activate auto-buyback circuit: if price drops -15% within any 60-minute window — deploy full buyback reserve immediately.', threshold: 85 },
   { text: 'Freeze all dev wallet outflows for 30 days. Smart contract enforced. Community confidence protocol.', threshold: 70 },
-  { text: 'Reward top 10 diamond hands: holders with longest unbroken hold streak receive 10,000 DEVCREW each.', threshold: 65 },
+  { text: 'Reward top 10 diamond hands: holders with longest unbroken hold streak receive 10,000 $CREW each.', threshold: 65 },
   { text: 'Deploy 3% of supply into on-chain reward pool. Distributed weekly to holders with 7+ day positions only.', threshold: 68 },
   { text: 'SENTINEL PROTOCOL: If a single wallet dumps more than 2% of supply in one tx — auto-blacklist and redistribute to holders.', threshold: 82 },
   { text: 'Burn all unclaimed airdrop tokens after 48h window. No extensions. Committed holders only.', threshold: 72 },
