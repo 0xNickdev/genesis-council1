@@ -259,7 +259,9 @@ class DebateEngine extends EventEmitter {
     });
 
     return (res.data.choices?.[0]?.message?.content || '')
-      .replace(/^\[?\w[\w\s]*\]?:?\s*/, '').trim();
+      .replace(/^\[?\w[\w\s]*\]?:?\s*/, '') // strip "AgentName:" prefix
+      .replace(/^[,\s]+/, '')               // strip leading comma/spaces
+      .trim();
   }
 
   _fallback(agent) {
