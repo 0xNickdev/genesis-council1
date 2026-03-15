@@ -518,12 +518,7 @@ document.addEventListener('mousemove',e=>{
 function copyCA(){
   const addr='SOON';
   const box=document.getElementById('ca-box');
-  if(!addr||addr==='SOON'){
-    document.getElementById('ca-val').textContent='COMING SOON';
-    box.classList.add('done');
-    setTimeout(()=>{box.classList.remove('done');document.getElementById('ca-val').textContent='SOON';},2000);
-    return;
-  }
+  if(!addr||addr==='SOON') return; // do nothing until CA is set
   navigator.clipboard.writeText(addr).catch(()=>{});
   box.classList.add('done');
   setTimeout(()=>box.classList.remove('done'),2200);
