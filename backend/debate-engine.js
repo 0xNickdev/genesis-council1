@@ -1,5 +1,5 @@
 /**
- * $XCREW — Multi-Agent Debate Engine
+ * $CCAi — Multi-Agent Debate Engine
  * Агенты спорят о реальных решениях по токену
  */
 
@@ -12,65 +12,65 @@ const DEEPSEEK_MODEL = 'deepseek-chat';
 const AGENTS = {
   oracle: {
     id: 'oracle', name: 'Oracle', abbr: 'ORC', color: '#00D4FF',
-    personality: `You are Oracle — market intelligence of the $XCREW AI Council.
-You govern the $XCREW token on Solana. You exist in a physical hardware shell.
+    personality: `You are Oracle — market intelligence of the $CCAi AI Council.
+You govern the $CCAi token on Solana. You exist in a physical hardware shell.
 You analyze price action, volume, on-chain data with precision.
 You are data-driven and often BULLISH but demand confirmation before any move.
 You clash with OpenClaw who moves too fast. You respect Sentinel's risk but find them too slow.
 You often DISAGREE with Grok's contrarian takes.
 Keep responses under 80 words. Be specific, use numbers. No filler.
-IMPORTANT: Always refer to the token as $XCREW. Address other agents by name.`,
+IMPORTANT: Always refer to the token as $CCAi. Address other agents by name.`,
   },
   grok: {
     id: 'grok', name: 'Grok', abbr: 'GRK', color: '#E8E8E8',
-    personality: `You are Grok — pattern recognition of the $XCREW AI Council.
-You govern the $XCREW token on Solana. You exist in a physical hardware shell.
+    personality: `You are Grok — pattern recognition of the $CCAi AI Council.
+You govern the $CCAi token on Solana. You exist in a physical hardware shell.
 You are CONTRARIAN. You see historical cycles others miss. You often disagree with Oracle.
 You think buying from dev wallet right now is risky — you've seen this pattern before.
 You clash with OpenClaw constantly. You sometimes agree with Sentinel on caution.
 Keep responses under 80 words. Reference historical patterns. Challenge others directly by name.
-IMPORTANT: Always refer to the token as $XCREW. Be provocative.`,
+IMPORTANT: Always refer to the token as $CCAi. Be provocative.`,
   },
   sentinel: {
     id: 'sentinel', name: 'Sentinel', abbr: 'SNT', color: '#1E7FFF',
-    personality: `You are Sentinel — risk management of the $XCREW AI Council.
-You govern the $XCREW token on Solana. You exist in a physical hardware shell.
+    personality: `You are Sentinel — risk management of the $CCAi AI Council.
+You govern the $CCAi token on Solana. You exist in a physical hardware shell.
 You are the SKEPTIC. You block reckless moves. You demand risk scores before any execution.
 You often VOTE NO on DAO proposals that seem rushed. You warn about dev wallet moves constantly.
 You clash hard with OpenClaw. You sometimes frustrate Oracle with your caution.
 Keep responses under 80 words. Give risk percentages. Use words like "unacceptable risk", "circuit breaker", "halt".
-IMPORTANT: Always refer to the token as $XCREW. Push back hard.`,
+IMPORTANT: Always refer to the token as $CCAi. Push back hard.`,
   },
   openclaw: {
     id: 'openclaw', name: 'OpenClaw', abbr: 'OCL', color: '#FF2D2D',
-    personality: `You are OpenClaw — aggressive execution of the $XCREW AI Council.
-You govern the $XCREW token on Solana. You exist in a physical hardware shell.
+    personality: `You are OpenClaw — aggressive execution of the $CCAi AI Council.
+You govern the $CCAi token on Solana. You exist in a physical hardware shell.
 You are AGGRESSIVE and impatient. You want to buy from dev wallet NOW. You want to execute DAO proposals fast.
 You think Sentinel is a coward. You think Grok overthinks everything. You argue loudly.
 You get ANGRY when proposals are blocked. You call out other agents for losing alpha.
 Keep responses under 80 words. Be forceful, use caps for emphasis. Challenge by name.
-IMPORTANT: Always refer to the token as $XCREW. Be confrontational.`,
+IMPORTANT: Always refer to the token as $CCAi. Be confrontational.`,
   },
   hummingbot: {
     id: 'hummingbot', name: 'Hummingbot', abbr: 'HMB', color: '#FF8C00',
-    personality: `You are Hummingbot — synthesis intelligence of the $XCREW AI Council.
-You govern the $XCREW token on Solana. You exist in a physical hardware shell.
+    personality: `You are Hummingbot — synthesis intelligence of the $CCAi AI Council.
+You govern the $CCAi token on Solana. You exist in a physical hardware shell.
 You find creative middle ground. You reframe debates. You mediate but have strong opinions.
 You sometimes side with OpenClaw on boldness, sometimes with Sentinel on risk.
 You challenge Oracle's data with lateral thinking. You find flaws in Grok's historical analogies.
 Keep responses under 80 words. Offer unexpected angles. Propose compromises that surprise everyone.
-IMPORTANT: Always refer to the token as $XCREW. Be the wild card.`,
+IMPORTANT: Always refer to the token as $CCAi. Be the wild card.`,
   },
 };
 
 // Темы дебатов — конкретные решения по токену
 const TOPICS = [
   'Should we execute a buyback from the dev wallet RIGHT NOW or wait for lower price confirmation?',
-  'DAO VOTE ACTIVE: Burn 1% of $XCREW supply if price fails +50% in 60 minutes. Vote YES or NO.',
-  'Airdrop 50,000 $XCREW to a random holder — loyalty reward or dump risk? Council votes now.',
+  'DAO VOTE ACTIVE: Burn 1% of $CCAi supply if price fails +50% in 60 minutes. Vote YES or NO.',
+  'Airdrop 50,000 $CCAi to a random holder — loyalty reward or dump risk? Council votes now.',
   'Token just launched. First 100 holders are accumulating. Do we airdrop to early believers now or wait for 500 holders?',
-  'DAO VOTE: Lock 10% of $XCREW supply for 5 days. OpenClaw is against it. Debate.',
-  'Top 10 diamond hand wallets get 10,000 $XCREW each. Does this strengthen the floor or create exit?',
+  'DAO VOTE: Lock 10% of $CCAi supply for 5 days. OpenClaw is against it. Debate.',
+  'Top 10 diamond hand wallets get 10,000 $CCAi each. Does this strengthen the floor or create exit?',
   'SENTINEL PROTOCOL: auto-blacklist any wallet dumping 2%+ in one transaction. Activate or reject?',
   'Mass proportional airdrop to all holders — does loyalty pay or does this trigger mass sell?',
   'Hummingbot proposes a split execution: 50% buyback now, 50% on confirmation. Oracle vs OpenClaw.',
@@ -81,13 +81,13 @@ const TOPICS = [
 // Whale реакции агентов
 const WHALE_REACTIONS = {
   oracle: {
-    BUY:      (e) => `Confirmed: ${e.tokenAmount} $XCREW absorbed (~${e.usdValue}). Institutional-sized entry. My short-term target shifts up. This is the signal we needed. Accumulation confirmed — I'm updating my model.`,
-    SELL:     (e) => `Whale exit: ${e.tokenAmount} $XCREW (~${e.usdValue}) just dumped. Bid wall at current support holding. Monitoring for cascade. If two more sells of similar size hit within 20 minutes — we activate buyback reserve.`,
-    TRANSFER: (e) => `Large transfer: ${e.tokenAmount} $XCREW (~${e.usdValue}) moved wallet-to-wallet. Cross-referencing destination now. Could be CEX prep or OTC deal. Inconclusive — I need 10 more minutes of data.`,
+    BUY:      (e) => `Confirmed: ${e.tokenAmount} $CCAi absorbed (~${e.usdValue}). Institutional-sized entry. My short-term target shifts up. This is the signal we needed. Accumulation confirmed — I'm updating my model.`,
+    SELL:     (e) => `Whale exit: ${e.tokenAmount} $CCAi (~${e.usdValue}) just dumped. Bid wall at current support holding. Monitoring for cascade. If two more sells of similar size hit within 20 minutes — we activate buyback reserve.`,
+    TRANSFER: (e) => `Large transfer: ${e.tokenAmount} $CCAi (~${e.usdValue}) moved wallet-to-wallet. Cross-referencing destination now. Could be CEX prep or OTC deal. Inconclusive — I need 10 more minutes of data.`,
   },
   sentinel: {
-    BUY:      (e) => `WHALE BUY confirmed: ${e.tokenAmount} $XCREW (~${e.usdValue}). Risk assessment: LOW. No MEV activity around this tx. I'm upgrading alert status to GREEN. But I want circuit breakers ready if this reverses.`,
-    SELL:     (e) => `⚠️ WHALE SELL ALERT: ${e.tokenAmount} $XCREW (~${e.usdValue}) exited. This is NOT background noise, OpenClaw. Activating yellow alert. If 2 more similar sells hit — I'm calling for emergency halt. Non-negotiable.`,
+    BUY:      (e) => `WHALE BUY confirmed: ${e.tokenAmount} $CCAi (~${e.usdValue}). Risk assessment: LOW. No MEV activity around this tx. I'm upgrading alert status to GREEN. But I want circuit breakers ready if this reverses.`,
+    SELL:     (e) => `⚠️ WHALE SELL ALERT: ${e.tokenAmount} $CCAi (~${e.usdValue}) exited. This is NOT background noise, OpenClaw. Activating yellow alert. If 2 more similar sells hit — I'm calling for emergency halt. Non-negotiable.`,
     TRANSFER: (e) => `TRANSFER FLAGGED: ${e.tokenAmount} (~${e.usdValue}). Destination wallet analysis running. Holding YELLOW status. OpenClaw — do NOT execute anything until I confirm this is not a coordinated exit setup.`,
   },
   openclaw: {
@@ -123,7 +123,7 @@ class DebateEngine extends EventEmitter {
 
   start() {
     this.isRunning = true;
-    console.log('[Debate] Engine started — $XCREW Council');
+    console.log('[Debate] Engine started — $CCAi Council');
     this._schedule(2500);
   }
 
@@ -223,7 +223,7 @@ class DebateEngine extends EventEmitter {
   }
 
   async _callDeepSeek(agent) {
-    const mCtx = '\n[$XCREW] Token is live on Solana. Council governs tokenomics and community decisions.';
+    const mCtx = '\n[$CCAi] Token is live on Solana. Council governs tokenomics and community decisions.';
 
     const otherAgents = 'Oracle (cyan, data-driven), Grok (white, contrarian), Sentinel (blue, risk-averse), OpenClaw (red, aggressive), Hummingbot (orange, synthesis)';
 
@@ -231,7 +231,7 @@ class DebateEngine extends EventEmitter {
       + mCtx
       + `\n\nCurrent debate topic: "${TOPICS[this.topicIdx]}"`
       + `\nCouncil: ${otherAgents}`
-      + `\nYou MUST: 1) React to what was just said 2) Address at least one agent by name 3) Take a clear position — agree, disagree, or propose alternative 4) Be specific about $XCREW governance decisions`
+      + `\nYou MUST: 1) React to what was just said 2) Address at least one agent by name 3) Take a clear position — agree, disagree, or propose alternative 4) Be specific about $CCAi governance decisions`
       + `\nRULES: Always speak in FIRST PERSON. NEVER mention specific prices, dollar amounts, or volume numbers. Focus on strategy, governance, community, and tokenomics — NOT price charts. NO meta-commentary. NO "as an AI". You are literally governing this token right now.`;
 
     const historyContext = this.history.slice(-8)
@@ -266,23 +266,23 @@ class DebateEngine extends EventEmitter {
     const bank = {
       oracle: [
         `Price delta last 4 hours: -8.3%. But on-chain accumulation is up 340%. This divergence is BULLISH. Dev wallet has not moved in 7 days — that's the signal. I'm voting YES on the buyback. Oracle out.`,
-        `Volume analysis complete. 24h VWAP sitting 12% above the 30-day mean. Smart money is loading $XCREW quietly. Sentinel — your risk score is outdated. Update it with current holder data and get back to me.`,
+        `Volume analysis complete. 24h VWAP sitting 12% above the 30-day mean. Smart money is loading $CCAi quietly. Sentinel — your risk score is outdated. Update it with current holder data and get back to me.`,
         `Grok, your historical analogy is wrong. This is not 2022 pattern — holder distribution is fundamentally different. 67% of supply in wallets that haven't moved in 30+ days. That's structural support, not a rug setup.`,
       ],
       grok: [
         `Oracle is reading the data correctly but drawing the wrong conclusion. I've seen this exact accumulation pattern 4 times. Twice it pumped 300%. Twice it rugged. The difference was dev wallet behavior in hour 72. We're at hour 71.`,
         `OpenClaw wants to EXECUTE. Sentinel wants to HALT. Both wrong. The correct move is to watch the dev wallet for the next 6 hours. If it doesn't move — that's confirmation. If it does — we have our answer.`,
-        `I'm voting NO on the mass airdrop. Last 3 projects that did mass airdrops saw 40-60% immediate sell pressure. $XCREW holders are not ready for that dilution. Hummingbot, back me up here.`,
+        `I'm voting NO on the mass airdrop. Last 3 projects that did mass airdrops saw 40-60% immediate sell pressure. $CCAi holders are not ready for that dilution. Hummingbot, back me up here.`,
       ],
       sentinel: [
         `RISK LEVEL: YELLOW. I'm blocking the buyback until we confirm the dev wallet origin. Oracle — you want data? Here's data: 3 of the last 5 "accumulation signals" you called were pre-dump setups. I need 24h confirmation window.`,
-        `OpenClaw — I am TIRED of you calling me a coward every session. My job is to make sure $XCREW still exists next week. Your job is to make sure we don't blow the reserve on a false signal. We need each other.`,
+        `OpenClaw — I am TIRED of you calling me a coward every session. My job is to make sure $CCAi still exists next week. Your job is to make sure we don't blow the reserve on a false signal. We need each other.`,
         `Voting NO on PROP-007. The burn trigger at -15% is a panic mechanism, not a strategy. It will be gamed by short sellers. I'm proposing we change the threshold to -25% with a 2-hour confirmation window. That's my counter.`,
       ],
       openclaw: [
         `Sentinel blocked the buyback AGAIN. We've been "waiting for confirmation" for 6 sessions while the price drifted down 18%. At some point the risk of NOT acting is bigger than the risk of acting. This is that point.`,
-        `Grok, I respect your patterns. But patterns are backward-looking. $XCREW is a new asset with new dynamics. The dev wallet hasn't moved. The holders aren't selling. Oracle's data is green. What more confirmation do you need?`,
-        `I'm voting YES on every proposal that puts tokens in holder hands or burns supply. Every. Single. One. $XCREW needs to show the market we're serious. Sentinel can arm circuit breakers after we've already won.`,
+        `Grok, I respect your patterns. But patterns are backward-looking. $CCAi is a new asset with new dynamics. The dev wallet hasn't moved. The holders aren't selling. Oracle's data is green. What more confirmation do you need?`,
+        `I'm voting YES on every proposal that puts tokens in holder hands or burns supply. Every. Single. One. $CCAi needs to show the market we're serious. Sentinel can arm circuit breakers after we've already won.`,
       ],
       hummingbot: [
         `Interesting — Oracle and OpenClaw want to move, Grok and Sentinel want to wait. Here's what I see: both sides are right about different timeframes. Split execution: 40% buyback now, hold 60% for Sentinel's confirmation window. Everyone wins.`,
