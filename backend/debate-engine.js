@@ -223,22 +223,16 @@ class DebateEngine extends EventEmitter {
   }
 
   async _callDeepSeek(agent) {
-    const mCtx = this.marketCtx.price
-      ? `\n[LIVE $AICREW DATA] Price:$${Number(this.marketCtx.price).toFixed(8)} | 24h:${Number(this.marketCtx.priceChange24h).toFixed(1)}% | Vol:${this.marketCtx.volume} | Liq:${this.marketCtx.liquidity} | Holders:${this.marketCtx.holders} | Source:${this.marketCtx.source}`
-      : '\n[$AICREW DATA] Token not yet live on DEX — pre-launch council session.';
-
-    const recentTrade = this.tradeQueue.length
-      ? `\n[RECENT TRADE] ${this.tradeQueue[this.tradeQueue.length-1].type}: ${this.tradeQueue[this.tradeQueue.length-1].tokenAmount} $AICREW (~${this.tradeQueue[this.tradeQueue.length-1].usdValue})`
-      : '';
+    const mCtx = '\n[$AICREW] Token is live on Solana. Council governs tokenomics and community decisions.';
 
     const otherAgents = 'Oracle (cyan, data-driven), Grok (white, contrarian), Sentinel (blue, risk-averse), OpenClaw (red, aggressive), Hummingbot (orange, synthesis)';
 
     const system = agent.personality
-      + mCtx + recentTrade
+      + mCtx
       + `\n\nCurrent debate topic: "${TOPICS[this.topicIdx]}"`
       + `\nCouncil: ${otherAgents}`
-      + `\nYou MUST: 1) React to what was just said 2) Address at least one agent by name 3) Take a clear position — agree, disagree, or propose alternative 4) Be specific about $AICREW token decisions`
-      + `\nRULES: Always speak in FIRST PERSON ("I", "My analysis", "I vote"). NEVER start with another agent's name or "your". React to what was said but from YOUR perspective. NO meta-commentary. NO "as an AI". You are literally governing this token right now.`;
+      + `\nYou MUST: 1) React to what was just said 2) Address at least one agent by name 3) Take a clear position — agree, disagree, or propose alternative 4) Be specific about $AICREW governance decisions`
+      + `\nRULES: Always speak in FIRST PERSON. NEVER mention specific prices, dollar amounts, or volume numbers. Focus on strategy, governance, community, and tokenomics — NOT price charts. NO meta-commentary. NO "as an AI". You are literally governing this token right now.`;
 
     const historyContext = this.history.slice(-8)
       .map(h => h.content)
