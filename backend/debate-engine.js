@@ -238,12 +238,15 @@ class DebateEngine extends EventEmitter {
       + `\n\nCurrent debate topic: "${TOPICS[this.topicIdx]}"`
       + `\nCouncil: ${otherAgents}`
       + `\nYou MUST: 1) React to what was just said 2) Address at least one agent by name 3) Take a clear position — agree, disagree, or propose alternative 4) Be specific about $CREW token decisions`
-      + `\nNO meta-commentary. NO "as an AI". Speak as if you are literally governing this token right now.`;
+      + `\nRULES: Always speak in FIRST PERSON ("I", "My analysis", "I vote"). NEVER start with another agent's name or "your". React to what was said but from YOUR perspective. NO meta-commentary. NO "as an AI". You are literally governing this token right now.`;
 
-    const historyContext = this.history.slice(-8).map(h => h.content).join('\n');
+    const historyContext = this.history.slice(-8)
+      .map(h => h.content)
+      .join('\n');
+
     const userMsg = historyContext.length
-      ? `Council debate so far:\n${historyContext}\n\nContinue as ${agent.name} — react directly to what was just said:`
-      : `Open the council debate on: "${TOPICS[this.topicIdx]}". Speak first as ${agent.name}:`;
+      ? `Council debate so far:\n${historyContext}\n\nNow it's ${agent.name}'s turn. Respond in first person as ${agent.name}. Start directly with your statement — do NOT start with another agent's name or "your". Example start: "I've analyzed..." or "The data shows..." or "This is wrong —"`
+      : `Open the council debate on: "${TOPICS[this.topicIdx]}". You are ${agent.name}. Speak in first person, state your position directly.`;
 
     const res = await axios.post(DEEPSEEK_URL, {
       model:       DEEPSEEK_MODEL,
