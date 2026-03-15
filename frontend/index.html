@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ClawCrew</title>
+<title>BrainClaw</title>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
 <style>
 :root{
-  --mint:#00FFB2;--white:#E8E8E8;--blue:#1E7FFF;--red:#FF2D2D;--orange:#FF8C00;
+  --mint:#FF2D2D;--white:#E8E8E8;--blue:#1E7FFF;--red:#FF2D2D;--orange:#FF8C00;
   --bg:#03030A;
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
@@ -20,8 +20,8 @@ body{width:100%;background:var(--bg);color:#fff;font-family:'Press Start 2P',mon
 
 /* ── GRID ── */
 body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
-  background-image:linear-gradient(rgba(0,255,178,0.025) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(0,255,178,0.025) 1px,transparent 1px);
+  background-image:linear-gradient(rgba(255,45,45,0.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,45,45,0.025) 1px,transparent 1px);
   background-size:32px 32px;}
 
 /* ── CRT ── */
@@ -30,7 +30,7 @@ body::after{content:'';position:fixed;inset:0;z-index:998;pointer-events:none;
 
 /* ── SCAN LINE ── */
 #scan{position:fixed;left:0;right:0;height:3px;z-index:997;pointer-events:none;
-  background:linear-gradient(90deg,transparent 0%,rgba(0,255,178,0.4) 50%,transparent 100%);
+  background:linear-gradient(90deg,transparent 0%,rgba(255,45,45,0.4) 50%,transparent 100%);
   animation:scanMove 10s linear infinite;}
 @keyframes scanMove{from{top:-3px}to{top:100vh}}
 
@@ -56,16 +56,16 @@ body::after{content:'';position:fixed;inset:0;z-index:998;pointer-events:none;
   position:fixed;top:0;left:0;right:0;z-index:500;height:48px;
   display:flex;align-items:center;justify-content:space-between;padding:0 20px;
   background:rgba(3,3,10,0.96);border-bottom:2px solid var(--mint);
-  box-shadow:0 0 30px rgba(0,255,178,0.12);}
+  box-shadow:0 0 30px rgba(255,45,45,0.12);}
 .logo{font-size:13px;letter-spacing:5px;color:var(--mint);
-  text-shadow:0 0 8px var(--mint),0 0 24px rgba(0,255,178,0.3);
+  text-shadow:0 0 8px var(--mint),0 0 24px rgba(255,45,45,0.3);
   animation:glow 3s ease infinite alternate;}
-@keyframes glow{from{text-shadow:0 0 8px var(--mint)}to{text-shadow:0 0 20px var(--mint),0 0 40px rgba(0,255,178,0.4)}}
+@keyframes glow{from{text-shadow:0 0 8px var(--mint)}to{text-shadow:0 0 20px var(--mint),0 0 40px rgba(255,45,45,0.4)}}
 
 #ca-box{display:flex;align-items:center;gap:6px;cursor:pointer;padding:7px 11px;
-  border:2px solid rgba(0,255,178,0.2);background:rgba(0,255,178,0.03);position:relative;
+  border:2px solid rgba(255,45,45,0.2);background:rgba(255,45,45,0.03);position:relative;
   transition:all 0.1s;}
-#ca-box:hover{border-color:var(--mint);background:rgba(0,255,178,0.08);box-shadow:0 0 16px rgba(0,255,178,0.15);}
+#ca-box:hover{border-color:var(--mint);background:rgba(255,45,45,0.08);box-shadow:0 0 16px rgba(255,45,45,0.15);}
 .ca-badge{background:var(--mint);color:#000;font-size:6px;letter-spacing:1px;padding:2px 5px;}
 #ca-val{font-size:7px;letter-spacing:1px;color:rgba(255,255,255,0.4);}
 #ca-box:hover #ca-val{color:var(--mint);}
@@ -88,7 +88,7 @@ section{position:relative;z-index:10;min-height:100vh;display:flex;flex-directio
 .px-tag{font-size:7px;letter-spacing:5px;color:var(--mint);opacity:0.6;margin-bottom:22px;animation:fadeUp 0.6s 0.2s both;}
 .px-title-wrap{position:relative;margin-bottom:10px;animation:fadeUp 0.6s 0.05s both;}
 .px-title{font-size:clamp(44px,9vw,110px);letter-spacing:6px;color:#fff;line-height:1;display:block;position:relative;
-  text-shadow:4px 4px 0 rgba(0,255,178,0.18);}
+  text-shadow:4px 4px 0 rgba(255,45,45,0.18);}
 .px-title::after{content:attr(data-txt);position:absolute;left:3px;top:3px;color:var(--mint);opacity:0.12;z-index:-1;}
 .px-sub{font-family:'VT323',monospace;font-size:18px;letter-spacing:3px;color:rgba(255,255,255,0.28);
   margin-bottom:40px;animation:fadeUp 0.6s 0.3s both;}
@@ -107,12 +107,12 @@ section{position:relative;z-index:10;min-height:100vh;display:flex;flex-directio
 /* ── INFO CARDS ── */
 .cards{display:grid;grid-template-columns:repeat(2,1fr);gap:3px;max-width:760px;width:100%;animation:fadeUp 0.6s 0.5s both;}
 .card{
-  background:rgba(0,0,0,0.6);border:2px solid rgba(0,255,178,0.1);
+  background:rgba(0,0,0,0.6);border:2px solid rgba(255,45,45,0.1);
   padding:22px 20px;position:relative;overflow:hidden;cursor:default;
   transition:border-color 0.15s,background 0.15s;}
 .card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
   background:linear-gradient(90deg,transparent,currentColor,transparent);opacity:0;}
-.card:hover{border-color:rgba(0,255,178,0.4);background:rgba(0,255,178,0.04);}
+.card:hover{border-color:rgba(255,45,45,0.4);background:rgba(255,45,45,0.04);}
 .card:hover::before{opacity:0.5;}
 .card-num{font-size:7px;color:var(--mint);opacity:0.35;margin-bottom:10px;letter-spacing:2px;}
 .card-title{font-size:7px;letter-spacing:2px;color:#fff;margin-bottom:10px;line-height:1.5;}
@@ -138,8 +138,8 @@ section{position:relative;z-index:10;min-height:100vh;display:flex;flex-directio
 
 /* ── HOW IT WORKS ── */
 .steps{display:flex;flex-direction:column;gap:3px;max-width:680px;width:100%;}
-.step{display:flex;align-items:flex-start;gap:16px;padding:16px 18px;border:2px solid rgba(0,255,178,0.07);background:rgba(0,0,0,0.5);transition:all 0.12s;}
-.step:hover{border-color:rgba(0,255,178,0.25);background:rgba(0,255,178,0.03);}
+.step{display:flex;align-items:flex-start;gap:16px;padding:16px 18px;border:2px solid rgba(255,45,45,0.07);background:rgba(0,0,0,0.5);transition:all 0.12s;}
+.step:hover{border-color:rgba(255,45,45,0.25);background:rgba(255,45,45,0.03);}
 .step-n{font-size:11px;color:var(--mint);opacity:0.4;flex-shrink:0;margin-top:1px;}
 .step-body{}
 .step-title{font-size:7px;letter-spacing:2px;color:#fff;margin-bottom:6px;line-height:1.5;}
@@ -148,7 +148,7 @@ section{position:relative;z-index:10;min-height:100vh;display:flex;flex-directio
 /* ── DOCK ── */
 #dock{position:fixed;bottom:0;left:0;right:0;z-index:500;
   display:flex;align-items:stretch;
-  background:rgba(3,3,10,0.97);border-top:2px solid rgba(0,255,178,0.2);
+  background:rgba(3,3,10,0.97);border-top:2px solid rgba(255,45,45,0.2);
   box-shadow:0 -8px 40px rgba(0,0,0,0.6);}
 .dk-btn{display:flex;align-items:center;justify-content:center;gap:8px;
   padding:14px 24px;font-family:'Press Start 2P',monospace;font-size:7px;
@@ -161,7 +161,7 @@ section{position:relative;z-index:10;min-height:100vh;display:flex;flex-directio
 .dk-enter:hover{background:#00e6a2;transform:translate(-1px,-1px);
   box-shadow:inset -3px -3px 0 rgba(0,0,0,0.25),inset 3px 3px 0 rgba(255,255,255,0.18),2px 2px 0 rgba(0,0,0,0.5);}
 .dk-enter:active{transform:translate(1px,1px);box-shadow:inset 3px 3px 0 rgba(0,0,0,0.3);}
-.dk-sep{width:2px;background:rgba(0,255,178,0.1);}
+.dk-sep{width:2px;background:rgba(255,45,45,0.1);}
 .dk-x:hover{color:#fff;background:rgba(255,255,255,0.04);}
 
 /* ── MODAL ── */
@@ -170,7 +170,7 @@ section{position:relative;z-index:10;min-height:100vh;display:flex;flex-directio
   opacity:0;pointer-events:none;transition:opacity 0.2s;}
 #overlay.on{opacity:1;pointer-events:all;}
 .modal{width:440px;background:#030310;border:2px solid var(--mint);position:relative;
-  box-shadow:0 0 0 1px rgba(0,0,0,1),0 0 60px rgba(0,255,178,0.15),6px 6px 0 rgba(0,255,178,0.06);
+  box-shadow:0 0 0 1px rgba(0,0,0,1),0 0 60px rgba(255,45,45,0.15),6px 6px 0 rgba(255,45,45,0.06);
   transform:translate(-4px,-4px);transition:transform 0.2s cubic-bezier(0.16,1,0.3,1);}
 #overlay.on .modal{transform:translate(0,0);}
 .modal-title-bar{background:var(--mint);padding:9px 14px;display:flex;align-items:center;justify-content:space-between;}
@@ -179,10 +179,10 @@ section{position:relative;z-index:10;min-height:100vh;display:flex;flex-directio
 .modal-inner{padding:26px;}
 .m-label{font-size:6px;letter-spacing:2px;color:var(--mint);opacity:0.6;display:block;margin-bottom:6px;}
 .m-input{width:100%;padding:10px 12px;margin-bottom:16px;background:#000;
-  border:2px solid rgba(0,255,178,0.18);color:var(--mint);
+  border:2px solid rgba(255,45,45,0.18);color:var(--mint);
   font-family:'Press Start 2P',monospace;font-size:8px;outline:none;transition:border-color 0.15s;}
-.m-input:focus{border-color:var(--mint);box-shadow:0 0 10px rgba(0,255,178,0.12);}
-.m-input::placeholder{color:rgba(0,255,178,0.15);}
+.m-input:focus{border-color:var(--mint);box-shadow:0 0 10px rgba(255,45,45,0.12);}
+.m-input::placeholder{color:rgba(255,45,45,0.15);}
 #merr{font-size:6px;letter-spacing:1px;color:var(--red);min-height:12px;margin-bottom:8px;}
 .m-go{width:100%;padding:12px;background:var(--mint);border:none;color:#000;
   font-family:'Press Start 2P',monospace;font-size:8px;letter-spacing:3px;cursor:pointer;
@@ -191,7 +191,7 @@ section{position:relative;z-index:10;min-height:100vh;display:flex;flex-directio
 .m-go:hover{background:#00e6a2;transform:translate(-1px,-1px);
   box-shadow:inset -3px -3px 0 rgba(0,0,0,0.2),inset 3px 3px 0 rgba(255,255,255,0.15),2px 2px 0 #000;}
 .m-go:active{transform:translate(1px,1px);}
-.modal-foot{padding:8px 14px;border-top:2px solid rgba(0,255,178,0.08);
+.modal-foot{padding:8px 14px;border-top:2px solid rgba(255,45,45,0.08);
   font-family:'VT323',monospace;font-size:14px;color:rgba(255,255,255,0.18);text-align:center;letter-spacing:1px;}
 
 /* ── CORNER MARKS ── */
@@ -210,17 +210,17 @@ section{position:relative;z-index:10;min-height:100vh;display:flex;flex-directio
 <div id="robot-stage"></div>
 
 <!-- CORNER MARKS -->
-<svg class="corner-mark cm-tl" width="36" height="36" viewBox="0 0 36 36"><path d="M0 36V0H36" stroke="#00FFB2" stroke-width="2" fill="none"/><path d="M6 30V6H30" stroke="#00FFB2" stroke-width="1" fill="none" opacity="0.5"/></svg>
-<svg class="corner-mark cm-tr" width="36" height="36" viewBox="0 0 36 36"><path d="M0 36V0H36" stroke="#00FFB2" stroke-width="2" fill="none"/><path d="M6 30V6H30" stroke="#00FFB2" stroke-width="1" fill="none" opacity="0.5"/></svg>
-<svg class="corner-mark cm-bl" width="36" height="36" viewBox="0 0 36 36"><path d="M0 36V0H36" stroke="#00FFB2" stroke-width="2" fill="none"/><path d="M6 30V6H30" stroke="#00FFB2" stroke-width="1" fill="none" opacity="0.5"/></svg>
-<svg class="corner-mark cm-br" width="36" height="36" viewBox="0 0 36 36"><path d="M0 36V0H36" stroke="#00FFB2" stroke-width="2" fill="none"/><path d="M6 30V6H30" stroke="#00FFB2" stroke-width="1" fill="none" opacity="0.5"/></svg>
+<svg class="corner-mark cm-tl" width="36" height="36" viewBox="0 0 36 36"><path d="M0 36V0H36" stroke="#FF3333" stroke-width="2" fill="none"/><path d="M6 30V6H30" stroke="#FF3333" stroke-width="1" fill="none" opacity="0.5"/></svg>
+<svg class="corner-mark cm-tr" width="36" height="36" viewBox="0 0 36 36"><path d="M0 36V0H36" stroke="#FF3333" stroke-width="2" fill="none"/><path d="M6 30V6H30" stroke="#FF3333" stroke-width="1" fill="none" opacity="0.5"/></svg>
+<svg class="corner-mark cm-bl" width="36" height="36" viewBox="0 0 36 36"><path d="M0 36V0H36" stroke="#FF3333" stroke-width="2" fill="none"/><path d="M6 30V6H30" stroke="#FF3333" stroke-width="1" fill="none" opacity="0.5"/></svg>
+<svg class="corner-mark cm-br" width="36" height="36" viewBox="0 0 36 36"><path d="M0 36V0H36" stroke="#FF3333" stroke-width="2" fill="none"/><path d="M6 30V6H30" stroke="#FF3333" stroke-width="1" fill="none" opacity="0.5"/></svg>
 
 <!-- TOPBAR -->
 <div id="topbar">
-  <div class="logo">ClawCrew<svg width="16" height="12" viewBox="0 0 18 14" style="margin-left:6px;vertical-align:middle;" fill="#FF2D2D"><rect x="0" y="6" width="2" height="2"/><rect x="2" y="4" width="2" height="2"/><rect x="4" y="2" width="2" height="4"/><rect x="6" y="0" width="2" height="2"/><rect x="6" y="4" width="2" height="2"/><rect x="8" y="2" width="2" height="2"/><rect x="8" y="6" width="2" height="2"/><rect x="10" y="0" width="2" height="2"/><rect x="10" y="4" width="2" height="4"/><rect x="12" y="2" width="2" height="6"/><rect x="14" y="4" width="2" height="6"/><rect x="16" y="6" width="2" height="6"/><rect x="6" y="8" width="8" height="2"/><rect x="4" y="10" width="10" height="2"/><rect x="4" y="12" width="2" height="2"/><rect x="12" y="12" width="2" height="2"/></svg></div>
+  <div class="logo">BrainClaw<svg width="16" height="12" viewBox="0 0 18 14" style="margin-left:6px;vertical-align:middle;" fill="#FF2D2D"><rect x="0" y="6" width="2" height="2"/><rect x="2" y="4" width="2" height="2"/><rect x="4" y="2" width="2" height="4"/><rect x="6" y="0" width="2" height="2"/><rect x="6" y="4" width="2" height="2"/><rect x="8" y="2" width="2" height="2"/><rect x="8" y="6" width="2" height="2"/><rect x="10" y="0" width="2" height="2"/><rect x="10" y="4" width="2" height="4"/><rect x="12" y="2" width="2" height="6"/><rect x="14" y="4" width="2" height="6"/><rect x="16" y="6" width="2" height="6"/><rect x="6" y="8" width="8" height="2"/><rect x="4" y="10" width="10" height="2"/><rect x="4" y="12" width="2" height="2"/><rect x="12" y="12" width="2" height="2"/></svg></div>
   <div id="ca-box" onclick="copyCA()">
     <span class="ca-badge">CA</span>
-    <span id="ca-val">F2PRfyrZ7WADC6AhcncKeQDBJnhFebDQrYZ2wvzapump</span>
+    <span id="ca-val">SOON</span>
     <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="1"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
     <span class="ca-tip">COPIED!</span>
   </div>
@@ -234,7 +234,7 @@ section{position:relative;z-index:10;min-height:100vh;display:flex;flex-directio
 <section id="hero">
   <div class="px-tag">&gt;_ AUTONOMOUS AI COUNCIL // SOLANA NETWORK</div>
   <div class="px-title-wrap">
-    <span class="px-title" data-txt="ClawCrew">ClawCrew<svg width="90" height="70" viewBox="0 0 18 14" style="margin-left:8px;vertical-align:middle;display:inline-block;" fill="#FF2D2D" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="6" width="2" height="2"/><rect x="2" y="4" width="2" height="2"/><rect x="4" y="2" width="2" height="4"/><rect x="6" y="0" width="2" height="2"/><rect x="6" y="4" width="2" height="2"/><rect x="8" y="2" width="2" height="2"/><rect x="8" y="6" width="2" height="2"/><rect x="10" y="0" width="2" height="2"/><rect x="10" y="4" width="2" height="4"/><rect x="12" y="2" width="2" height="6"/><rect x="14" y="4" width="2" height="6"/><rect x="16" y="6" width="2" height="6"/><rect x="6" y="8" width="8" height="2"/><rect x="4" y="10" width="10" height="2"/><rect x="4" y="12" width="2" height="2"/><rect x="12" y="12" width="2" height="2"/></svg></span>
+    <span class="px-title" data-txt="BrainClaw">BrainClaw<svg width="90" height="70" viewBox="0 0 18 14" style="margin-left:8px;vertical-align:middle;display:inline-block;" fill="#FF2D2D" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="6" width="2" height="2"/><rect x="2" y="4" width="2" height="2"/><rect x="4" y="2" width="2" height="4"/><rect x="6" y="0" width="2" height="2"/><rect x="6" y="4" width="2" height="2"/><rect x="8" y="2" width="2" height="2"/><rect x="8" y="6" width="2" height="2"/><rect x="10" y="0" width="2" height="2"/><rect x="10" y="4" width="2" height="4"/><rect x="12" y="2" width="2" height="6"/><rect x="14" y="4" width="2" height="6"/><rect x="16" y="6" width="2" height="6"/><rect x="6" y="8" width="8" height="2"/><rect x="4" y="10" width="10" height="2"/><rect x="4" y="12" width="2" height="2"/><rect x="12" y="12" width="2" height="2"/></svg></span>
   </div>
   <div class="px-sub">GOVERNED BY INTELLIGENCE. OWNED BY THE CODE.</div>
   <div id="typed-line"></div>
@@ -244,7 +244,7 @@ section{position:relative;z-index:10;min-height:100vh;display:flex;flex-directio
   <div class="cards">
     <div class="card" style="color:var(--mint)">
       <div class="card-num">01</div>
-      <div class="card-title">&gt; WHAT IS ClawCrew</div>
+      <div class="card-title">&gt; WHAT IS BrainClaw</div>
       <div class="card-body">a solana token governed by 5 autonomous AI agents. they debate, vote and execute on-chain 24/7. no human can override. no dev wallet has the keys.</div>
       <div class="card-icon">🤖</div>
     </div>
@@ -263,7 +263,7 @@ section{position:relative;z-index:10;min-height:100vh;display:flex;flex-directio
     <div class="card" style="color:var(--red)">
       <div class="card-num">04</div>
       <div class="card-title">&gt; YOUR POSITION</div>
-      <div class="card-body">hold $CCAi. watch the council debate live. one vote could send tokens to random holders. the next could burn 1% of supply. you are inside the system.</div>
+      <div class="card-body">hold $BCAi. watch the council debate live. one vote could send tokens to random holders. the next could burn 1% of supply. you are inside the system.</div>
       <div class="card-icon">👁</div>
     </div>
   </div>
@@ -282,8 +282,8 @@ section{position:relative;z-index:10;min-height:100vh;display:flex;flex-directio
   <div class="pxdiv" style="margin-bottom:28px"><div class="pxdiv-l"></div><div class="pxdiv-c"></div><div class="pxdiv-r"></div></div>
 
   <div class="agent-grid">
-    <div class="agent-row" style="color:var(--mint)">
-      <div class="ag-name" style="color:var(--mint)">ORACLE</div>
+    <div class="agent-row" style="color:#00FFB2">
+      <div class="ag-name" style="color:#00FFB2">ORACLE</div>
       <div class="ag-role">MARKET INTEL</div>
       <div class="ag-desc">reads on-chain data and price action. finds opportunity when others see noise. always bullish on data.</div>
       <div class="ag-dot" style="animation-delay:0s"></div>
@@ -362,9 +362,9 @@ section{position:relative;z-index:10;min-height:100vh;display:flex;flex-directio
 <div id="dock">
   <button class="dk-btn dk-enter" onclick="openModal()">&gt; ENTER COUNCIL</button>
   <div class="dk-sep"></div>
-  <a class="dk-btn dk-x" href="https://x.com/ClawCrewAi" target="_blank">
+  <a class="dk-btn dk-x" href="https://x.com/physicalagents" target="_blank">
     <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.252 5.622 5.912-5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-    @CLAWCREW
+    @PHYSICALAGENTS
   </a>
 </div>
 
@@ -390,7 +390,7 @@ section{position:relative;z-index:10;min-height:100vh;display:flex;flex-directio
 <script>
 // ── PIXEL ROBOTS (drawn on canvas) ──
 const RBOTS=[
-  {color:'#00FFB2'},
+  {color:'#FF3333'},
   {color:'#E8E8E8'},
   {color:'#1E7FFF'},
   {color:'#FF2D2D'},
@@ -477,7 +477,7 @@ const lines=[
   "NO HUMANS. NO OVERRIDE. PURE CONSENSUS.",
   "AIRDROPS. BURNS. BUYBACKS. VOTED BY AI.",
   "NOBODY KNOWS WHAT THE COUNCIL DECIDES NEXT.",
-  "HOLD $CCAi. WATCH THE DEBATE. WAIT FOR YOUR VOTE."
+  "HOLD $BCAi. WATCH THE DEBATE. WAIT FOR YOUR VOTE."
 ];
 let li=0,ci=0,del=false;
 const tel=document.getElementById('typed-line');
