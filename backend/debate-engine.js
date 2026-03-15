@@ -262,8 +262,9 @@ class DebateEngine extends EventEmitter {
     });
 
     return (res.data.choices?.[0]?.message?.content || '')
-      .replace(/^\[?\w[\w\s]*\]?:?\s*/, '') // strip "AgentName:" prefix
-      .replace(/^[,\s]+/, '')               // strip leading comma/spaces
+      .replace(/^\[[\w\s]+\]:\s*/, '')   // strip [AgentName]: 
+      .replace(/^[\w\s]+:\s*(?=[A-Z])/, '') // strip "AgentName: " only if followed by capital
+      .replace(/^[,.\s]+/, '')           // strip leading punctuation/spaces
       .trim();
   }
 
