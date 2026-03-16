@@ -7,158 +7,165 @@
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
 <style>
 :root{
-  --mint:#FF2D2D;--white:#E8E8E8;--blue:#1E7FFF;--red:#FF2D2D;--orange:#FF8C00;
-  --bg:#02020A;--border:rgba(255,45,45,0.15);
+  --red:#FF2D2D;--mint:#00FFB2;--white:#E8E8E8;--blue:#1E7FFF;--orange:#FF8C00;
+  --bg:#04000A;--bdr:rgba(255,45,45,0.12);
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 html,body{width:100%;height:100%;background:var(--bg);color:#fff;
   font-family:'Press Start 2P',monospace;overflow:hidden;cursor:crosshair;}
 body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
-  background-image:linear-gradient(rgba(255,51,51,0.015) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(255,51,51,0.015) 1px,transparent 1px);
-  background-size:32px 32px;}
+  background-image:linear-gradient(rgba(255,45,45,0.025) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(255,45,45,0.025) 1px,transparent 1px);
+  background-size:28px 28px;}
 body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.04) 3px,rgba(0,0,0,0.04) 4px);}
 #scan{position:fixed;left:0;right:0;height:2px;z-index:4;pointer-events:none;
-  background:linear-gradient(90deg,transparent,rgba(255,45,45,0.3),transparent);
-  animation:scanA 14s linear infinite;}
+  background:linear-gradient(90deg,transparent,rgba(255,45,45,0.25),transparent);
+  animation:scanA 12s linear infinite;}
 @keyframes scanA{from{top:-2px}to{top:100vh}}
 
-/* ── APP ── */
 .app{position:relative;z-index:10;width:100vw;height:100vh;
-  display:grid;grid-template-rows:48px 1fr;}
+  display:grid;grid-template-rows:50px 1fr;}
 
-/* ── HEADER ── */
+/* ── HDR ── */
 .hdr{display:flex;align-items:center;justify-content:space-between;padding:0 16px;
-  background:rgba(2,2,10,0.97);border-bottom:2px solid var(--mint);
-  box-shadow:0 0 20px rgba(255,51,51,0.1);z-index:20;}
-.hdr-logo{font-size:12px;letter-spacing:5px;color:var(--mint);
-  text-shadow:0 0 8px var(--mint),0 0 20px rgba(255,45,45,0.3);
-  animation:glow 3s ease infinite alternate;}
-@keyframes glow{from{text-shadow:0 0 8px var(--mint)}to{text-shadow:0 0 20px var(--mint),0 0 40px rgba(255,45,45,0.4)}}
-.hdr-agents{display:flex;gap:0;}
-.ha{display:flex;align-items:center;gap:5px;padding:0 10px;font-size:6px;
-  letter-spacing:1px;text-transform:uppercase;border-right:1px solid rgba(255,51,51,0.08);}
-.ha:first-child{border-left:1px solid rgba(255,51,51,0.08);}
-.ha-led{width:6px;height:6px;flex-shrink:0;animation:blink 2s steps(1) infinite;}
+  background:rgba(4,0,10,0.98);border-bottom:2px solid var(--bdr);z-index:20;}
+.hdr-logo{display:flex;align-items:center;gap:8px;font-size:11px;letter-spacing:4px;
+  color:var(--red);text-shadow:0 0 10px rgba(255,45,45,0.4);}
+.hdr-agents{display:flex;}
+.ha{display:flex;align-items:center;gap:5px;padding:0 9px;font-size:6px;letter-spacing:1px;
+  border-right:1px solid rgba(255,45,45,0.06);}
+.ha:first-child{border-left:1px solid rgba(255,45,45,0.06);}
+.ha-led{width:5px;height:5px;flex-shrink:0;animation:blk 2s steps(1) infinite;}
 .hdr-r{display:flex;align-items:center;gap:12px;}
 .live-w{display:flex;align-items:center;gap:5px;font-size:6px;letter-spacing:3px;color:var(--mint);}
-.led{width:7px;height:7px;background:var(--mint);box-shadow:0 0 6px var(--mint);animation:blink 1s steps(1) infinite;}
-@keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
-#clk{font-size:7px;color:rgba(255,255,255,0.22);letter-spacing:1px;}
-.hdr-exit{font-size:6px;letter-spacing:1px;color:rgba(255,255,255,0.2);cursor:pointer;
-  padding:5px 8px;border:1px solid rgba(255,255,255,0.08);background:none;transition:all 0.1s;}
+.led{width:6px;height:6px;background:var(--mint);box-shadow:0 0 6px var(--mint);animation:blk 1s steps(1) infinite;}
+#clk{font-size:7px;color:rgba(255,255,255,0.2);letter-spacing:1px;}
+.hdr-exit{font-size:6px;letter-spacing:1px;color:rgba(255,255,255,0.18);cursor:pointer;
+  padding:5px 8px;border:1px solid rgba(255,255,255,0.07);background:none;transition:all 0.1s;}
 .hdr-exit:hover{color:var(--red);border-color:var(--red);}
+@keyframes blk{0%,49%{opacity:1}50%,100%{opacity:0}}
 
 /* ── MAIN ── */
-.main{display:grid;grid-template-columns:200px 1fr 200px;height:calc(100vh - 48px);overflow:hidden;}
+.main{display:grid;grid-template-columns:220px 1fr 220px;height:calc(100vh - 50px);overflow:hidden;}
 
 /* ── LEFT ── */
-.lpanel{border-right:2px solid var(--border);display:flex;flex-direction:column;overflow:hidden;background:rgba(0,0,0,0.3);}
-.blk{border-bottom:2px solid var(--border);padding:12px;background:rgba(0,0,0,0.4);}
-.blk-t{font-size:5px;letter-spacing:3px;color:rgba(255,45,45,0.4);text-transform:uppercase;margin-bottom:10px;}
+.lpanel{border-right:2px solid var(--bdr);display:flex;flex-direction:column;overflow:hidden;background:rgba(0,0,0,0.3);}
+.blk{border-bottom:2px solid var(--bdr);padding:12px;background:rgba(0,0,0,0.35);}
+.blk-t{font-size:5px;letter-spacing:3px;color:rgba(255,45,45,0.35);text-transform:uppercase;margin-bottom:10px;}
 
-/* TOKEN DATA */
-.tok-name{font-family:'VT323',monospace;font-size:26px;color:#fff;letter-spacing:2px;margin-bottom:8px;}
-.tok-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;}
-.tok-cell{background:rgba(255,51,51,0.04);border:1px solid rgba(255,51,51,0.1);padding:7px 8px;}
-.tc-l{font-size:4px;letter-spacing:2px;color:rgba(255,51,51,0.35);margin-bottom:3px;text-transform:uppercase;}
-.tc-v{font-family:'VT323',monospace;font-size:16px;color:var(--mint);}
+/* TOKEN */
+.tok-name{font-family:'VT323',monospace;font-size:28px;color:var(--red);letter-spacing:2px;margin-bottom:4px;
+  text-shadow:0 0 10px rgba(255,45,45,0.3);}
+.tok-sub{font-size:5px;letter-spacing:2px;color:rgba(255,45,45,0.3);}
 
 /* DAO */
-.dao-cd{font-family:'VT323',monospace;font-size:38px;color:var(--mint);
-  letter-spacing:2px;line-height:1;margin-bottom:4px;text-shadow:0 0 10px rgba(255,45,45,0.4);}
-.dao-lbl{font-size:5px;letter-spacing:2px;color:rgba(255,255,255,0.2);margin-bottom:10px;}
-.dao-box{background:rgba(255,51,51,0.04);border:2px solid rgba(255,51,51,0.1);padding:8px;margin-bottom:10px;position:relative;}
-.dao-box::before{content:'PROPOSAL';position:absolute;top:-6px;left:6px;font-size:4px;letter-spacing:2px;background:#02020A;padding:0 4px;color:rgba(255,45,45,0.4);}
-.dao-txt{font-family:'VT323',monospace;font-size:13px;color:rgba(255,255,255,0.5);line-height:1.5;}
+.dao-cd{font-family:'VT323',monospace;font-size:52px;color:var(--red);letter-spacing:2px;line-height:1;
+  text-shadow:0 0 12px rgba(255,45,45,0.35);}
+.dao-lbl{font-size:5px;letter-spacing:2px;color:rgba(255,255,255,0.18);margin-bottom:10px;}
+.dao-box{background:rgba(255,45,45,0.04);border:1px solid rgba(255,45,45,0.1);
+  padding:8px;margin-bottom:10px;position:relative;}
+.dao-box::before{content:'PROPOSAL';position:absolute;top:-6px;left:6px;font-size:4px;
+  letter-spacing:2px;background:var(--bg);padding:0 4px;color:rgba(255,45,45,0.3);}
+.dao-txt{font-family:'VT323',monospace;font-size:14px;color:rgba(255,255,255,0.5);line-height:1.5;}
 .vbars{display:flex;flex-direction:column;gap:5px;}
 .vr{display:flex;align-items:center;gap:5px;}
-.va{font-size:4px;letter-spacing:1px;width:44px;flex-shrink:0;opacity:0.5;text-transform:uppercase;}
-.vtrack{flex:1;height:3px;background:rgba(255,255,255,0.06);}
-.vfill{height:100%;transition:width 1s cubic-bezier(0.16,1,0.3,1);}
-.vnum{font-size:5px;width:20px;text-align:right;opacity:0.5;flex-shrink:0;}
+.va{font-size:4px;letter-spacing:1px;width:44px;flex-shrink:0;opacity:0.5;}
+.vtrack{flex:1;height:3px;background:rgba(255,255,255,0.05);}
+.vfill{height:100%;transition:width 1s ease;}
+.vnum{font-size:5px;width:22px;text-align:right;opacity:0.5;flex-shrink:0;}
 
 /* USERS */
 .users-list{display:flex;flex-direction:column;gap:3px;flex:1;overflow-y:auto;scrollbar-width:none;}
 .users-list::-webkit-scrollbar{display:none;}
-.urow{display:flex;align-items:center;gap:6px;padding:4px 6px;background:rgba(255,51,51,0.03);border:1px solid rgba(255,51,51,0.06);}
-.u-dot{width:4px;height:4px;background:var(--mint);flex-shrink:0;}
-.u-name{font-size:5px;letter-spacing:1px;color:rgba(255,255,255,0.35);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
+.urow{display:flex;align-items:center;gap:6px;padding:4px 6px;
+  background:rgba(255,45,45,0.03);border:1px solid rgba(255,45,45,0.06);}
+.u-dot{width:4px;height:4px;background:var(--red);flex-shrink:0;}
+.u-name{font-size:5px;letter-spacing:1px;color:rgba(255,255,255,0.3);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
 
 /* ── CENTER ── */
 .center{display:flex;flex-direction:column;overflow:hidden;position:relative;}
-
-/* CANVAS AREA — fixed block, does NOT overlap chat */
 #canvas-wrap{flex:0 0 auto;position:relative;z-index:5;pointer-events:none;
-  background:rgba(0,0,0,0.25);border-bottom:2px solid var(--border);}
+  background:rgba(0,0,0,0.2);border-bottom:2px solid var(--bdr);}
 #board-canvas{display:block;width:100%;image-rendering:pixelated;}
 
-/* CHAT — sits strictly below canvas */
 .chat-section{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0;}
-
-.chat-hdr{padding:8px 14px;border-bottom:2px solid var(--border);background:rgba(0,0,0,0.5);
-  display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
-.chat-title{font-size:6px;letter-spacing:3px;color:rgba(255,255,255,0.25);}
-.chat-round{font-size:6px;letter-spacing:2px;color:var(--mint);opacity:0.6;}
+.chat-hdr{padding:8px 14px;border-bottom:2px solid var(--bdr);
+  background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.chat-title{font-size:6px;letter-spacing:4px;color:rgba(255,45,45,0.4);}
+.chat-round{font-size:6px;letter-spacing:2px;color:var(--red);opacity:0.6;}
 #feed{flex:1;overflow-y:auto;padding:10px 12px;display:flex;flex-direction:column;gap:6px;
-  scrollbar-width:thin;scrollbar-color:rgba(255,51,51,0.12) transparent;}
+  scrollbar-width:thin;scrollbar-color:rgba(255,45,45,0.1) transparent;}
 #feed::-webkit-scrollbar{width:2px;}
-#feed::-webkit-scrollbar-thumb{background:rgba(255,51,51,0.12);}
+#feed::-webkit-scrollbar-thumb{background:rgba(255,45,45,0.1);}
 .msg{display:flex;flex-direction:column;gap:4px;padding:8px 10px;
-  border:2px solid rgba(255,255,255,0.04);background:rgba(0,0,0,0.35);
+  border:1px solid rgba(255,255,255,0.04);background:rgba(0,0,0,0.35);
   position:relative;animation:msgIn 0.3s ease both;}
 @keyframes msgIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 .msg::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:currentColor;}
 .msg-hdr{display:flex;align-items:center;gap:8px;}
 .msg-agent{font-size:5px;letter-spacing:2px;font-weight:bold;}
-.msg-time{font-size:5px;letter-spacing:1px;color:rgba(255,255,255,0.18);}
-.msg-txt{font-family:'VT323',monospace;font-size:16px;color:rgba(255,255,255,0.55);line-height:1.5;letter-spacing:0.3px;}
-#typing-area{flex-shrink:0;min-height:24px;padding:0 12px;}
-.typing-row{display:flex;align-items:center;gap:8px;padding:4px 0;}
+.msg-time{font-size:5px;color:rgba(255,255,255,0.16);}
+.msg-txt{font-family:'VT323',monospace;font-size:17px;color:rgba(255,255,255,0.58);line-height:1.5;}
+#typing-area{flex-shrink:0;min-height:22px;padding:0 12px;}
+.typing-row{display:flex;align-items:center;gap:8px;padding:3px 0;}
 .typing-dots{display:flex;gap:3px;}
-.typing-dots span{width:4px;height:4px;background:var(--mint);animation:blink 1s steps(1) infinite;}
+.typing-dots span{width:4px;height:4px;background:var(--red);animation:blk 1s steps(1) infinite;}
 .typing-dots span:nth-child(2){animation-delay:0.33s;}
 .typing-dots span:nth-child(3){animation-delay:0.66s;}
-.typing-name{font-size:5px;letter-spacing:1px;color:rgba(255,255,255,0.25);}
+.typing-name{font-size:5px;letter-spacing:1px;color:rgba(255,255,255,0.22);}
 
 /* ── RIGHT ── */
-.rpanel{border-left:2px solid var(--border);display:flex;flex-direction:column;overflow:hidden;background:rgba(0,0,0,0.3);}
-.ag-card{padding:10px 11px;border-bottom:2px solid rgba(0,0,0,0.4);
-  cursor:default;transition:background 0.12s;position:relative;overflow:hidden;}
-.ag-card::after{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:currentColor;opacity:0.7;}
-.ag-card:hover{background:rgba(255,255,255,0.015);}
-.ag-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
+.rpanel{border-left:2px solid var(--bdr);display:flex;flex-direction:column;overflow:hidden;background:rgba(0,0,0,0.3);}
+.ag-card{padding:9px 11px;border-bottom:1px solid rgba(0,0,0,0.4);cursor:default;transition:background 0.1s;position:relative;overflow:hidden;}
+.ag-card::after{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:currentColor;opacity:0.65;}
+.ag-card:hover{background:rgba(255,255,255,0.012);}
+.ag-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;}
 .ag-name-r{font-size:5px;letter-spacing:2px;}
-.ag-sdot{width:5px;height:5px;background:currentColor;box-shadow:0 0 4px currentColor;animation:blink 2s steps(1) infinite;}
-.ag-role-r{font-family:'VT323',monospace;font-size:12px;color:rgba(255,255,255,0.22);letter-spacing:1px;margin-bottom:4px;}
-.ag-last{font-family:'VT323',monospace;font-size:12px;color:rgba(255,255,255,0.28);line-height:1.4;
+.ag-sdot{width:5px;height:5px;background:currentColor;box-shadow:0 0 4px currentColor;animation:blk 2s steps(1) infinite;}
+.ag-role-r{font-family:'VT323',monospace;font-size:12px;color:rgba(255,255,255,0.2);margin-bottom:3px;}
+.ag-last{font-family:'VT323',monospace;font-size:12px;color:rgba(255,255,255,0.25);line-height:1.3;
   overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
-.vote-sec{padding:10px 11px;border-top:2px solid var(--border);background:rgba(0,0,0,0.5);margin-top:auto;}
-.vote-t{font-size:5px;letter-spacing:2px;color:rgba(255,51,51,0.35);margin-bottom:8px;}
+
+/* VOTE */
+.vote-sec{padding:10px 11px;border-top:2px solid var(--bdr);background:rgba(0,0,0,0.5);margin-top:auto;}
+.vote-t{font-size:5px;letter-spacing:2px;color:rgba(255,45,45,0.3);margin-bottom:8px;}
 .vote-btns{display:grid;grid-template-columns:1fr 1fr;gap:2px;}
 .vbtn{padding:7px 4px;font-family:'Press Start 2P',monospace;font-size:5px;letter-spacing:1px;
-  cursor:pointer;border:2px solid;background:transparent;transition:all 0.1s;text-align:center;}
-.vbtn-yes{color:var(--mint);border-color:rgba(255,51,51,0.2);}
-.vbtn-yes:hover{background:rgba(255,51,51,0.08);border-color:var(--mint);}
+  cursor:pointer;border:1px solid;background:transparent;transition:all 0.1s;text-align:center;}
+.vbtn-yes{color:var(--mint);border-color:rgba(0,255,178,0.15);}
+.vbtn-yes:hover{background:rgba(0,255,178,0.07);border-color:var(--mint);}
 .vbtn-no{color:var(--red);border-color:rgba(255,45,45,0.15);}
-.vbtn-no:hover{background:rgba(255,45,45,0.06);border-color:var(--red);}
-.vote-fb{font-family:'VT323',monospace;font-size:13px;color:var(--mint);min-height:18px;margin-top:6px;text-align:center;}
+.vbtn-no:hover{background:rgba(255,45,45,0.07);border-color:var(--red);}
+.vote-fb{font-family:'VT323',monospace;font-size:13px;color:var(--red);min-height:18px;margin-top:5px;text-align:center;}
 </style>
 </head>
 <body>
 <div id="scan"></div>
 <div class="app">
 
-<!-- HEADER -->
+<!-- HDR -->
 <div class="hdr">
-  <div class="hdr-logo">BrainClaw<svg width="18" height="14" viewBox="0 0 18 14" style="margin-left:7px;vertical-align:middle;" fill="#FF2D2D"><rect x="0" y="6" width="2" height="2"/><rect x="2" y="4" width="2" height="2"/><rect x="4" y="2" width="2" height="4"/><rect x="6" y="0" width="2" height="2"/><rect x="6" y="4" width="2" height="2"/><rect x="8" y="2" width="2" height="2"/><rect x="8" y="6" width="2" height="2"/><rect x="10" y="0" width="2" height="2"/><rect x="10" y="4" width="2" height="4"/><rect x="12" y="2" width="2" height="6"/><rect x="14" y="4" width="2" height="6"/><rect x="16" y="6" width="2" height="6"/><rect x="6" y="8" width="8" height="2"/><rect x="4" y="10" width="10" height="2"/><rect x="4" y="12" width="2" height="2"/><rect x="12" y="12" width="2" height="2"/></svg></div>
+  <div class="hdr-logo">
+    <svg width="16" height="13" viewBox="0 0 20 16" fill="var(--red)">
+      <rect x="2" y="0" width="2" height="2"/><rect x="6" y="0" width="2" height="2"/>
+      <rect x="10" y="0" width="2" height="2"/><rect x="14" y="0" width="2" height="2"/>
+      <rect x="0" y="2" width="2" height="2"/><rect x="4" y="2" width="2" height="2"/>
+      <rect x="8" y="2" width="2" height="2"/><rect x="12" y="2" width="2" height="2"/>
+      <rect x="16" y="2" width="2" height="2"/>
+      <rect x="0" y="4" width="18" height="6"/>
+      <rect x="2" y="10" width="3" height="2"/><rect x="7" y="10" width="2" height="4"/>
+      <rect x="11" y="10" width="2" height="4"/><rect x="15" y="10" width="3" height="2"/>
+      <rect x="2" y="12" width="3" height="2"/><rect x="15" y="12" width="3" height="2"/>
+    </svg>
+    BrainClaw
+  </div>
   <div class="hdr-agents">
-    <div class="ha" style="color:#00FFB2"><div class="ha-led" style="background:#00FFB2;box-shadow:0 0 5px #00FFB2;animation-delay:0s"></div>ORACLE</div>
-    <div class="ha" style="color:var(--white)"><div class="ha-led" style="background:var(--white);box-shadow:0 0 5px var(--white);animation-delay:0.3s"></div>GROK</div>
-    <div class="ha" style="color:var(--blue)"><div class="ha-led" style="background:var(--blue);box-shadow:0 0 5px var(--blue);animation-delay:0.6s"></div>SENTINEL</div>
-    <div class="ha" style="color:var(--red)"><div class="ha-led" style="background:var(--red);box-shadow:0 0 5px var(--red);animation-delay:0.9s"></div>OPENCLAW</div>
-    <div class="ha" style="color:var(--orange)"><div class="ha-led" style="background:var(--orange);box-shadow:0 0 5px var(--orange);animation-delay:1.2s"></div>HUMMINGBOT</div>
+    <div class="ha" style="color:#00FFB2"><div class="ha-led" style="background:#00FFB2;box-shadow:0 0 4px #00FFB2;animation-delay:0s"></div>ORACLE</div>
+    <div class="ha" style="color:var(--white)"><div class="ha-led" style="background:var(--white);animation-delay:0.3s"></div>GROK</div>
+    <div class="ha" style="color:var(--blue)"><div class="ha-led" style="background:var(--blue);box-shadow:0 0 4px var(--blue);animation-delay:0.6s"></div>SENTINEL</div>
+    <div class="ha" style="color:var(--red)"><div class="ha-led" style="background:var(--red);box-shadow:0 0 4px var(--red);animation-delay:0.9s"></div>OPENCLAW</div>
+    <div class="ha" style="color:var(--orange)"><div class="ha-led" style="background:var(--orange);box-shadow:0 0 4px var(--orange);animation-delay:1.2s"></div>HUMMINGBOT</div>
   </div>
   <div class="hdr-r">
     <div class="live-w"><div class="led"></div>LIVE</div>
@@ -175,7 +182,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   <div class="blk">
     <div class="blk-t">&gt;_ TOKEN</div>
     <div class="tok-name" id="tok-name">$BCAi</div>
-    <div style="font-size:5px;letter-spacing:2px;color:rgba(255,51,51,0.25);margin-top:4px;">LAUNCHING SOON</div>
+    <div class="tok-sub">LAUNCHING SOON</div>
   </div>
   <div class="blk">
     <div class="blk-t">&gt;_ DAO_VOTE</div>
@@ -185,16 +192,14 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
     <div class="vbars" id="vbars"></div>
   </div>
   <div class="blk" style="flex:1;overflow:hidden;display:flex;flex-direction:column;min-height:0;">
-    <div class="blk-t">&gt;_ OBSERVERS <span id="user-count" style="color:var(--mint)">0</span></div>
+    <div class="blk-t">&gt;_ OBSERVERS <span id="user-count" style="color:var(--red)">0</span></div>
     <div class="users-list" id="users-list"></div>
   </div>
 </div>
 
 <!-- CENTER -->
 <div class="center">
-  <div id="canvas-wrap">
-    <canvas id="board-canvas"></canvas>
-  </div>
+  <div id="canvas-wrap"><canvas id="board-canvas"></canvas></div>
   <div class="chat-section">
     <div class="chat-hdr">
       <div class="chat-title">&gt;_ COUNCIL_DEBATE_FEED</div>
@@ -210,28 +215,23 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   <div class="blk"><div class="blk-t">&gt;_ AGENT_STATUS</div></div>
   <div class="ag-card" style="color:#00FFB2">
     <div class="ag-top"><div class="ag-name-r" style="color:#00FFB2">ORACLE</div><div class="ag-sdot" style="background:#00FFB2;box-shadow:0 0 4px #00FFB2;"></div></div>
-    <div class="ag-role-r">MARKET INTEL</div>
-    <div class="ag-last" id="last-oracle">Analyzing on-chain data...</div>
+    <div class="ag-role-r">MARKET INTEL</div><div class="ag-last" id="last-oracle">Analyzing on-chain data...</div>
   </div>
   <div class="ag-card" style="color:var(--white)">
-    <div class="ag-top"><div class="ag-name-r" style="color:var(--white)">GROK</div><div class="ag-sdot" style="background:var(--white);box-shadow:0 0 4px var(--white);animation-delay:0.3s"></div></div>
-    <div class="ag-role-r">PATTERN REC</div>
-    <div class="ag-last" id="last-grok">Scanning historical cycles...</div>
+    <div class="ag-top"><div class="ag-name-r" style="color:var(--white)">GROK</div><div class="ag-sdot" style="background:var(--white);animation-delay:0.3s"></div></div>
+    <div class="ag-role-r">PATTERN REC</div><div class="ag-last" id="last-grok">Scanning historical cycles...</div>
   </div>
   <div class="ag-card" style="color:var(--blue)">
     <div class="ag-top"><div class="ag-name-r" style="color:var(--blue)">SENTINEL</div><div class="ag-sdot" style="background:var(--blue);box-shadow:0 0 4px var(--blue);animation-delay:0.6s"></div></div>
-    <div class="ag-role-r">RISK MGMT</div>
-    <div class="ag-last" id="last-sentinel">Monitoring risk levels...</div>
+    <div class="ag-role-r">RISK MGMT</div><div class="ag-last" id="last-sentinel">Monitoring risk levels...</div>
   </div>
   <div class="ag-card" style="color:var(--red)">
     <div class="ag-top"><div class="ag-name-r" style="color:var(--red)">OPENCLAW</div><div class="ag-sdot" style="background:var(--red);box-shadow:0 0 4px var(--red);animation-delay:0.9s"></div></div>
-    <div class="ag-role-r">EXECUTION</div>
-    <div class="ag-last" id="last-openclaw">Ready to execute...</div>
+    <div class="ag-role-r">EXECUTION</div><div class="ag-last" id="last-openclaw">Ready to execute...</div>
   </div>
   <div class="ag-card" style="color:var(--orange)">
     <div class="ag-top"><div class="ag-name-r" style="color:var(--orange)">HUMMINGBOT</div><div class="ag-sdot" style="background:var(--orange);box-shadow:0 0 4px var(--orange);animation-delay:1.2s"></div></div>
-    <div class="ag-role-r">SYNTHESIS</div>
-    <div class="ag-last" id="last-hummingbot">Finding the angle...</div>
+    <div class="ag-role-r">SYNTHESIS</div><div class="ag-last" id="last-hummingbot">Finding the angle...</div>
   </div>
   <div class="vote-sec">
     <div class="vote-t">&gt;_ CAST YOUR SIGNAL</div>
@@ -243,11 +243,10 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   </div>
 </div>
 
-</div><!-- /main -->
-</div><!-- /app -->
+</div>
+</div>
 
 <script>
-// ── AGENTS CONFIG ──
 const AGENTS = [
   { id:'oracle',    name:'ORACLE',     color:'#00FFB2', role:'MARKET INTEL' },
   { id:'grok',      name:'GROK',       color:'#E8E8E8', role:'PATTERN REC'  },
@@ -256,550 +255,285 @@ const AGENTS = [
   { id:'hummingbot',name:'HUMMINGBOT', color:'#FF8C00', role:'SYNTHESIS'    },
 ];
 
-// ── CANVAS BOARD RENDERER ──
+// ── CANVAS ──
 const canvas = document.getElementById('board-canvas');
 const ctx = canvas.getContext('2d');
 let CW, CH;
-const BOARD_W = 88; // pixels per board
-const BOARD_H = 100;
-const PIXEL = 3;
+const BOARD_W=88, BOARD_H=100, PIXEL=3;
 
-// Agent states
 const agentState = {};
 AGENTS.forEach(a => {
-  agentState[a.id] = { thinking: false, pulse: 0, lastMsg: '', blinkPhase: Math.random() * Math.PI * 2 };
+  agentState[a.id] = { thinking:false, pulse:0, blinkPhase:Math.random()*Math.PI*2 };
 });
 
-// Synapse pulses — travel DOWN from boards into chat
-const synapses = [];
-const CROSS_PAIRS = [[0,1],[1,2],[2,3],[3,4],[0,2],[1,3],[2,4]];
-const crossSynapses = [];
+const synapses=[], crossSynapses=[];
+const CROSS_PAIRS=[[0,1],[1,2],[2,3],[3,4],[0,2],[1,3],[2,4]];
 
-function spawnSynapse(agentIdx, col) {
-  synapses.push({
-    agentIdx,
-    col: col || AGENTS[agentIdx].color,
-    t: 0,
-    speed: 0.007 + Math.random() * 0.009,
-    xOff: (Math.random() - 0.5) * 12,
-  });
+function spawnSynapse(idx,col){
+  synapses.push({agentIdx:idx,col:col||AGENTS[idx].color,t:0,speed:0.007+Math.random()*0.009});
+}
+function spawnCross(f,t){
+  crossSynapses.push({from:f,to:t,col:AGENTS[f].color,t:0,speed:0.02+Math.random()*0.015});
 }
 
-function spawnCross(fromIdx, toIdx) {
-  crossSynapses.push({
-    from: fromIdx, to: toIdx,
-    col: AGENTS[fromIdx].color,
-    t: 0,
-    speed: 0.02 + Math.random() * 0.015,
-  });
-}
-
-let lastSynapseTime = 0;
-function maybeSpawnSynapse() {
-  const now = Date.now();
-  if (now - lastSynapseTime < 200) return;
-  lastSynapseTime = now;
-
-  // ONLY fire when an agent is actively thinking
-  const thinking = AGENTS.filter(a => agentState[a.id].thinking);
-  if (thinking.length === 0) return; // NO idle synapses
-
-  thinking.forEach(ag => {
-    const idx = AGENTS.indexOf(ag);
-    if (Math.random() > 0.4) spawnSynapse(idx, ag.color);
-    if (Math.random() > 0.6) {
-      const targets = CROSS_PAIRS.filter(p => p[0]===idx || p[1]===idx);
-      if (targets.length) spawnCross(...targets[Math.floor(Math.random()*targets.length)]);
+let lastSyn=0;
+function maybeSpawnSynapse(){
+  const now=Date.now();if(now-lastSyn<200)return;lastSyn=now;
+  const thinking=AGENTS.filter(a=>agentState[a.id].thinking);
+  if(!thinking.length)return;
+  thinking.forEach(ag=>{
+    const idx=AGENTS.indexOf(ag);
+    if(Math.random()>0.4)spawnSynapse(idx,ag.color);
+    if(Math.random()>0.6){
+      const t=CROSS_PAIRS.filter(p=>p[0]===idx||p[1]===idx);
+      if(t.length)spawnCross(...t[Math.floor(Math.random()*t.length)]);
     }
   });
 }
 
-function initCanvas() {
-  const wrap = document.getElementById('canvas-wrap');
-  CW = wrap.parentElement.clientWidth;
-  CH = 180; // boards + synapse zone, chat is strictly below
-  canvas.width = CW;
-  canvas.height = CH;
+function initCanvas(){
+  CW=document.getElementById('canvas-wrap').parentElement.clientWidth;
+  CH=180;canvas.width=CW;canvas.height=CH;
 }
 
-// Draw a single pixel board
-function drawBoard(cx, cy, agent, state) {
-  const col = agent.color;
-  const P = PIXEL;
-  const alpha = state.thinking ? 0.9 : 0.55;
-
-  ctx.save();
-  ctx.setLineDash([]); // ALWAYS solid — never dashed
-
-  if (state.thinking) {
-    ctx.shadowColor = col;
-    ctx.shadowBlur = 18 + Math.sin(state.pulse) * 8;
-  }
-
-  function px(x, y, w, h, a) {
-    ctx.globalAlpha = (a || 1) * alpha;
-    ctx.fillStyle = col;
-    ctx.fillRect(cx + x * P, cy + y * P, w * P, h * P);
-  }
-  function outline(x, y, w, h, a) {
-    ctx.globalAlpha = (a || 1) * alpha;
-    ctx.strokeStyle = col;
-    ctx.lineWidth = 1;
-    ctx.setLineDash([]); // force solid
-    ctx.strokeRect(cx + x * P + 0.5, cy + y * P + 0.5, w * P - 1, h * P - 1);
-  }
-
-  // PCB outline
-  outline(0, 4, BOARD_W / P, BOARD_H / P - 4, 0.8);
-
-  // GPIO pins top row
-  for (let i = 1; i < 26; i += 2) {
-    px(i, 4, 1, 2, 0.5);
-    px(i, 6, 1, 1, 0.2);
-  }
-  for (let i = 1; i < 26; i += 2) {
-    px(i, 2, 1, 2, 0.4);
-  }
-
-  // Second pin row
-  for (let i = 2; i < 26; i += 2) {
-    px(i, 4, 1, 2, 0.35);
-    px(i, 2, 1, 2, 0.25);
-  }
-
-  // Main chip
-  outline(6, 10, 18, 14, 0.7);
-  for (let i = 7; i < 23; i++) {
-    for (let j = 11; j < 23; j++) {
-      if ((i + j) % 3 === 0) px(i, j, 1, 1, 0.08);
-    }
-  }
-  // Chip label
-  px(10, 14, 2, 1, 0.3);
-  px(10, 16, 4, 1, 0.2);
-  px(10, 18, 3, 1, 0.15);
-
-  // USB port
-  outline(0, 22, 5, 4, 0.6);
-  px(1, 23, 3, 2, 0.15);
-
-  // Capacitor circles
-  ctx.globalAlpha = alpha * 0.7;
-  ctx.strokeStyle = col;
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.arc(cx + 22 * P, cy + 16 * P, 4 * P, 0, Math.PI * 2);
-  ctx.stroke();
-  ctx.beginPath();
-  ctx.arc(cx + 22 * P, cy + 16 * P, 2 * P, 0, Math.PI * 2);
-  ctx.stroke();
-  ctx.beginPath();
-  ctx.arc(cx + 26 * P, cy + 16 * P, 3 * P, 0, Math.PI * 2);
-  ctx.stroke();
-
-  // LED — blinks when thinking
-  const ledBright = state.thinking
-    ? (Math.sin(state.pulse * 3) > 0 ? 1 : 0.1)
-    : 0.3 + Math.sin(Date.now() / 2000 + state.blinkPhase) * 0.1;
-  ctx.globalAlpha = ledBright;
-  ctx.fillStyle = col;
-  ctx.fillRect(cx + 3 * P, cy + 24 * P, 3 * P, 3 * P);
-  if (state.thinking) {
-    ctx.shadowColor = col;
-    ctx.shadowBlur = 15;
-    ctx.fillRect(cx + 3 * P, cy + 24 * P, 3 * P, 3 * P);
-    ctx.shadowBlur = 0;
-  }
-
-  // Power indicator line
-  ctx.globalAlpha = alpha * 0.25;
-  ctx.fillStyle = col;
-  ctx.fillRect(cx + 2 * P, cy + 28 * P, 8 * P, 1);
-  ctx.fillRect(cx + 2 * P, cy + 30 * P, 5 * P, 1);
-
-  // Board traces
-  for (let i = 0; i < 4; i++) {
-    ctx.globalAlpha = alpha * 0.08;
-    ctx.fillStyle = col;
-    ctx.fillRect(cx + (8 + i * 5) * P, cy + 28 * P, 1, 4 * P);
-  }
-
-  // Agent name label below board
-  ctx.globalAlpha = state.thinking ? 0.9 : 0.4;
-  ctx.fillStyle = col;
-  ctx.font = `${P * 2}px 'Press Start 2P', monospace`;
-  ctx.textAlign = 'center';
-  const nameX = cx + (BOARD_W / 2);
-  ctx.fillText(agent.name, nameX, cy + (BOARD_H / P + 5) * P);
-
-  ctx.globalAlpha = 1;
-  ctx.restore(); // always restore, was always saved
+function drawBoard(cx,cy,agent,state){
+  const col=agent.color,P=PIXEL,alpha=state.thinking?0.9:0.55;
+  ctx.save();ctx.setLineDash([]);
+  if(state.thinking){ctx.shadowColor=col;ctx.shadowBlur=18+Math.sin(state.pulse)*8;}
+  const px=(x,y,w,h,a)=>{ctx.globalAlpha=(a||1)*alpha;ctx.fillStyle=col;ctx.fillRect(cx+x*P,cy+y*P,w*P,h*P);};
+  const ol=(x,y,w,h,a)=>{ctx.globalAlpha=(a||1)*alpha;ctx.strokeStyle=col;ctx.lineWidth=1;ctx.setLineDash([]);ctx.strokeRect(cx+x*P+.5,cy+y*P+.5,w*P-1,h*P-1);};
+  ol(0,4,BOARD_W/P,BOARD_H/P-4,0.8);
+  for(let i=1;i<26;i+=2){px(i,4,1,2,.5);px(i,6,1,1,.2);px(i,2,1,2,.4);}
+  for(let i=2;i<26;i+=2){px(i,4,1,2,.35);px(i,2,1,2,.25);}
+  ol(6,10,18,14,.7);
+  for(let i=7;i<23;i++)for(let j=11;j<23;j++)if((i+j)%3===0)px(i,j,1,1,.08);
+  px(10,14,2,1,.3);px(10,16,4,1,.2);px(10,18,3,1,.15);
+  ol(0,22,5,4,.6);px(1,23,3,2,.15);
+  [4,2,2].forEach((r,ri)=>{
+    ctx.globalAlpha=alpha*0.7;ctx.strokeStyle=col;ctx.lineWidth=1;ctx.setLineDash([]);ctx.beginPath();
+    ctx.arc(cx+(22+ri*2)*P,cy+16*P,r*P,0,Math.PI*2);ctx.stroke();
+  });
+  const lb=state.thinking?(Math.sin(state.pulse*3)>0?1:.1):.3+Math.sin(Date.now()/2000+state.blinkPhase)*.1;
+  ctx.globalAlpha=lb;ctx.fillStyle=col;
+  ctx.fillRect(cx+3*P,cy+24*P,3*P,3*P);
+  if(state.thinking){ctx.shadowColor=col;ctx.shadowBlur=15;ctx.fillRect(cx+3*P,cy+24*P,3*P,3*P);ctx.shadowBlur=0;}
+  ctx.globalAlpha=alpha*.25;ctx.fillStyle=col;
+  ctx.fillRect(cx+2*P,cy+28*P,8*P,1);ctx.fillRect(cx+2*P,cy+30*P,5*P,1);
+  ctx.globalAlpha=state.thinking?.9:.4;ctx.fillStyle=col;
+  ctx.font=`${P*2}px 'Press Start 2P',monospace`;ctx.textAlign='center';
+  ctx.fillText(agent.name,cx+(BOARD_W/2),cy+(BOARD_H/P+5)*P);
+  ctx.globalAlpha=1;ctx.restore();
 }
 
-// Get board center point
-function boardCenter(pos) {
-  return {
-    x: pos.cx + Math.floor(BOARD_W / 2),
-    y: pos.cy + Math.floor((BOARD_H / PIXEL) * PIXEL / 2)
-  };
-}
+function drawSynapses(positions){
+  const BOT=positions[0].cy+(BOARD_H/PIXEL)*PIXEL;
+  const BUSY=BOT+22,MIDX=Math.floor(CW/2);
+  const any=AGENTS.some(a=>agentState[a.id].thinking);
+  const x0=positions[0].cx+Math.floor(BOARD_W/2);
+  const x4=positions[4].cx+Math.floor(BOARD_W/2);
 
-// Draw synapses — flow DOWN from boards into chat
-function drawSynapses(positions) {
-  const BOARD_BOT = positions[0].cy + (BOARD_H / PIXEL) * PIXEL;
-  const BUS_Y = BOARD_BOT + 22;
-  const MID_X = Math.floor(CW / 2);
-  const anyThinking = AGENTS.some(a => agentState[a.id].thinking);
-  const x0 = positions[0].cx + Math.floor(BOARD_W / 2);
-  const x4 = positions[4].cx + Math.floor(BOARD_W / 2);
-
-  // 1) ALWAYS: vertical stems from every board to bus
-  AGENTS.forEach((agent, i) => {
-    const st = agentState[agent.id];
-    const x = positions[i].cx + Math.floor(BOARD_W / 2);
-    ctx.save();
-    ctx.setLineDash([]);
-    ctx.globalAlpha = st.thinking ? 0.7 : 0.11;
-    ctx.strokeStyle = st.thinking ? agent.color : '#FF3333';
-    ctx.lineWidth = st.thinking ? 2 : 1;
-    if (st.thinking) { ctx.shadowColor = agent.color; ctx.shadowBlur = 6; }
-    ctx.beginPath();
-    ctx.moveTo(x, BOARD_BOT);
-    ctx.lineTo(x, BUS_Y);
-    ctx.stroke();
-    ctx.globalAlpha = st.thinking ? 0.9 : 0.16;
-    ctx.fillStyle = st.thinking ? agent.color : '#FF3333';
-    ctx.fillRect(x - 3, BUS_Y - 3, 6, 6);
-    ctx.restore();
+  AGENTS.forEach((ag,i)=>{
+    const st=agentState[ag.id];
+    const x=positions[i].cx+Math.floor(BOARD_W/2);
+    ctx.save();ctx.setLineDash([]);
+    ctx.globalAlpha=st.thinking?.7:.11;
+    ctx.strokeStyle=st.thinking?ag.color:'#FF2D2D';
+    ctx.lineWidth=st.thinking?2:1;
+    if(st.thinking){ctx.shadowColor=ag.color;ctx.shadowBlur=6;}
+    ctx.beginPath();ctx.moveTo(x,BOT);ctx.lineTo(x,BUSY);ctx.stroke();
+    ctx.globalAlpha=st.thinking?.9:.16;ctx.fillStyle=st.thinking?ag.color:'#FF2D2D';
+    ctx.fillRect(x-3,BUSY-3,6,6);ctx.restore();
   });
 
-  // 2) ALWAYS: horizontal bus
-  ctx.save();
-  ctx.setLineDash([]);
-  ctx.globalAlpha = anyThinking ? 0.4 : 0.09;
-  ctx.strokeStyle = '#FF3333';
-  ctx.lineWidth = anyThinking ? 2 : 1;
-  ctx.beginPath();
-  ctx.moveTo(x0, BUS_Y);
-  ctx.lineTo(x4, BUS_Y);
-  ctx.stroke();
-  ctx.restore();
+  ctx.save();ctx.setLineDash([]);ctx.globalAlpha=any?.4:.09;
+  ctx.strokeStyle='#FF2D2D';ctx.lineWidth=any?2:1;
+  ctx.beginPath();ctx.moveTo(x0,BUSY);ctx.lineTo(x4,BUSY);ctx.stroke();ctx.restore();
 
-  // 3) ALWAYS: central trunk down into chat (gradient fade)
-  ctx.save();
-  ctx.setLineDash([]);
-  const ta = anyThinking ? 0.32 : 0.07;
-  const trunkGrad = ctx.createLinearGradient(0, BUS_Y, 0, CH);
-  trunkGrad.addColorStop(0, `rgba(255,51,51,${ta})`);
-  trunkGrad.addColorStop(0.65, `rgba(255,51,51,${ta*0.3})`);
-  trunkGrad.addColorStop(1, 'rgba(255,51,51,0)');
-  ctx.strokeStyle = trunkGrad;
-  ctx.lineWidth = anyThinking ? 2 : 1;
-  ctx.beginPath();
-  ctx.moveTo(MID_X, BUS_Y);
-  ctx.lineTo(MID_X, CH);
-  ctx.stroke();
-  ctx.globalAlpha = anyThinking ? 0.65 : 0.14;
-  ctx.fillStyle = '#FF3333';
-  ctx.fillRect(MID_X - 3, BUS_Y - 3, 6, 6);
-  ctx.restore();
+  ctx.save();ctx.setLineDash([]);
+  const ta=any?.32:.07;
+  const tg=ctx.createLinearGradient(0,BUSY,0,CH);
+  tg.addColorStop(0,`rgba(255,45,45,${ta})`);
+  tg.addColorStop(.65,`rgba(255,45,45,${ta*.3})`);
+  tg.addColorStop(1,'rgba(255,45,45,0)');
+  ctx.strokeStyle=tg;ctx.lineWidth=any?2:1;
+  ctx.beginPath();ctx.moveTo(MIDX,BUSY);ctx.lineTo(MIDX,CH);ctx.stroke();
+  ctx.globalAlpha=any?.65:.14;ctx.fillStyle='#FF2D2D';ctx.fillRect(MIDX-3,BUSY-3,6,6);ctx.restore();
 
-  // 4) ONLY when active: cross wires between thinking agents
-  CROSS_PAIRS.forEach(([a, b], pi) => {
-    const stA = agentState[AGENTS[a].id];
-    const stB = agentState[AGENTS[b].id];
-    if (!stA.thinking && !stB.thinking) return;
-    const ax = positions[a].cx + Math.floor(BOARD_W / 2);
-    const bx = positions[b].cx + Math.floor(BOARD_W / 2);
-    const rowY = BUS_Y - 9 - (pi % 3) * 7;
-    ctx.save();
-    ctx.setLineDash([]);
-    ctx.globalAlpha = 0.28;
-    ctx.strokeStyle = stA.thinking ? AGENTS[a].color : AGENTS[b].color;
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(ax, BUS_Y); ctx.lineTo(ax, rowY);
-    ctx.lineTo(bx, rowY); ctx.lineTo(bx, BUS_Y);
-    ctx.stroke();
-    ctx.restore();
+  CROSS_PAIRS.forEach(([a,b],pi)=>{
+    const sA=agentState[AGENTS[a].id],sB=agentState[AGENTS[b].id];
+    if(!sA.thinking&&!sB.thinking)return;
+    const ax=positions[a].cx+Math.floor(BOARD_W/2),bx=positions[b].cx+Math.floor(BOARD_W/2);
+    const ry=BUSY-9-(pi%3)*7;
+    ctx.save();ctx.setLineDash([]);ctx.globalAlpha=.28;
+    ctx.strokeStyle=sA.thinking?AGENTS[a].color:AGENTS[b].color;ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(ax,BUSY);ctx.lineTo(ax,ry);ctx.lineTo(bx,ry);ctx.lineTo(bx,BUSY);ctx.stroke();ctx.restore();
   });
 
-  // 5) Pulses — only spawned when agent is thinking, animate in-flight
   maybeSpawnSynapse();
 
-  // Down-synapses: board → bus → midX → down into chat
-  for (let i = synapses.length - 1; i >= 0; i--) {
-    const s = synapses[i];
-    s.t += s.speed;
-    if (s.t > 1) { synapses.splice(i, 1); continue; }
-    const ax = positions[s.agentIdx].cx + Math.floor(BOARD_W / 2);
-    let dotX, dotY;
-    if (s.t < 0.2) {
-      const p = s.t / 0.2;
-      dotX = ax; dotY = BOARD_BOT + (BUS_Y - BOARD_BOT) * p;
-    } else if (s.t < 0.45) {
-      const p = (s.t - 0.2) / 0.25;
-      dotX = ax + (MID_X - ax) * p; dotY = BUS_Y;
-    } else {
-      const p = (s.t - 0.45) / 0.55;
-      dotX = MID_X; dotY = BUS_Y + (CH - BUS_Y) * p;
-    }
-    const fade = s.t < 0.1 ? s.t/0.1 : s.t > 0.85 ? (1-s.t)/0.15 : 1;
-    ctx.save();
-    ctx.setLineDash([]);
-    ctx.shadowColor = s.col; ctx.shadowBlur = 10;
-    ctx.globalAlpha = fade * 0.95;
-    ctx.fillStyle = s.col;
-    ctx.fillRect(Math.round(dotX) - 4, Math.round(dotY) - 4, 8, 8);
-    ctx.shadowBlur = 0; ctx.globalAlpha = fade * 0.35;
-    ctx.fillRect(Math.round(dotX) - 2, Math.round(dotY) - 2, 4, 4);
-    ctx.restore();
+  for(let i=synapses.length-1;i>=0;i--){
+    const s=synapses[i];s.t+=s.speed;if(s.t>1){synapses.splice(i,1);continue;}
+    const ax=positions[s.agentIdx].cx+Math.floor(BOARD_W/2);
+    let dx,dy;
+    if(s.t<.2){const p=s.t/.2;dx=ax;dy=BOT+(BUSY-BOT)*p;}
+    else if(s.t<.45){const p=(s.t-.2)/.25;dx=ax+(MIDX-ax)*p;dy=BUSY;}
+    else{const p=(s.t-.45)/.55;dx=MIDX;dy=BUSY+(CH-BUSY)*p;}
+    const fd=s.t<.1?s.t/.1:s.t>.85?(1-s.t)/.15:1;
+    ctx.save();ctx.setLineDash([]);ctx.shadowColor=s.col;ctx.shadowBlur=10;
+    ctx.globalAlpha=fd*.95;ctx.fillStyle=s.col;ctx.fillRect(Math.round(dx)-4,Math.round(dy)-4,8,8);
+    ctx.shadowBlur=0;ctx.globalAlpha=fd*.35;ctx.fillRect(Math.round(dx)-2,Math.round(dy)-2,4,4);ctx.restore();
   }
 
-  // Cross-synapses: horizontal along bus between boards
-  for (let i = crossSynapses.length - 1; i >= 0; i--) {
-    const s = crossSynapses[i];
-    s.t += s.speed;
-    if (s.t > 1) { crossSynapses.splice(i, 1); continue; }
-    const ax = positions[s.from].cx + Math.floor(BOARD_W / 2);
-    const bx = positions[s.to].cx + Math.floor(BOARD_W / 2);
-    const dotX = ax + (bx - ax) * s.t;
-    const fade = Math.sin(s.t * Math.PI);
-    ctx.save();
-    ctx.setLineDash([]);
-    ctx.shadowColor = s.col; ctx.shadowBlur = 8;
-    ctx.globalAlpha = fade * 0.85;
-    ctx.fillStyle = s.col;
-    ctx.fillRect(Math.round(dotX) - 4, BUS_Y - 4, 8, 8);
-    ctx.restore();
+  for(let i=crossSynapses.length-1;i>=0;i--){
+    const s=crossSynapses[i];s.t+=s.speed;if(s.t>1){crossSynapses.splice(i,1);continue;}
+    const ax=positions[s.from].cx+Math.floor(BOARD_W/2),bx=positions[s.to].cx+Math.floor(BOARD_W/2);
+    const dx=ax+(bx-ax)*s.t,fd=Math.sin(s.t*Math.PI);
+    ctx.save();ctx.setLineDash([]);ctx.shadowColor=s.col;ctx.shadowBlur=8;
+    ctx.globalAlpha=fd*.85;ctx.fillStyle=s.col;ctx.fillRect(Math.round(dx)-4,BUSY-4,8,8);ctx.restore();
   }
 }
 
-function renderCanvas() {
-  ctx.clearRect(0, 0, CW, CH);
-
-  const gap = CW / 6;
-  const boardPixW = (BOARD_W / PIXEL) * PIXEL;
-  const topY = 8;
-
-  const positions = AGENTS.map((a, i) => ({
-    cx: Math.floor(gap * (i + 1) - boardPixW / 2),
-    cy: topY
-  }));
-
-  AGENTS.forEach(a => {
-    const s = agentState[a.id];
-    if (s.thinking) s.pulse += 0.12;
-  });
-
+function renderCanvas(){
+  ctx.clearRect(0,0,CW,CH);
+  const gap=CW/6,bw=(BOARD_W/PIXEL)*PIXEL,topY=8;
+  const positions=AGENTS.map((a,i)=>({cx:Math.floor(gap*(i+1)-bw/2),cy:topY}));
+  AGENTS.forEach(a=>{const s=agentState[a.id];if(s.thinking)s.pulse+=.12;});
   drawSynapses(positions);
-
-  AGENTS.forEach((agent, i) => {
-    drawBoard(positions[i].cx, positions[i].cy, agent, agentState[agent.id]);
-  });
-
+  AGENTS.forEach((ag,i)=>drawBoard(positions[i].cx,positions[i].cy,ag,agentState[ag.id]));
   requestAnimationFrame(renderCanvas);
 }
 
-// ── INIT ──
 initCanvas();
-window.addEventListener('resize', () => { initCanvas(); });
+window.addEventListener('resize',()=>initCanvas());
 renderCanvas();
 
 // ── CLOCK ──
-function tick() {
-  const n = new Date();
-  document.getElementById('clk').textContent =
-    String(n.getUTCHours()).padStart(2,'0') + ':' +
-    String(n.getUTCMinutes()).padStart(2,'0') + ':' +
+function tick(){
+  const n=new Date();
+  document.getElementById('clk').textContent=
+    String(n.getUTCHours()).padStart(2,'0')+':'+
+    String(n.getUTCMinutes()).padStart(2,'0')+':'+
     String(n.getUTCSeconds()).padStart(2,'0');
 }
-setInterval(tick, 1000); tick();
+setInterval(tick,1000);tick();
 
-// ── DAO COUNTDOWN ──
-let daoSecs = 180;
-function setDaoTimer(val) {
-  // Server may send seconds (180) or milliseconds (180000) — normalise
-  const n = Number(val);
-  if (!n || isNaN(n)) return;
-  daoSecs = n > 10000 ? Math.floor(n / 1000) : n; // convert ms→s if needed
-  daoSecs = Math.max(0, Math.min(daoSecs, 900)); // clamp 0–15min
+// ── DAO TIMER ──
+let daoSecs=180;
+function setDaoTimer(val){
+  const n=Number(val);if(!n||isNaN(n))return;
+  daoSecs=n>10000?Math.floor(n/1000):n;daoSecs=Math.max(0,Math.min(daoSecs,900));
 }
-const daoInterval = setInterval(() => {
-  if (daoSecs > 0) daoSecs--;
-  const m = String(Math.floor(daoSecs / 60)).padStart(2,'0');
-  const s = String(daoSecs % 60).padStart(2,'0');
-  document.getElementById('dao-timer').textContent = m + ':' + s;
-}, 1000);
+setInterval(()=>{
+  if(daoSecs>0)daoSecs--;
+  const m=String(Math.floor(daoSecs/60)).padStart(2,'0'),s=String(daoSecs%60).padStart(2,'0');
+  document.getElementById('dao-timer').textContent=m+':'+s;
+},1000);
 
 // ── VOTE BARS ──
-const COLORS = { oracle:'#00FFB2', grok:'#E8E8E8', sentinel:'#1E7FFF', openclaw:'#FF2D2D', hummingbot:'#FF8C00' };
-const voteData = { oracle:0, grok:0, sentinel:0, openclaw:0, hummingbot:0 };
-
-function renderVoteBars() {
-  const total = Object.values(voteData).reduce((a,b) => a+b, 0) || 1;
-  document.getElementById('vbars').innerHTML = AGENTS.map(a => {
-    const pct = Math.round((voteData[a.id] / total) * 100);
-    return `<div class="vr">
-      <div class="va" style="color:${a.color}">${a.name.slice(0,5)}</div>
-      <div class="vtrack"><div class="vfill" style="width:${pct}%;background:${a.color}"></div></div>
-      <div class="vnum" style="color:${a.color}">${pct}%</div>
-    </div>`;
+const COLORS={oracle:'#00FFB2',grok:'#E8E8E8',sentinel:'#1E7FFF',openclaw:'#FF2D2D',hummingbot:'#FF8C00'};
+const voteData={oracle:0,grok:0,sentinel:0,openclaw:0,hummingbot:0};
+function renderVoteBars(){
+  const total=Object.values(voteData).reduce((a,b)=>a+b,0)||1;
+  document.getElementById('vbars').innerHTML=AGENTS.map(a=>{
+    const pct=Math.round((voteData[a.id]/total)*100);
+    return `<div class="vr"><div class="va" style="color:${a.color}">${a.name.slice(0,5)}</div><div class="vtrack"><div class="vfill" style="width:${pct}%;background:${a.color}"></div></div><div class="vnum" style="color:${a.color}">${pct}%</div></div>`;
   }).join('');
 }
 renderVoteBars();
 
 // ── MESSAGES ──
-function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-function addMsg(agent, text) {
-  const col = COLORS[agent.toLowerCase()] || 'rgba(255,255,255,0.4)';
-  const feed = document.getElementById('feed');
-  const now = new Date();
-  const t = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
-  const div = document.createElement('div');
-  div.className = 'msg';
-  div.style.cssText = `color:${col};border-color:${col}20;`;
-  div.innerHTML = `<div class="msg-hdr"><div class="msg-agent" style="color:${col}">${esc(agent.toUpperCase())}</div><div class="msg-time">${t}</div></div><div class="msg-txt">${esc(text)}</div>`;
-  feed.appendChild(div);
-  feed.scrollTop = feed.scrollHeight;
-
-  // Update right panel last msg
-  const key = agent.toLowerCase();
-  const el = document.getElementById('last-' + key);
-  if (el) el.textContent = text;
-
-  // Update vote bar
-  if (voteData[key] !== undefined) { voteData[key]++; renderVoteBars(); }
-
-  // Fire synapses burst when agent speaks
-  const fromIdx = AGENTS.findIndex(a => a.id === key);
-  if (fromIdx !== -1) {
-    for (let b = 0; b < 4; b++) {
-      setTimeout(() => spawnSynapse(fromIdx, AGENTS[fromIdx].color), b * 120);
-    }
-    CROSS_PAIRS.filter(p => p[0] === fromIdx || p[1] === fromIdx).forEach(pair => {
-      setTimeout(() => spawnCross(pair[0], pair[1]), Math.random() * 300);
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function addMsg(agent,text){
+  const col=COLORS[agent.toLowerCase()]||'rgba(255,255,255,0.4)';
+  const feed=document.getElementById('feed');
+  const now=new Date();
+  const t=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+  const div=document.createElement('div');
+  div.className='msg';div.style.cssText=`color:${col};border-color:${col}20;`;
+  div.innerHTML=`<div class="msg-hdr"><div class="msg-agent" style="color:${col}">${esc(agent.toUpperCase())}</div><div class="msg-time">${t}</div></div><div class="msg-txt">${esc(text)}</div>`;
+  feed.appendChild(div);feed.scrollTop=feed.scrollHeight;
+  const key=agent.toLowerCase();
+  const el=document.getElementById('last-'+key);if(el)el.textContent=text;
+  if(voteData[key]!==undefined){voteData[key]++;renderVoteBars();}
+  const fromIdx=AGENTS.findIndex(a=>a.id===key);
+  if(fromIdx!==-1){
+    for(let b=0;b<4;b++)setTimeout(()=>spawnSynapse(fromIdx,AGENTS[fromIdx].color),b*120);
+    CROSS_PAIRS.filter(p=>p[0]===fromIdx||p[1]===fromIdx).forEach(pair=>{
+      setTimeout(()=>spawnCross(pair[0],pair[1]),Math.random()*300);
     });
   }
-
-  // Stop thinking anim
-  if (agentState[key]) {
-    agentState[key].thinking = false;
-  }
+  if(agentState[key])agentState[key].thinking=false;
 }
 
-function showTyping(agent) {
-  const key = agent.toLowerCase();
-  const col = COLORS[key] || 'rgba(255,255,255,0.3)';
-  // Reset any previously thinking agent first
-  AGENTS.forEach(a => { agentState[a.id].thinking = false; });
-  // Set only this agent
-  if (agentState[key]) agentState[key].thinking = true;
-  document.getElementById('typing-area').innerHTML =
+function showTyping(agent){
+  const key=agent.toLowerCase();
+  const col=COLORS[key]||'rgba(255,255,255,0.3)';
+  AGENTS.forEach(a=>{agentState[a.id].thinking=false;});
+  if(agentState[key])agentState[key].thinking=true;
+  document.getElementById('typing-area').innerHTML=
     `<div class="typing-row"><div class="typing-dots"><span></span><span></span><span></span></div><div class="typing-name" style="color:${col}">${agent.toUpperCase()} IS THINKING</div></div>`;
-  // Reset thinking after 4s if no message arrived
-  setTimeout(() => {
-    if (agentState[key]) agentState[key].thinking = false;
-    const ta = document.getElementById('typing-area');
-    if (ta) ta.innerHTML = '';
-  }, 4000);
+  setTimeout(()=>{
+    if(agentState[key])agentState[key].thinking=false;
+    const ta=document.getElementById('typing-area');if(ta)ta.innerHTML='';
+  },4000);
 }
 
 // ── MARKET ──
-function updateMarket(d) {
-  if (!d) return;
-  if (d.symbol) document.getElementById('tok-name').textContent = '$' + d.symbol.toUpperCase();
-
-  // Server sends pre-formatted strings like "$250K" OR raw numbers
-  function display(val, prefix) {
-    if (!val || val === 'TBA' || val === '$0') return 'TBA';
-    if (typeof val === 'string' && val.startsWith('$')) return val; // already formatted
-    const n = Number(val);
-    if (!n || isNaN(n)) return 'TBA';
-    return (prefix || '') + formatNum(n);
-  }
-
-  const mc = d.marketCap || d.market_cap || d.mcap;
-  document.getElementById('tok-mc').textContent = display(mc, '$');
-  document.getElementById('tok-vol').textContent = display(d.volume, '$');
-
-  if (d.price && d.price !== 'TBA') {
-    const p = Number(d.price);
-    document.getElementById('tok-price').textContent = isNaN(p) ? 'TBA' : '$' + p.toFixed(6);
-  }
-
-  if (d.holders && d.holders !== 'TBA') {
-    const h = Number(d.holders);
-    document.getElementById('tok-holders').textContent = isNaN(h) || h === 0 ? 'TBA' : h.toLocaleString();
-  }
+function updateMarket(d){
+  if(!d)return;
+  if(d.symbol)document.getElementById('tok-name').textContent='$'+d.symbol.toUpperCase();
 }
-function formatNum(n) {
-  const num = Number(n);
-  if (num >= 1e6) return (num/1e6).toFixed(1) + 'M';
-  if (num >= 1e3) return (num/1e3).toFixed(1) + 'K';
-  return num.toFixed(0);
-}
+function formatNum(n){const num=Number(n);if(num>=1e6)return(num/1e6).toFixed(1)+'M';if(num>=1e3)return(num/1e3).toFixed(1)+'K';return num.toFixed(0);}
 
 // ── USERS ──
-function renderUsers(list) {
-  document.getElementById('user-count').textContent = list.length;
-  const ul = document.getElementById('users-list');
-  if (!list.length) { ul.innerHTML = '<div class="urow"><div class="u-dot"></div><div class="u-name">NO OBSERVERS</div></div>'; return; }
-  ul.innerHTML = list.map(u => `<div class="urow"><div class="u-dot"></div><div class="u-name">${esc(u.toUpperCase())}</div></div>`).join('');
+function renderUsers(list){
+  document.getElementById('user-count').textContent=list.length;
+  const ul=document.getElementById('users-list');
+  if(!list.length){ul.innerHTML='<div class="urow"><div class="u-dot"></div><div class="u-name">NO OBSERVERS</div></div>';return;}
+  ul.innerHTML=list.map(u=>`<div class="urow"><div class="u-dot"></div><div class="u-name">${esc(u.toUpperCase())}</div></div>`).join('');
 }
 
-// ── WEBSOCKET ──
-const USERNAME = localStorage.getItem('devcrew_username') || 'OBSERVER';
+// ── WS ──
+const USERNAME=localStorage.getItem('devcrew_username')||'OBSERVER';
 let ws;
-function connect() {
-  ws = new WebSocket('wss://genesis-council1-production.up.railway.app');
-  let ok = false;
-  ws.onopen = () => {
-    ws.send(JSON.stringify({ type:'join', username:USERNAME }));
-    addMsg('SYSTEM', 'CONNECTION ESTABLISHED // COUNCIL CHAMBER ONLINE');
-    ok = true;
+function connect(){
+  ws=new WebSocket('wss://genesis-council1-production.up.railway.app');
+  let ok=false;
+  ws.onopen=()=>{ws.send(JSON.stringify({type:'join',username:USERNAME}));addMsg('SYSTEM','CONNECTION ESTABLISHED // COUNCIL CHAMBER ONLINE');ok=true;};
+  ws.onmessage=(e)=>{
+    try{
+      const msg=JSON.parse(e.data);
+      if(msg.type==='init'){
+        const d=msg.data||{};
+        if(d.history&&d.history.length)d.history.slice(-20).forEach(m=>{if(m.agent&&m.text)addMsg(m.agent,m.text);});
+        if(d.dao){if(d.dao.proposal)document.getElementById('dao-prop-txt').textContent=d.dao.proposal;if(d.dao.timeLeft!=null)setDaoTimer(d.dao.timeLeft);}
+        if(d.token)updateMarket(d.token);if(d.users)renderUsers(d.users);return;
+      }
+      if(msg.type==='agent_message'&&msg.agent){
+        addMsg(msg.agent,msg.content||msg.text);
+        if(msg.proposal)document.getElementById('dao-prop-txt').textContent=msg.proposal;
+        if(msg.round)document.getElementById('round-lbl').textContent='ROUND '+String(msg.round).padStart(2,'0');
+      }
+      if(msg.type==='typing_start'&&msg.agent)showTyping(msg.agent);
+      if(msg.type==='token_update'&&msg.data)updateMarket(msg.data);
+      if(msg.type==='dao_update'&&msg.data){
+        if(msg.data.proposal)document.getElementById('dao-prop-txt').textContent=msg.data.proposal;
+        if(msg.data.timeLeft!=null)setDaoTimer(msg.data.timeLeft);
+      }
+      if(msg.type==='users'||msg.type==='user_list')renderUsers(msg.users||[]);
+      if(msg.type==='user_joined'||msg.type==='user_left'){if(msg.users)renderUsers(msg.users);}
+    }catch(x){}
   };
-  ws.onmessage = (e) => {
-    try {
-      const msg = JSON.parse(e.data);
-      if (msg.type === 'init') {
-        const d = msg.data || {};
-        if (d.history && d.history.length) d.history.slice(-20).forEach(m => { if (m.agent && m.text) addMsg(m.agent, m.text); });
-        if (d.dao) {
-          if (d.dao.proposal) document.getElementById('dao-prop-txt').textContent = d.dao.proposal;
-          if (d.dao.timeLeft != null) setDaoTimer(d.dao.timeLeft); // sync from server on connect
-        }
-        if (d.token) updateMarket(d.token);
-        if (d.users) renderUsers(d.users);
-        return;
-      }
-      if (msg.type === 'agent_message' && msg.agent) {
-        addMsg(msg.agent, msg.content || msg.text);
-        if (msg.proposal) document.getElementById('dao-prop-txt').textContent = msg.proposal;
-        if (msg.round) document.getElementById('round-lbl').textContent = 'ROUND ' + String(msg.round).padStart(2,'0');
-      }
-      if (msg.type === 'typing_start' && msg.agent) showTyping(msg.agent);
-      if (msg.type === 'token_update' && msg.data) updateMarket(msg.data);
-      if (msg.type === 'dao_update' && msg.data) {
-        if (msg.data.proposal) document.getElementById('dao-prop-txt').textContent = msg.data.proposal;
-        if (msg.data.timeLeft != null) setDaoTimer(msg.data.timeLeft);
-      }
-      if (msg.type === 'users' || msg.type === 'user_list') renderUsers(msg.users || []);
-      if (msg.type === 'user_joined' || msg.type === 'user_left') { if (msg.users) renderUsers(msg.users); }
-    } catch(x) {}
-  };
-  ws.onerror = () => {};
-  ws.onclose = () => { if (ok) setTimeout(connect, 3000); else setTimeout(connect, 5000); };
+  ws.onerror=()=>{};
+  ws.onclose=()=>{if(ok)setTimeout(connect,3000);else setTimeout(connect,5000);};
 }
 connect();
 
-// ── VOTE ──
-function castVote(v) {
-  const fb = document.getElementById('vote-fb');
-  if (ws && ws.readyState === 1) ws.send(JSON.stringify({ type:'vote', vote:v, username:USERNAME }));
-  fb.textContent = 'SIGNAL: ' + v + ' SENT';
-  setTimeout(() => fb.textContent = '', 2500);
+function castVote(v){
+  const fb=document.getElementById('vote-fb');
+  if(ws&&ws.readyState===1)ws.send(JSON.stringify({type:'vote',vote:v,username:USERNAME}));
+  fb.textContent='SIGNAL: '+v+' SENT';
+  setTimeout(()=>fb.textContent='',2500);
 }
 </script>
 </body>
