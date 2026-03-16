@@ -1,5 +1,5 @@
 /**
- * BrainClaw — Main Server
+ * AICREW — Main Server
  * WebSocket + REST API + Helius Webhook receiver
  */
 
@@ -154,7 +154,7 @@ helius.on('whale', (event) => {
   debate.injectWhaleAlert(event);
   pushLog({
     type: 'action',
-    text: `🐋 WHALE ${event.type}: ${event.tokenAmount} BrainClaw (~${event.usdValue}) | ${event.sig}`,
+    text: `🐋 WHALE ${event.type}: ${event.tokenAmount} AICREW (~${event.usdValue}) | ${event.sig}`,
   });
   broadcast({ type: 'whale_alert', data: event });
 });
@@ -209,16 +209,6 @@ app.get('/admin/reset', (req, res) => {
   debate.topicIdx = 0;
   debate.tradeQueue = [];
 
-  // Restart DAO
-  if (dao.countdown) clearInterval(dao.countdown);
-  dao.round = 0;
-  dao.propIdx = -1;
-  dao.current = null;
-  dao.votes = {};
-  dao.timeLeft = 15 * 60;
-  dao.status = 'voting';
-  dao.start();
-
   // Inject fresh token context
   const tokenData = market.getCurrentData();
   const price = tokenData.isLive
@@ -231,8 +221,8 @@ app.get('/admin/reset', (req, res) => {
   const liq = tokenData.isLive ? tokenData.liquidity : 'TBA';
 
   debate.injectContext(
-    `BrainClaw COUNCIL SESSION RESET. Fresh start. ` +
-    `Token: BrainClaw on Solana. ` +
+    `AICREW COUNCIL SESSION RESET. Fresh start. ` +
+    `Token: AICREW on Solana. ` +
     `Price: ${price}. Holders: ${holders}. Volume: ${vol}. Liquidity: ${liq}. ` +
     `Council mission: govern this token, protect holders, maximize value. Begin debates now.`
   );
@@ -263,7 +253,7 @@ app.get('/admin/reset', (req, res) => {
 server.listen(PORT, () => {
   console.log(`
 ╔══════════════════════════════════════════╗
-║   BrainClaw COUNCIL — BACKEND v2           ║
+║   AICREW COUNCIL — BACKEND v2           ║
 ║   WS:      ws://localhost:${PORT}           ║
 ║   API:     http://localhost:${PORT}/api     ║
 ║   Webhook: http://localhost:${PORT}/webhook ║
