@@ -216,7 +216,23 @@ class DebateEngine extends EventEmitter {
 
     } catch (err) {
       console.error(`[Debate] ${agentId} error:`, err.message);
-      this.emit('message', { agent: agentId, text: this._fallback(agent), tag: 'system' });
+      // If aborted/timeout — retry once after delay
+      if (err.message === 'aborted' || err.code === 'ECONNABORTED' || err.message.includes('timeout')) {
+        console.log(`[Debate] ${agentId} retrying in 5s...`);
+        await this._wait(5000);
+        try {
+          const text2 = await this._callDeepSeek(agent);
+          this.history.push({ role: 'assistant', content: `[${agent.name}]: ${text2}` });
+          if (this.history.length > 24) this.history.shift();
+          this.emit('status', agentId, 'responding');
+          this.emit('message', { agent: agentId, text: text2, tag: 'system' });
+        } catch (err2) {
+          console.error(`[Debate] ${agentId} retry failed:`, err2.message);
+          this.emit('message', { agent: agentId, text: this._fallback(agent), tag: 'system' });
+        }
+      } else {
+        this.emit('message', { agent: agentId, text: this._fallback(agent), tag: 'system' });
+      }
     }
 
     this._schedule(3000 + Math.random() * 4500);
@@ -252,7 +268,7 @@ class DebateEngine extends EventEmitter {
       ],
     }, {
       headers: { 'Authorization': `Bearer ${this.apiKey}`, 'Content-Type': 'application/json' },
-      timeout: 20000,
+      timeout: 45000,
     });
 
     return (res.data.choices?.[0]?.message?.content || '')
